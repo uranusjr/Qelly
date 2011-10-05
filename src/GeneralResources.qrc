@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/translations">
+        <file>UJ_Translate.qm</file>
+    </qresource>
+</RCC>
