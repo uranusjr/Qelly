@@ -5,7 +5,7 @@
 TelnetTester::TelnetTester(QObject *parent) : QObject(parent)
 {
     QString host = "ptt.cc";
-    connect(&t, SIGNAL(receivedBytes(QByteArray)),
+    connect(&t, SIGNAL(processedBytes(QByteArray)),
             this, SLOT(dumpByteArray(QByteArray)));
     t.connectTo(host);
 }

@@ -25,7 +25,3 @@ HEADERS += \
     TelnetTester.h \
     ../../src/Telnet.h \
     ../../src/AbstractConnection.h
-
-
-
-
