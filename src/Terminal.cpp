@@ -181,13 +181,8 @@ void Terminal::updateDoubleByteStateForRow(int row)
 void Terminal::updateUrlStateForRow(int row)
 {
     QSet<const char *> protocols;   // NOTE: Use global preferences
-    protocols << "http://";
-    protocols << "https://";
-    protocols << "ftp://";
-    protocols << "telnet://";
-    protocols << "bbs://";
-    protocols << "ssh://";
-    protocols << "mailto:";
+    protocols << "http://" << "https://" << "ftp://" << "telnet://"
+              << "bbs://"  << "ssh://"   << "mailto:";
 
     bool isUrl = false;
     if (row > 0)
@@ -272,7 +267,7 @@ void Terminal::goOneRowUp(bool updateView)
     }
 }
 
-void Terminal::feedData(QByteArray &data)
+void Terminal::feedData(QByteArray data)
 {
     for (int i = 0; i < data.size(); i++)
     {
@@ -310,9 +305,7 @@ void Terminal::handleNormalDataInput(uchar c)
     case ASC_EQT:   // Flow control
         break;
     case ASC_ENQ:   // Flow control...why does this need action?
-        uchar cmd[1];
-        cmd[0] = ASC_NUL;
-        connection()->sendBytes(cmd, 1);
+        connection()->sendBytes(QByteArray(ASC_NUL));
         break;
     case ASC_ACK:   // Flow control
         break;
@@ -777,33 +770,22 @@ void Terminal::handleControlDch()
 
 void Terminal::handleControlDa()
 {
-    uchar cmd[10];  // Enough for now
-    uint cmd_sz = 0;
+    QByteArray cmd;
     switch (_standard)
     {
-    case StandardVT100: // respond ESC[?1;0c
-        cmd[cmd_sz++] = '\x1b'; // ESC
-        cmd[cmd_sz++] = '[';
-        cmd[cmd_sz++] = '?';
-        cmd[cmd_sz++] = '1';
-        cmd[cmd_sz++] = ';';
-        cmd[cmd_sz++] = '0';
-        cmd[cmd_sz++] = 'c';
+    case StandardVT100: // x1b = ESC
+        cmd.append("\x1b[?1;0c");
         break;
-    case StandardVT102: // respond ESC[?6c
-        cmd[cmd_sz++] = '\x1b'; // ESC
-        cmd[cmd_sz++] = '[';
-        cmd[cmd_sz++] = '?';
-        cmd[cmd_sz++] = '0';
-        cmd[cmd_sz++] = 'c';
+    case StandardVT102: // x1b = ESC
+        cmd.append("\x1b[?6c");
         break;
     default:
         break;
     }
     if (_csArg->isEmpty())
-        connection()->sendBytes(cmd, cmd_sz);
+        connection()->sendBytes(cmd);
     else if (_csArg->size() == 1 && _csArg->head() == 0)
-        connection()->sendBytes(cmd, cmd_sz);
+        connection()->sendBytes(cmd);
 }
 
 void Terminal::handleControlSm()
@@ -990,28 +972,20 @@ void Terminal::handleControlDsr()
         return;
 
     int p = _csArg->dequeue();
-    uchar cmd[10];      // Longest possible cursor position msg is 8
-    uint cmd_sz = 0;
+    QByteArray cmd;
     switch (p)
     {
-    case 5:     // Report device OK ESC[0n
-        cmd[cmd_sz++] = '\x1b';
-        cmd[cmd_sz++] = '[';
-        cmd[cmd_sz++] = '0';
-        cmd[cmd_sz++] = 'n';
-        connection()->sendBytes(cmd, cmd_sz);
+    case 5:     // Report device OK (\x1b = ESC)
+        cmd.append("\x1b[0n");
+        connection()->sendBytes(cmd);
         break;
     case 6:     // Report cursor ESC[{y};{x}R  ({x}, {y} indicate position)
-        cmd[cmd_sz++] = '\x1b';
-        cmd[cmd_sz++] = '[';
-        if ((_cursorY + 1) >= 10)                   // 10s (may not exist)
-            cmd[cmd_sz++] = '0' + (_cursorY + 1) / 10;
-        cmd[cmd_sz++] = '0' + (_cursorY + 1) % 10;  // 1s
-        if ((_cursorX + 1) >= 10)                   // 10s (may not exist)
-            cmd[cmd_sz++] = '0' + (_cursorX + 1) / 10;
-        cmd[cmd_sz++] = '0' + (_cursorX + 1) % 10;  // 1s
-        cmd[cmd_sz++] = CSI_CPR;
-        connection()->sendBytes(cmd, cmd_sz);
+        cmd.append("\x1b[");
+        cmd.append(QString::number(_cursorY + 1));
+        cmd.append(';');
+        cmd.append(QString::number(_cursorX + 1));
+        cmd.append(CSI_CPR);
+        connection()->sendBytes(cmd);
         break;
     default:
         break;
@@ -1102,6 +1076,8 @@ void Terminal::setConnection(Connection::AbstractConnection *connection)
     _connection = connection;
     connect(_connection, SIGNAL(connected()), this, SLOT(startConnection()));
     connect(_connection, SIGNAL(disconnected()), this, SLOT(closeConnection()));
+    connect(_connection, SIGNAL(processedBytes(QByteArray)),
+            this, SLOT(feedData(QByteArray)));
 }
 
 }   // namespace UJ

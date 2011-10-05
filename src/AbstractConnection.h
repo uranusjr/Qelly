@@ -31,8 +31,8 @@ public:
 public slots:
     virtual void close() = 0;
     virtual void reconnect() = 0;
-    virtual void processBytes(QByteArray data) = 0;
-    virtual void sendBytes(uchar *bytes, uint length) = 0;
+    virtual void processBytes(QByteArray bytes) = 0;
+    virtual void sendBytes(QByteArray bytes) = 0;
 
 protected:
     Site *_site;
@@ -47,6 +47,7 @@ protected:
 signals:
     void connected();
     void disconnected();
+    void processedBytes(QByteArray bytes);
 
 public: // Getters & Setters
     virtual inline Site *site()

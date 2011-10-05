@@ -36,7 +36,7 @@ signals:
 public slots:
     void startConnection();
     void closeConnection();
-    void feedData(QByteArray &data);
+    void feedData(QByteArray data);
     void clearAll();
     void clearRow(int row,
                   int columnStart = 0, int columnEnd = PositionNotFound);
