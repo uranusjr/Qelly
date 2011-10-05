@@ -9,6 +9,8 @@ namespace Connection
 
 AbstractConnection::AbstractConnection(QObject *parent) : QObject(parent)
 {
+    setProcessing(false);
+    setConnected(false);
 }
 
 void AbstractConnection::setSite(Site *site)

@@ -173,10 +173,7 @@ public: // Setters & Getters
     {
         return _connection;
     }
-    inline void setConnection(Connection::AbstractConnection *connection)
-    {
-        _connection = connection;
-    }
+    void setConnection(Connection::AbstractConnection *connection);
 };
 
 }   // namespace UJ

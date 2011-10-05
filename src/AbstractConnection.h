@@ -2,6 +2,7 @@
 #define ABSTRACTCONNECTION_H
 
 #include <QObject>
+class QDate;
 
 namespace UJ
 {
@@ -11,8 +12,12 @@ class Terminal;
 namespace Connection
 {
 
-class QDate;
 class Site;
+
+enum
+{
+    PortDefault = -1
+};
 
 class AbstractConnection : public QObject
 {
@@ -20,17 +25,13 @@ class AbstractConnection : public QObject
 
 public:
     explicit AbstractConnection(QObject *parent = 0);
-    enum Port
-    {
-        PortDefault = -1
-    };
     virtual bool connectTo(Site *s) = 0;
-    virtual bool connectTo(QString &address, Port port = PortDefault) = 0;
+    virtual bool connectTo(QString &address, qint16 port = PortDefault) = 0;
 
 public slots:
     virtual void close() = 0;
     virtual void reconnect() = 0;
-    virtual void receivedBytes(uchar *bytes, uint length) = 0;
+    virtual void processBytes(QByteArray data) = 0;
     virtual void sendBytes(uchar *bytes, uint length) = 0;
 
 protected:
@@ -42,6 +43,10 @@ protected:
     //       Haven't decided which class, maybe QIcon?
     bool _isConnected;
     bool _isProcessing;
+
+signals:
+    void connected();
+    void disconnected();
 
 public: // Getters & Setters
     virtual inline Site *site()
@@ -78,7 +83,7 @@ public: // Getters & Setters
     {
         return _isProcessing;
     }
-    virtual inline void setProcessing(Terminal *isProcessing)
+    virtual inline void setProcessing(bool isProcessing)
     {
         _isProcessing = isProcessing;
     }

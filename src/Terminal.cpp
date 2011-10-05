@@ -1095,4 +1095,13 @@ void Terminal::setEncoding(BBS::Encoding encoding)
     connection()->site()->setEncoding(encoding);
 }
 
+void Terminal::setConnection(Connection::AbstractConnection *connection)
+{
+    if (_connection)
+        delete _connection;
+    _connection = connection;
+    connect(_connection, SIGNAL(connected()), this, SLOT(startConnection()));
+    connect(_connection, SIGNAL(disconnected()), this, SLOT(closeConnection()));
+}
+
 }   // namespace UJ
