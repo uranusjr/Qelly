@@ -13,6 +13,7 @@ Terminal::Terminal(QObject *parent) : QObject(parent)
 {
     initSettings();
     initCells();
+    _connection = 0;
     _csArg = new QQueue<int>();
     _csBuf = new QQueue<int>();
     _csTemp = 0;

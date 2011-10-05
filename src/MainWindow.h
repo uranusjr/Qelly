@@ -1,10 +1,16 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QtGui/QMainWindow>
+#include <QMainWindow>
 class QMenuBar;
+class QToolBar;
 
 namespace UJ
+{
+
+class TabWidget;
+
+namespace Qelly
 {
 
 class MainWindow : public QMainWindow
@@ -12,7 +18,8 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
-    MainWindow(QWidget *parent = 0);
+    explicit MainWindow(QWidget *parent = 0);
+    virtual ~MainWindow();
     static inline MainWindow *sharedInstance()
     {
         static MainWindow *g = new MainWindow();
@@ -20,9 +27,14 @@ public:
     }
 
 private:
-    void buildCentralWidget();
-    void buildSharedMenu();
+    void buildToolBar();
+    TabWidget *_tabs;
+    QToolBar *_toolbar;
+    QWidget *_stretch;
+    QWidget *_inputFrame;
 };
+
+}   // namespace Qelly
 
 }   // namespace UJ
 

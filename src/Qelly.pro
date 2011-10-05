@@ -20,7 +20,8 @@ SOURCES += main.cpp \
     AbstractConnection.cpp \
     Site.cpp \
     Ssh.cpp \
-    Telnet.cpp
+    Telnet.cpp \
+    TabWidget.cpp
 
 HEADERS  += \
     SharedMenuBar.h \
@@ -34,10 +35,23 @@ HEADERS  += \
     Site.h \
     Ssh.h \
     Telnet.h \
-    YLTelnet.h
+    YLTelnet.h \
+    TabWidget.h
 
 RESOURCES += \
     GeneralResources.qrc
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
