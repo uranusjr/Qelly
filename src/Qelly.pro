@@ -36,59 +36,8 @@ HEADERS  += \
     Ssh.h \
     Telnet.h \
     YLTelnet.h \
-    TabWidget.h
+    TabWidget.h \
+    Wrapper.h
 
 RESOURCES += \
     GeneralResources.qrc
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

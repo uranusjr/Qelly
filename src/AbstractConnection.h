@@ -31,18 +31,19 @@ public:
 public slots:
     virtual void close() = 0;
     virtual void reconnect() = 0;
-    virtual void processBytes(QByteArray bytes) = 0;
     virtual void sendBytes(QByteArray bytes) = 0;
 
 protected:
     Site *_site;
     QString _name;
     QString _address;
-    QDate *_lastDate;
     // NOTE: Need an image member for tab icon...
     //       Haven't decided which class, maybe QIcon?
     bool _isConnected;
     bool _isProcessing;
+
+protected slots:
+    virtual void processBytes(QByteArray bytes) = 0;
 
 signals:
     void connected();
@@ -88,11 +89,6 @@ public: // Getters & Setters
     {
         _isProcessing = isProcessing;
     }
-    virtual inline QDate *lastDate()
-    {
-        return _lastDate;
-    }
-};
 
 }   // namespace Connection
 
