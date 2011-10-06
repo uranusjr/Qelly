@@ -65,7 +65,7 @@ void MainWindow::buildToolBar()
     _toolbar->addAction(style->standardIcon(QStyle::SP_BrowserReload),
                         tr("Reconnect"));
     _toolbar->addAction(style->standardIcon(QStyle::SP_DialogSaveButton),
-                        tr("Sites"));
+                        tr("Add"));
     _toolbar->addWidget(_inputFrame);
     _toolbar->addWidget(_stretch);
     _toolbar->addAction(style->standardIcon(QStyle::SP_DirIcon),
