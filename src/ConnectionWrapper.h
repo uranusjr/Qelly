@@ -1,5 +1,5 @@
-#ifndef WRAPPER_H
-#define WRAPPER_H
+#ifndef CONNECTIONWRAPPER_H
+#define CONNECTIONWRAPPER_H
 
 class qint16;
 class QByteArray;
@@ -17,9 +17,14 @@ template <class T>
 class Wrapper
 {
 public:
-    ConnnectionWrapper(T *connection)
+    Wrapper(T *connection)
     {
+        _connection = 0;
         setConnection(connection);
+    }
+    virtual ~Wrapper()
+    {
+        delete _connection;
     }
 
 private:
@@ -32,6 +37,8 @@ public: // Setter & getters
     }
     inline void setConnection(T *connection)
     {
+        if (_connection)
+            delete _connection;
         _connection = connection;
     }
 
@@ -108,4 +115,4 @@ public: // Relaying setters & getters
 
 }   // namespace UJ
 
-#endif // WRAPPER_H
+#endif // CONNECTIONWRAPPER_H
