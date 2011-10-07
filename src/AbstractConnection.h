@@ -90,6 +90,8 @@ public: // Getters & Setters
         _isProcessing = isProcessing;
     }
 
+};
+
 }   // namespace Connection
 
 }   // namespace UJ
