@@ -21,7 +21,9 @@ SOURCES += main.cpp \
     Site.cpp \
     Ssh.cpp \
     Telnet.cpp \
-    TabWidget.cpp
+    TabWidget.cpp \
+    View.cpp \
+    UJQxWidget.cpp
 
 HEADERS  += \
     SharedMenuBar.h \
@@ -37,7 +39,31 @@ HEADERS  += \
     Telnet.h \
     YLTelnet.h \
     TabWidget.h \
-    Wrapper.h
+    View.h \
+    ConnectionWrapper.h \
+    UJQxWidget.h
 
 RESOURCES += \
     GeneralResources.qrc
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
