@@ -8,7 +8,7 @@ namespace UJ
 
 enum Modifiers
 {
-#if Q_WS_MAC
+#ifdef Q_WS_MAC
     MOD = Qt::META,
     OPT = Qt::ALT
 #else

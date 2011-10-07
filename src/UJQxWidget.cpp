@@ -38,11 +38,12 @@ Widget::Widget(QWidget *parent) : QWidget(parent)
 
 void Widget::mousePressEvent(QMouseEvent *e)
 {
-    if (e->type() == QEvent.MouseButtonDblClick && _pendingTripleClick)
+    if (e->type() == QEvent::MouseButtonDblClick && _pendingTripleClick)
     {
         _tripleClickTimer->stop();
         _pendingTripleClick = false;
-        QMouseEvent event(Event::MouseButtonTplClick,
+        QMouseEvent event(static_cast<QEvent::Type>(
+                              static_cast<int>(Event::MouseButtonTplClick)),
                           e->pos(), e->globalPos(), e->button(), e->buttons(),
                           e->modifiers());
         mouseTripleClickEvent(&event);
@@ -53,12 +54,17 @@ void Widget::mousePressEvent(QMouseEvent *e)
 void Widget::mouseDoubleClickEvent(QMouseEvent *e)
 {
     _pendingTripleClick = true;
-    _tripleClickTimer->start(QApplication.doubleClickInterval());
+    _tripleClickTimer->start(QApplication::doubleClickInterval());
     return QWidget::mouseDoubleClickEvent(e);
 }
 
-void TripleClickableWidget::mouseTripleClickEvent(QMouseEvent *)
+void Widget::mouseTripleClickEvent(QMouseEvent *)
 {
+}
+
+void Widget::tripleClickTimedout()
+{
+    _pendingTripleClick = false;
 }
 
 }   // namespace Qx

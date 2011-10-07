@@ -1,7 +1,7 @@
 #include "Terminal.h"
 #include <cstring>
 #include <QSet>
-#include "ConnectionWrapper.h"
+#include "AbstractConnection.h"
 #include "Site.h"
 
 namespace UJ
@@ -1071,16 +1071,14 @@ void Terminal::setEncoding(BBS::Encoding encoding)
     connection()->site()->setEncoding(encoding);
 }
 
-void Terminal::setConnection(Connection::Wrapper *connection)
+void Terminal::setConnection(AbstractConnection *connection)
 {
     if (_connection)
         delete _connection;
     _connection = connection;
-    connect(_connection->connection(), SIGNAL(connected()),
-            this, SLOT(startConnection()));
-    connect(_connection->connection(), SIGNAL(disconnected()),
-            this, SLOT(closeConnection()));
-    connect(_connection->connection(), SIGNAL(processedBytes(QByteArray)),
+    connect(_connection, SIGNAL(connected()), this, SLOT(startConnection()));
+    connect(_connection, SIGNAL(disconnected()), this, SLOT(closeConnection()));
+    connect(_connection, SIGNAL(processedBytes(QByteArray)),
             this, SLOT(feedData(QByteArray)));
 }
 

@@ -1,5 +1,6 @@
-#include <QtCore/QTranslator>
-#include <QtGui/QApplication>
+#include <QTranslator>
+#include <QApplication>
+#include "Encodings.h"
 #include "MainWindow.h"
 
 int main(int argc, char *argv[])
@@ -11,11 +12,13 @@ int main(int argc, char *argv[])
     // Globals.h instead.
     a.setAttribute(Qt::AA_MacDontSwapCtrlAndMeta);
 
+    YL::init_table();
+
     QTranslator trans;
     trans.load(":/translations/UJ_Translate");
     a.installTranslator(&trans);
 
-    UJ::MainWindow w;
+    UJ::Qelly::MainWindow w;
     w.show();
 
     return a.exec();

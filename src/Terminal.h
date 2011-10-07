@@ -13,7 +13,7 @@ namespace UJ
 namespace Connection
 {
 
-class Wrapper;
+class AbstractConnection;
 
 class Terminal : public QObject
 {
@@ -23,7 +23,10 @@ public:
     explicit Terminal(QObject *parent = 0);
     virtual ~Terminal();
     bool isDiryAt(int row, int column);
-    BBS::CellAttribute attributeOfCellAt(int row, int column);
+    inline BBS::CellAttribute attributeOfCellAt(int row, int column)
+    {
+        return _cells[row][column].attr;
+    }
     inline BBS::Cell *cellsAtRow(int row)
     {
         return _cells[row];
@@ -95,7 +98,7 @@ private:
     void handleControlDecstbm();
 
     // NOTE: The Telnet View Instance Here
-    Connection::Wrapper *_connection;
+    AbstractConnection *_connection;
     QQueue<int> *_csArg;
     QQueue<int> *_csBuf;
     uint _csTemp;
@@ -170,11 +173,11 @@ public: // Setters & Getters
         _hasMessage = hasMessage;
         // NOTE: Change Tab Icon...Maybe should be a signal connected to view
     }
-    inline Connection::Wrapper *connection() const
+    inline AbstractConnection *connection() const
     {
         return _connection;
     }
-    void setConnection(Connection::Wrapper *connection);
+    void setConnection(AbstractConnection *connection);
 };
 
 }   // namespace Connection

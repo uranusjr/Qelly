@@ -40,30 +40,7 @@ HEADERS  += \
     YLTelnet.h \
     TabWidget.h \
     View.h \
-    ConnectionWrapper.h \
     UJQxWidget.h
 
 RESOURCES += \
     GeneralResources.qrc
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
