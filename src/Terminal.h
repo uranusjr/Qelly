@@ -12,8 +12,8 @@ namespace UJ
 
 namespace Connection
 {
-class AbstractConnection;
-}
+
+class Wrapper;
 
 class Terminal : public QObject
 {
@@ -95,10 +95,11 @@ private:
     void handleControlDecstbm();
 
     // NOTE: The Telnet View Instance Here
-    Connection::AbstractConnection *_connection;
+    Connection::Wrapper *_connection;
     QQueue<int> *_csArg;
     QQueue<int> *_csBuf;
     uint _csTemp;
+    ushort _emptyAttr;
 
     int _row;
     int _column;
@@ -169,12 +170,14 @@ public: // Setters & Getters
         _hasMessage = hasMessage;
         // NOTE: Change Tab Icon...Maybe should be a signal connected to view
     }
-    inline Connection::AbstractConnection *connection() const
+    inline Connection::Wrapper *connection() const
     {
         return _connection;
     }
-    void setConnection(Connection::AbstractConnection *connection);
+    void setConnection(Connection::Wrapper *connection);
 };
+
+}   // namespace Connection
 
 }   // namespace UJ
 

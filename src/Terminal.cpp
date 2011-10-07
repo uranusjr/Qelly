@@ -1,13 +1,14 @@
 #include "Terminal.h"
 #include <cstring>
 #include <QSet>
-#include "AbstractConnection.h"
+#include "ConnectionWrapper.h"
 #include "Site.h"
 
 namespace UJ
 {
 
-static unsigned short gEmptyAttr;
+namespace Connection
+{
 
 Terminal::Terminal(QObject *parent) : QObject(parent)
 {
@@ -83,7 +84,7 @@ void Terminal::clearAll()
     a.f.reversed = 0;
     a.f.isUrl = 0;
     a.f.isNothing = 0;
-    gEmptyAttr = a.v;
+    _emptyAttr = a.v;
     for (int i = 0; i < _row; i++)
         clearRow(i);
 
@@ -107,7 +108,7 @@ void Terminal::clearRow(int row, int columnStart, int columnEnd)
     for (int x = columnStart; x <= columnEnd; x++)
     {
         _cells[row][x].byte = '\0';
-        _cells[row][x].attr.v = gEmptyAttr;
+        _cells[row][x].attr.v = _emptyAttr;
         _cells[row][x].attr.f.bColorIndex = _bColorIndex;
         _cells[row][x].attr.f.reversed = _reversed;
         _dirty[row * _column + x] = true;
@@ -455,7 +456,7 @@ void Terminal::handleEscapeHash(int *p_i, QByteArray &data)
             for (int x = 0; x <= _column - 1; x++)
             {
                 _cells[y][x].byte = 'E';
-                _cells[y][x].attr.v = gEmptyAttr;
+                _cells[y][x].attr.v = _emptyAttr;
                 _dirty[y * _column + x] = true;
             }
         }
@@ -762,7 +763,7 @@ void Terminal::handleControlDch()
         else
         {
             _cells[_cursorY][x].byte = '\0';
-            _cells[_cursorY][x].attr.v = gEmptyAttr;
+            _cells[_cursorY][x].attr.v = _emptyAttr;
             _cells[_cursorY][x].attr.f.bColorIndex = _bColorIndex;
         }
         setDirtyAt(_cursorY, x);
@@ -1070,15 +1071,19 @@ void Terminal::setEncoding(BBS::Encoding encoding)
     connection()->site()->setEncoding(encoding);
 }
 
-void Terminal::setConnection(Connection::AbstractConnection *connection)
+void Terminal::setConnection(Connection::Wrapper *connection)
 {
     if (_connection)
         delete _connection;
     _connection = connection;
-    connect(_connection, SIGNAL(connected()), this, SLOT(startConnection()));
-    connect(_connection, SIGNAL(disconnected()), this, SLOT(closeConnection()));
-    connect(_connection, SIGNAL(processedBytes(QByteArray)),
+    connect(_connection->connection(), SIGNAL(connected()),
+            this, SLOT(startConnection()));
+    connect(_connection->connection(), SIGNAL(disconnected()),
+            this, SLOT(closeConnection()));
+    connect(_connection->connection(), SIGNAL(processedBytes(QByteArray)),
             this, SLOT(feedData(QByteArray)));
 }
+
+}   // namespace Connection
 
 }   // namespace UJ
