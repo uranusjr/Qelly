@@ -12,11 +12,11 @@ namespace Connection
 
 Terminal::Terminal(QObject *parent) : QObject(parent)
 {
+    _csArg = new QQueue<int>();
+    _csBuf = new QQueue<int>();
     initSettings();
     initCells();
     _connection = 0;
-    _csArg = new QQueue<int>();
-    _csBuf = new QQueue<int>();
     _csTemp = 0;
 }
 
@@ -269,7 +269,7 @@ void Terminal::goOneRowUp(bool updateView)
     }
 }
 
-void Terminal::feedData(QByteArray data)
+void Terminal::processIncomingData(QByteArray data)
 {
     for (int i = 0; i < data.size(); i++)
     {
@@ -295,7 +295,8 @@ void Terminal::feedData(QByteArray data)
         updateDoubleByteStateForRow(i);
         updateUrlStateForRow(i);
     }
-    // NOTE: Tell view to tick()
+    // NOTE: Connect this to tick() in view to update the screen
+    emit dataProcessed();
 }
 
 void Terminal::handleNormalDataInput(uchar c)
@@ -465,7 +466,7 @@ void Terminal::handleEscapeHash(int *p_i, QByteArray &data)
 
 void Terminal::handleControlDataInput(uchar c)
 {
-    if (c % 0x10 == 3)
+    if (c >= '0' && c <= '?')
     {
         _csBuf->enqueue(static_cast<int>(c));
         if (c >= '0' && c <= '9')
@@ -503,11 +504,11 @@ void Terminal::handleControlDataInput(uchar c)
             break;
         default:
             handleControlNonSimpleShiftingInputs(c);
+            _csArg->clear();
+            _state = StateNormal;
             break;
         }
     }
-    _csArg->clear();
-    _state = StateNormal;
 }
 
 void Terminal::handleControlNonSimpleShiftingInputs(uchar c)
@@ -1079,7 +1080,7 @@ void Terminal::setConnection(AbstractConnection *connection)
     connect(_connection, SIGNAL(connected()), this, SLOT(startConnection()));
     connect(_connection, SIGNAL(disconnected()), this, SLOT(closeConnection()));
     connect(_connection, SIGNAL(processedBytes(QByteArray)),
-            this, SLOT(feedData(QByteArray)));
+            this, SLOT(processIncomingData(QByteArray)));
 }
 
 }   // namespace Connection

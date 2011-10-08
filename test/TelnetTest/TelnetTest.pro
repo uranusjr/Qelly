@@ -24,4 +24,6 @@ SOURCES += main.cpp \
 HEADERS += \
     TelnetTester.h \
     ../../src/Telnet.h \
-    ../../src/AbstractConnection.h
+    ../../src/AbstractConnection.h \
+    ../Test/UJQxTestUtilities.h
+

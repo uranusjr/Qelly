@@ -2,10 +2,11 @@
 #define TELNETTESTER_H
 
 #include <QObject>
+#include "../Test/UJQxTestUtilities.h"
 #include "Telnet.h"
 class QByteArray;
 
-class TelnetTester : public QObject
+class TelnetTester : public UJ::Qx::Tester
 {
     Q_OBJECT
 

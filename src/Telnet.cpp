@@ -112,6 +112,10 @@ void Telnet::processBytes(QByteArray bytes)
         case SEENWILL:
             handleStateSeenWill(c);
             break;
+        case SEENWONT:
+            sendCommand(DONT, c);
+            _state = TOP_LEVEL;
+            break;
         case SEENDO:
             handleStateSeenDo(c);
             break;
@@ -208,6 +212,7 @@ void Telnet::handleStateSeenWill(uchar c)
     {
     case TELOPT_ECHO:
     case TELOPT_SGA:
+    case TELOPT_BINARY:
         sendCommand(DO, c);
         break;
     default:

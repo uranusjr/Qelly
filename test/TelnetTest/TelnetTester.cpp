@@ -1,8 +1,7 @@
 #include "TelnetTester.h"
 #include <QByteArray>
-#include <QDebug>
 
-TelnetTester::TelnetTester(QObject *parent) : QObject(parent)
+TelnetTester::TelnetTester(QObject *parent) : Tester(parent)
 {
     QString host = "ptt.cc";
     connect(&t, SIGNAL(processedBytes(QByteArray)),
@@ -12,5 +11,8 @@ TelnetTester::TelnetTester(QObject *parent) : QObject(parent)
 
 void TelnetTester::dumpByteArray(QByteArray array)
 {
-    qDebug() << array;
+    for (int i = 0; i < array.size(); i++)
+    {
+         qDebug() << static_cast<int>(array.at(i));
+    }
 }

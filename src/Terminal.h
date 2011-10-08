@@ -35,11 +35,12 @@ public:
     QString urlStringAt(int row, int column, bool *haUrl);
 
 signals:
+    void dataProcessed();
 
 public slots:
     void startConnection();
     void closeConnection();
-    void feedData(QByteArray data);
+    void processIncomingData(QByteArray data);
     void clearAll();
     void clearRow(int row,
                   int columnStart = 0, int columnEnd = PositionNotFound);
@@ -97,7 +98,6 @@ private:
     void handleControlDsr();
     void handleControlDecstbm();
 
-    // NOTE: The Telnet View Instance Here
     AbstractConnection *_connection;
     QQueue<int> *_csArg;
     QQueue<int> *_csBuf;
