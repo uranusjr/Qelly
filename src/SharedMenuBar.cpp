@@ -74,7 +74,7 @@ SharedMenuBar::SharedMenuBar(QWidget *parent) : QMenuBar(parent)
     menu = addMenu(tr("Window"));
     menu->addAction(new QAction(tr("About"), this));
 #ifndef Q_WS_MAC
-    menu->addSeperator();
+    menu->addSeparator();
 #endif
     menu->addAction(tr("Minimize"), this, SIGNAL(windowMinimize()),
                     QKeySequence(UJ::MOD | Qt::Key_M));
