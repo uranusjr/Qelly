@@ -99,6 +99,11 @@ private:
         // NOTE: Get color from global preference considering bold
         return QColor("white");
     }
+    inline QColor backgroundColorOf(BBS::CellAttribute &attr)
+    {
+        // NOTE: Get color from global preference considering bold
+        return QColor("black");
+    }
     inline int fColorIndex(BBS::CellAttribute &attribute)
     {
         if (attribute.f.reversed)

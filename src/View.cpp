@@ -769,31 +769,31 @@ void View::paintDoubleColor(ushort code, int row, int column,
     int dblPadLeft = 0;
     int dblPadBottom = 1;
     QFont dblFont("LiSongPro", 23);    // NOTE: Get font from global preferences
-    QPixmap lp(_cellWidth, _cellHeight);
-    QPixmap rp(_cellWidth, _cellHeight);
-    painter.begin(&lp);
-    painter.setFont(dblFont);
-    int ascent = painter.fontMetrics().height();
 
     // Left side
+    QPixmap lp(_cellWidth, _cellHeight);
+    lp.fill(backgroundColorOf(left));
+    painter.begin(&lp);
+    painter.setFont(dblFont);
+    int height = painter.fontMetrics().height();
     painter.setPen(foregroundColorOf(left));
-    painter.drawText(dblPadLeft, _cellHeight - dblPadBottom, QChar(code));
+    painter.drawText(dblPadLeft, height - dblPadBottom, QChar(code));
     painter.end();
 
     // Right side
+    QPixmap rp(_cellWidth, _cellHeight);
+    rp.fill(backgroundColorOf(right));
     painter.begin(&rp);
+    painter.setFont(dblFont);
     painter.setPen(foregroundColorOf(right));
-    painter.drawText(dblPadLeft, _cellHeight - dblPadBottom, QChar(code));
+    painter.drawText(dblPadLeft - _cellWidth, height - dblPadBottom, QChar(code));
     painter.end();
 
     // Draw the left half of left side, right half of the right side
     painter.begin(_backImage);
-    painter.drawPixmap(column * _cellWidth + dblPadLeft,
-                       row * _cellHeight - dblPadBottom + ascent,
-                       _cellWidth / 2, _cellHeight, lp);
-    painter.drawPixmap(column * _cellWidth + dblPadLeft + _cellWidth / 2,
-                       row * _cellHeight - dblPadBottom + ascent,
-                       _cellWidth / 2, _cellHeight, rp);
+    painter.setBackgroundMode(Qt::TransparentMode);
+    painter.drawPixmap((column - 1) * _cellWidth, row * _cellHeight, lp);
+    painter.drawPixmap(column * _cellWidth, row * _cellHeight, rp);
     painter.end();
 }
 
