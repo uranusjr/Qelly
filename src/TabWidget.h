@@ -16,10 +16,6 @@ class TabWidget : public QTabWidget
 
 public:
     explicit TabWidget(QWidget *parent = 0);
-    inline QTabBar *getTabBar() const
-    {
-        return tabBar();
-    }
     int addTab(QWidget *widget, const QIcon &icon, const QString &label);
     int addTab(QWidget *widget, const QString &label);
 
@@ -29,6 +25,9 @@ public slots:
 signals:
     void tabWillClose(QWidget *tab);
 
+private:
+    int _tabBarHeight;
+
 public: // Setters & Getters
     inline QString tabText(int index) const
     {
@@ -37,6 +36,10 @@ public: // Setters & Getters
     inline void setTabText(int index, const QString &text)
     {
         QTabWidget::setTabText(index, QString::number(index + 1) + ". " + text);
+    }
+    inline int tabBarHeight()
+    {
+        return _tabBarHeight;
     }
 };
 

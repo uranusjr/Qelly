@@ -28,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     int row = 24;           // NOTE: Use global preferences
     int column = 80;        // NOTE: Use global preferences
     _tabs->setFixedSize(cellWidth * column,
-                        cellHeight * row + _tabs->getTabBar()->height());
+                        cellHeight * (row + 1) + _tabs->tabBarHeight());
     setCentralWidget(_tabs);
     resize(_tabs->width(), _tabs->height() + _toolbar->height());
 }
