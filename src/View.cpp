@@ -98,7 +98,7 @@ int View::indexFromPoint(QPoint p)
     else if (p.ry() < 0)
         p.setY(0);
     int x = p.rx() / _cellWidth;
-    int y = p.ry() / _cellHeight - 1;
+    int y = p.ry() / _cellHeight;
 
     return y * _column + x;
 }
@@ -573,7 +573,6 @@ void View::updateText(int row)
         return;
 
     int start = x;
-    update((x - 1) *_cellWidth, row * _cellHeight, _cellWidth, _cellHeight);
 
     for (x = start; x < _column; x++)
     {
@@ -581,17 +580,19 @@ void View::updateText(int row)
             continue;
         updateText(row, x);
     }
+    update((start - 1) *_cellWidth, row * _cellHeight, _cellWidth, _cellHeight);
 }
 
 void View::updateText(int row, int x)
 {
     // NOTE: Get padding spaces from global preferences
     int sglPadLeft = 0;
-    int sglPadBottom = 0;
+    int sglPadBott = 0;
     int dblPadLeft = 0;
-    int dblPadBottom = 1;
-    QFont sglFont("Couriew New", 21);  // NOTE: Get font from global preferences
-    QFont dblFont("LiSongPro", 23);     // NOTE: Get font from global preferences
+    int dblPadBott = 1;
+    QFont sglFont("Courier New", 21);  // NOTE: Get font from global preferences
+    QFont dblFont("LiSong Pro", 23);     // NOTE: Get font from global preferences
+    int ascent;
     BBS::Cell *cells = terminal()->cellsAtRow(row);
     BBS::CellAttribute &attr = cells[x].attr;
     ushort code;
@@ -600,10 +601,12 @@ void View::updateText(int row, int x)
     case 0: // Not double byte
         painter.begin(_backImage);
         painter.setFont(sglFont);
+        ascent = painter.fontMetrics().ascent();
         painter.setPen(foregroundColorOf(attr));
         code = cells[x].byte ? cells[x].byte : ' ';
         painter.drawText(x * _cellWidth + sglPadLeft,
-                         row * _cellHeight + sglPadBottom, QChar(code));
+                         row * _cellHeight - sglPadBott + ascent,
+                         QChar(code));
         painter.end();
         break;
     case 1: // First half of double byte
@@ -642,8 +645,9 @@ void View::updateText(int row, int x)
                 painter.begin(_backImage);
                 painter.setFont(dblFont);
                 painter.setPen(foregroundColorOf(attr));
+                ascent = painter.fontMetrics().height();
                 painter.drawText((x - 1) * _cellWidth + dblPadLeft,
-                                 row * _cellHeight + dblPadBottom,
+                                 row * _cellHeight - dblPadBott + ascent,
                                  QChar(code));
                 painter.end();
             }
@@ -769,25 +773,26 @@ void View::paintDoubleColor(ushort code, int row, int column,
     QPixmap rp(_cellWidth, _cellHeight);
     painter.begin(&lp);
     painter.setFont(dblFont);
+    int ascent = painter.fontMetrics().height();
 
     // Left side
     painter.setPen(foregroundColorOf(left));
-    painter.drawText(dblPadLeft, 0, QChar(code));
+    painter.drawText(dblPadLeft, _cellHeight - dblPadBottom, QChar(code));
     painter.end();
 
     // Right side
     painter.begin(&rp);
     painter.setPen(foregroundColorOf(right));
-    painter.drawText(dblPadLeft, 0, QChar(code));
+    painter.drawText(dblPadLeft, _cellHeight - dblPadBottom, QChar(code));
     painter.end();
 
     // Draw the left half of left side, right half of the right side
     painter.begin(_backImage);
     painter.drawPixmap(column * _cellWidth + dblPadLeft,
-                       row * _cellHeight - dblPadBottom,
+                       row * _cellHeight - dblPadBottom + ascent,
                        _cellWidth / 2, _cellHeight, lp);
     painter.drawPixmap(column * _cellWidth + dblPadLeft + _cellWidth / 2,
-                       row * _cellHeight - dblPadBottom,
+                       row * _cellHeight - dblPadBottom + ascent,
                        _cellWidth / 2, _cellHeight, rp);
     painter.end();
 }
@@ -818,7 +823,7 @@ void View::paintEvent(QPaintEvent *e)
                 if (start != x)
                 {
                     // NOTE: Prefernce for URL y offset (the -0.5)
-                    int yPos = y * _cellHeight - 0.5;
+                    int yPos = (y + 1) * _cellHeight - 0.5;
                     painter.drawLine(start *_cellWidth, yPos,
                                      x * _cellWidth, yPos);
                 }
@@ -832,7 +837,7 @@ void View::paintEvent(QPaintEvent *e)
         _x = terminal()->cursorColumn();
         _y = terminal()->cursorRow();
         // NOTE: Prefernce for cursor y offset (the -1)
-        int yPos = _y * _cellHeight - 1;
+        int yPos = (_y + 1) * _cellHeight - 1;
         painter.drawLine(x() * _cellWidth, yPos, (x() + 1) *_cellWidth, yPos);
 
         // Selection
@@ -890,25 +895,30 @@ void View::drawSelection(QRect &r)
     int x = loc % _column;
     int y = loc / _column;
 
-    painter.setPen(QColor(153, 229, 153, 102));
+    Qt::BGMode bgm = painter.backgroundMode();
+    QPen p = painter.pen();
+    painter.setPen(Qt::NoPen);
+    painter.setBackgroundMode(Qt::TransparentMode);
+    painter.setBrush(QBrush(QColor(153, 229, 153, 102), Qt::SolidPattern));
     while (len > 0)
     {
-        if (x + len <= _column)
+        if (x + len < _column)
         {
-            painter.fillRect(x * _cellWidth, y * _cellHeight,
-                             len * _cellWidth, _cellHeight, Qt::SolidPattern);
+            painter.drawRect(x * _cellWidth, y * _cellHeight,
+                             len * _cellWidth, _cellHeight);
             len = 0;
         }
         else
         {
-            painter.fillRect(x * _cellWidth, y * _cellHeight,
-                             len * (_cellWidth - x), _cellHeight,
-                             Qt::SolidPattern);
+            painter.drawRect(x * _cellWidth, y * _cellHeight,
+                             (_column - x) * _cellWidth, _cellHeight);
             len -= _column - x;
         }
         x = 0;
         y++;
     }
+    painter.setPen(p);
+    painter.setBackgroundMode(bgm);
 }
 
 void View::refreshHiddenRegion()
