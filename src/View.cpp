@@ -619,8 +619,9 @@ void View::updateText(int row, int x)
             code = YL::G2U[(static_cast<ushort>(cells[x - 1].byte) << 8) +
                            (static_cast<ushort>(cells[x].byte) - 0x8000)];
             break;
-        default:
-            code = 0;
+        default:    // Don't convert
+            code = ((static_cast<ushort>(cells[x - 1].byte) << 8) +
+                    (static_cast<ushort>(cells[x].byte) - 0x8000));
             break;
         }
         if (isSpecialSymbol(code))
@@ -799,7 +800,7 @@ void View::paintEvent(QPaintEvent *e)
         QRect r = e->rect();
 
         // Draw a portion of back image
-        painter.drawPixmap(r.topLeft(), *_backImage, r);
+        painter.drawPixmap(0, 0, *_backImage);
         drawBlink(r);
 
         // URL line

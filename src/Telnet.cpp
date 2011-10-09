@@ -13,6 +13,7 @@ namespace Connection
 
 Telnet::Telnet(QObject *parent) : AbstractConnection(parent)
 {
+    _site = 0;
     _state = TOP_LEVEL;
     _synced = false;
     _sbBuffer = new QByteArray();
@@ -49,6 +50,8 @@ bool Telnet::connectTo(QString &address, qint16 port)
     setProcessing(true);
     _port = port;
 
+    if (!_site)
+        setSite(new Site(address, address, this));
     _socket->connectToHost(address, _port);
 
     return true;

@@ -22,6 +22,7 @@ namespace BBS
 
 enum Encoding
 {
+    EncodingUnKnown,
     EncodingBig5,
     EncodingGBK
 };
