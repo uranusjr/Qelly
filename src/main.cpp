@@ -1,7 +1,8 @@
-#include <QTranslator>
 #include <QApplication>
+#include <QTextCodec>
+#include <QTranslator>
 #include "Encodings.h"
-#include "MainWindow.h"
+#include "Controller.h"
 
 int main(int argc, char *argv[])
 {
@@ -12,14 +13,19 @@ int main(int argc, char *argv[])
     // Globals.h instead.
     a.setAttribute(Qt::AA_MacDontSwapCtrlAndMeta);
 
+    QTextCodec *codec = QTextCodec::codecForName("System");
+    QTextCodec::setCodecForTr(codec);
+    QTextCodec::setCodecForLocale(codec);
+    QTextCodec::setCodecForCStrings(codec);
+
     YL::init_table();
 
     QTranslator trans;
     trans.load(":/translations/UJ_Translate");
     a.installTranslator(&trans);
 
-    UJ::Qelly::MainWindow w;
-    w.show();
+    UJ::Qelly::Controller c;
+    Q_UNUSED(c);
 
     return a.exec();
 }

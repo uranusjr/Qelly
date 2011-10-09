@@ -27,6 +27,10 @@ public:
     virtual ~Telnet();
     virtual bool connectTo(Site *s);
     virtual bool connectTo(QString &address, qint16 port = PortDefaultTelnet);
+    static QString type()
+    {
+        return "Telnet";
+    }
 
 signals:
     void receivedBytes(QByteArray data);

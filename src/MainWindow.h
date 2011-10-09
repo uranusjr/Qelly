@@ -2,16 +2,17 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+class QLineEdit;
 class QMenuBar;
 class QToolBar;
 
 namespace UJ
 {
 
-class TabWidget;
-
 namespace Qelly
 {
+
+class TabWidget;
 
 class MainWindow : public QMainWindow
 {
@@ -32,6 +33,18 @@ private:
     QToolBar *_toolbar;
     QWidget *_stretch;
     QWidget *_inputFrame;
+    QLineEdit *_address;
+
+public: // Setts & Getters
+    inline QLineEdit *address()
+    {
+        return _address;
+    }
+    inline TabWidget *tabs()
+    {
+        return _tabs;
+    }
+
 };
 
 }   // namespace Qelly

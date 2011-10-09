@@ -9,6 +9,7 @@
 #include <QStyle>
 #include "SharedMenuBar.h"
 #include "TabWidget.h"
+#include <QDebug>
 
 namespace UJ
 {
@@ -19,16 +20,16 @@ namespace Qelly
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     buildToolBar();
+    setMenuBar(SharedMenuBar::sharedInstance());
     _tabs = new TabWidget(this);
     _tabs->setTabPosition(QTabWidget::North);
     int cellWidth = 12;     // NOTE: Use global preferences
     int cellHeight = 25;    // NOTE: Use global preferences
     int row = 24;           // NOTE: Use global preferences
     int column = 80;        // NOTE: Use global preferences
-    _tabs->resize(cellWidth * column,
-                  cellHeight * row + _tabs->getTabBar()->height());
+    _tabs->setFixedSize(cellWidth * column,
+                        cellHeight * row + _tabs->getTabBar()->height());
     setCentralWidget(_tabs);
-    setMenuBar(SharedMenuBar::sharedInstance());
     resize(_tabs->width(), _tabs->height() + _toolbar->height());
 }
 
@@ -43,8 +44,10 @@ void MainWindow::buildToolBar()
     _stretch = new QWidget();
     _stretch->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
-    QLineEdit *input = new QLineEdit();
-    input->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    _address = new QLineEdit();
+    _address->setPlaceholderText(tr("Input site address"));
+    _address->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    _address->setFocusPolicy(Qt::ClickFocus);
     QLabel *inputLabel = new QLabel(QString("<small>") +
                                     tr("Address") +
                                     QString("</small>"));
@@ -54,7 +57,7 @@ void MainWindow::buildToolBar()
     _inputFrame = new QWidget();
     _inputFrame->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     QVBoxLayout *inputLayout = new QVBoxLayout(_inputFrame);
-    inputLayout->addWidget(input);
+    inputLayout->addWidget(_address);
     inputLayout->addWidget(inputLabel);
     _inputFrame->setLayout(inputLayout);
 

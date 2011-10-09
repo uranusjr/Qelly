@@ -295,7 +295,6 @@ void Terminal::processIncomingData(QByteArray data)
         updateDoubleByteStateForRow(i);
         updateUrlStateForRow(i);
     }
-    // NOTE: Connect this to tick() in view to update the screen
     emit dataProcessed();
 }
 
@@ -1077,6 +1076,8 @@ void Terminal::setConnection(AbstractConnection *connection)
     if (_connection)
         delete _connection;
     _connection = connection;
+    if (!_connection)
+        return;
     connect(_connection, SIGNAL(connected()), this, SLOT(startConnection()));
     connect(_connection, SIGNAL(disconnected()), this, SLOT(closeConnection()));
     connect(_connection, SIGNAL(processedBytes(QByteArray)),

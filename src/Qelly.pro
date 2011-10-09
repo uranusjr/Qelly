@@ -23,7 +23,8 @@ SOURCES += main.cpp \
     Telnet.cpp \
     TabWidget.cpp \
     View.cpp \
-    UJQxWidget.cpp
+    UJQxWidget.cpp \
+    Controller.cpp
 
 HEADERS  += \
     SharedMenuBar.h \
@@ -40,7 +41,8 @@ HEADERS  += \
     YLTelnet.h \
     TabWidget.h \
     View.h \
-    UJQxWidget.h
+    UJQxWidget.h \
+    Controller.h
 
 RESOURCES += \
     GeneralResources.qrc

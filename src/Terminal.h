@@ -22,7 +22,10 @@ class Terminal : public QObject
 public:
     explicit Terminal(QObject *parent = 0);
     virtual ~Terminal();
-    bool isDiryAt(int row, int column);
+    inline bool isDiryAt(int row, int column)
+    {
+        return _dirty[row * _column + column];
+    }
     inline BBS::CellAttribute attributeOfCellAt(int row, int column)
     {
         return _cells[row][column].attr;

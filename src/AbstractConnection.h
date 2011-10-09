@@ -2,7 +2,6 @@
 #define ABSTRACTCONNECTION_H
 
 #include <QObject>
-class QDate;
 
 namespace UJ
 {
@@ -27,6 +26,10 @@ public:
     explicit AbstractConnection(QObject *parent = 0);
     virtual bool connectTo(Site *s) = 0;
     virtual bool connectTo(QString &address, qint16 port = PortDefault) = 0;
+    static QString type()
+    {
+        return "AbstractConnection";
+    }
 
 public slots:
     virtual void close() = 0;
