@@ -833,12 +833,13 @@ void View::paintEvent(QPaintEvent *e)
         // Cursor
         // NOTE: Preference for cursor color and shape (?)
         //       Should a non-line type cursor be implemented?
-        painter.setPen(QPen(Qt::white, 2.0));
+        painter.setPen(Qt::NoPen);
+        painter.setBrush(QBrush(Qt::white, Qt::SolidPattern));
         _x = terminal()->cursorColumn();
         _y = terminal()->cursorRow();
-        // NOTE: Prefernce for cursor y offset (the -1)
-        int yPos = (_y + 1) * _cellHeight - 1;
-        painter.drawLine(x() * _cellWidth, yPos, (x() + 1) *_cellWidth, yPos);
+        // NOTE: Prefernce for cursor y offset (the -2)
+        int yPos = (_y + 1) * _cellHeight - 2;
+        painter.drawRect(_x * _cellWidth, yPos, _cellWidth, 2);
 
         // Selection
         if (_selectedLength)
