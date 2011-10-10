@@ -3,6 +3,7 @@
 #include <QSet>
 #include "AbstractConnection.h"
 #include "Site.h"
+#include <QDebug>
 
 namespace UJ
 {

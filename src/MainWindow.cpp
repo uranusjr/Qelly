@@ -9,7 +9,6 @@
 #include <QStyle>
 #include "SharedMenuBar.h"
 #include "TabWidget.h"
-#include <QDebug>
 
 namespace UJ
 {
@@ -27,7 +26,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     int cellHeight = 25;    // NOTE: Use global preferences
     int row = 24;           // NOTE: Use global preferences
     int column = 80;        // NOTE: Use global preferences
-    _tabs->resize(cellWidth * column, cellHeight * row + _tabs->tabBarHeight());
+    _width = column * cellWidth;
+    _height = row * cellHeight + _tabs->tabBarHeight();
     setCentralWidget(_tabs);
 }
 

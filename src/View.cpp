@@ -30,6 +30,7 @@
 #include "Terminal.h"
 #include "Site.h"
 #include "UJCommonDefs.h"
+#include <QDebug>
 
 namespace UJ
 {
@@ -280,14 +281,25 @@ void View::keyPressEvent(QKeyEvent *e)
             bool ok = false;
             switch (key)
             {
+            case Qt::Key_Tab:
+                emit hasBytesToSend(QByteArray("\x09"));
+                break;
             case Qt::Key_Up:
             case Qt::Key_Down:
             case Qt::Key_Right:
             case Qt::Key_Left:
                 handleArrowKey(key);
                 break;
+            case Qt::Key_PageUp:
+            case Qt::Key_PageDown:
+            case Qt::Key_Home:
+            case Qt::Key_End:
+                handleJumpKey(key);
+                break;
             case Qt::Key_Delete:
-                handleForwardDelete();
+                handleForwardDeleteKey();
+            case 0x7f:
+                //handleAsciiDelete();
                 break;
             default:
                 if (modifiers & Qt::ControlModifier)
@@ -307,6 +319,97 @@ void View::keyPressEvent(QKeyEvent *e)
     }
 
     return Qx::Widget::keyPressEvent(e);
+}
+
+void View::handleForwardDeleteKey()
+{
+    QByteArray bytes("\x1b[3~");
+    if (terminal()->connection()->site()->manualDoubleByte())
+    {
+        int x = terminal()->cursorColumn();
+        int y = terminal()->cursorRow();
+        if (x < _column - 1 &&
+            terminal()->attributeOfCellAt(y, x + 1).f.doubleByte == 2)
+        {
+            bytes.append(bytes);
+        }
+
+    }
+    emit hasBytesToSend(bytes);
+}
+
+void View::handleArrowKey(int key)
+{
+    QByteArray arrow("\x1b\x4f");
+    switch (key)
+    {
+    case Qt::Key_Up:
+        arrow.append('A');
+        break;
+    case Qt::Key_Down:
+        arrow.append('B');
+        break;
+    case Qt::Key_Right:
+        arrow.append('C');
+        break;
+    case Qt::Key_Left:
+        arrow.append('D');
+        break;
+    default:
+        return;
+    }
+    int row = terminal()->cursorRow();
+    int column = terminal()->cursorColumn();
+    terminal()->updateDoubleByteStateForRow(row);
+    if (terminal()->connection()->site()->manualDoubleByte())
+    {
+        if ((key == Qt::Key_Right &&
+             terminal()->attributeOfCellAt(row, column).f.doubleByte == 1) ||
+            (key == Qt::Key_Left &&
+             terminal()->attributeOfCellAt(row, column - 1).f.doubleByte == 2))
+        {
+            arrow.append(arrow);
+        }
+    }
+    emit hasBytesToSend(arrow);
+}
+
+void View::handleJumpKey(int key)
+{
+    QByteArray bytes("\x1b[");
+    switch (key)
+    {
+    case Qt::Key_PageUp:
+        bytes.append('5');
+        break;
+    case Qt::Key_PageDown:
+        bytes.append('6');
+        break;
+    case Qt::Key_Home:
+        bytes.append('1');
+        break;
+    case Qt::Key_End:
+        bytes.append('4');
+        break;
+    default:
+        return;
+    }
+    bytes.append('~');
+    emit hasBytesToSend(bytes);
+}
+
+void View::handleAsciiDelete()
+{
+    QByteArray buffer("\x08");
+    int row = terminal()->cursorRow();
+    int column = terminal()->cursorColumn();
+    if (terminal()->connection()->site()->manualDoubleByte() &&
+        terminal()->attributeOfCellAt(row, column - 1).f.doubleByte == 2 &&
+        column > 0)
+    {
+        buffer.append(buffer);
+    }
+    emit hasBytesToSend(buffer);
 }
 
 int View::characterFromKeyPress(int key, Qt::KeyboardModifiers mod, bool *ok)
@@ -342,54 +445,6 @@ int View::characterFromKeyPress(int key, Qt::KeyboardModifiers mod, bool *ok)
 
     *ok = true;
     return (key - Qt::Key_At);
-}
-
-void View::handleArrowKey(int key)
-{
-    QByteArray arrow("\x1b\x4f\x00");
-    switch (key)
-    {
-    case Qt::Key_Up:
-        arrow[2] = '\x0a';
-        break;
-    case Qt::Key_Down:
-        arrow[2] = '\x0b';
-        break;
-    case Qt::Key_Right:
-        arrow[2] = '\x0c';
-        break;
-    case Qt::Key_Left:
-        arrow[2] = '\x0d';
-        break;
-    }
-    int row = terminal()->cursorRow();
-    int column = terminal()->cursorColumn();
-    terminal()->updateDoubleByteStateForRow(row);
-    if (terminal()->connection()->site()->manualDoubleByte())
-    {
-        if ((key == Qt::Key_Right &&
-             terminal()->attributeOfCellAt(row, column).f.doubleByte == 1) ||
-            (key == Qt::Key_Left &&
-             terminal()->attributeOfCellAt(row, column - 1).f.doubleByte == 2))
-        {
-            arrow.append(arrow);
-        }
-    }
-    emit hasBytesToSend(arrow);
-}
-
-void View::handleForwardDelete()
-{
-    QByteArray buffer("\x08");
-    int row = terminal()->cursorRow();
-    int column = terminal()->cursorColumn();
-    if (terminal()->connection()->site()->manualDoubleByte() &&
-        terminal()->attributeOfCellAt(row, column - 1).f.doubleByte == 2 &&
-        column > 0)
-    {
-        buffer.append(buffer);
-    }
-    emit hasBytesToSend(buffer);
 }
 
 void View::inputMethodEvent(QInputMethodEvent *e)
@@ -492,13 +547,14 @@ void View::updateScreen()
     updateBackImage();
     int x = terminal()->cursorColumn();
     int y = terminal()->cursorRow();
-    if (_x != x && _y != y)
+    if (_x != x || _y != y)
     {
-        displayCellAt(_x, _y);  // Un-draw the old cursor
-        displayCellAt(x, y);    // Draw the new cursor
+        //displayCellAt(_x, _y);  // Un-draw the old cursor
         _x = x;
         _y = y;
     }
+    //displayCellAt(_x, _y);    // Draw current cursor
+    update();
 }
 
 void View::updateBackImage()
@@ -558,7 +614,7 @@ void View::updateBackground(int row, int startColumn, int endColumn)
     }
     painter.end();
 
-    update(rect);
+    update();
 }
 
 void View::updateText(int row)
@@ -580,19 +636,21 @@ void View::updateText(int row)
             continue;
         updateText(row, x);
     }
-    update((start - 1) *_cellWidth, row * _cellHeight, _cellWidth, _cellHeight);
+    //update((start - 1) *_cellWidth, row * _cellHeight,
+    //       _cellWidth, _cellHeight);
+    update();
 }
 
 void View::updateText(int row, int x)
 {
     // NOTE: Get padding spaces from global preferences
     int sglPadLeft = 0;
-    int sglPadBott = 0;
+    int sglPadBott = 5;
     int dblPadLeft = 0;
     int dblPadBott = 1;
     QFont sglFont("Courier New", 21);  // NOTE: Get font from global preferences
-    QFont dblFont("LiSong Pro", 23);     // NOTE: Get font from global preferences
-    int ascent;
+    QFont dblFont("LiSong Pro", 23);   // NOTE: Get font from global preferences
+    int off;
     BBS::Cell *cells = terminal()->cellsAtRow(row);
     BBS::CellAttribute &attr = cells[x].attr;
     ushort code;
@@ -601,12 +659,18 @@ void View::updateText(int row, int x)
     case 0: // Not double byte
         painter.begin(_backImage);
         painter.setFont(sglFont);
-        ascent = painter.fontMetrics().ascent();
         painter.setPen(foregroundColorOf(attr));
         code = cells[x].byte ? cells[x].byte : ' ';
         painter.drawText(x * _cellWidth + sglPadLeft,
-                         row * _cellHeight - sglPadBott + ascent,
+                         (row + 1) * _cellHeight - sglPadBott,
                          QChar(code));
+        if (!cells[x - 1].attr.f.doubleByte)
+        {
+            code = cells[x - 1].byte ? cells[x - 1].byte : ' ';
+            painter.drawText((x - 1) * _cellWidth + sglPadLeft,
+                             (row + 1) * _cellHeight - sglPadBott,
+                             QChar(code));
+        }
         painter.end();
         break;
     case 1: // First half of double byte
@@ -645,9 +709,8 @@ void View::updateText(int row, int x)
                 painter.begin(_backImage);
                 painter.setFont(dblFont);
                 painter.setPen(foregroundColorOf(attr));
-                ascent = painter.fontMetrics().height();
                 painter.drawText((x - 1) * _cellWidth + dblPadLeft,
-                                 row * _cellHeight - dblPadBott + ascent,
+                                 (row + 1) * _cellHeight - dblPadBott,
                                  QChar(code));
                 painter.end();
             }

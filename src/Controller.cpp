@@ -42,6 +42,7 @@ Controller::Controller(QObject *parent) : QObject(parent)
     connect(_window->address(), SIGNAL(returnPressed()),
             this, SLOT(onAddressReturnPressed()));
     _window->show();
+    _window->setFixedSize(_window->fixedSize());
 }
 
 Controller::~Controller()

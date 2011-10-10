@@ -26,9 +26,15 @@ public:
         static MainWindow *g = new MainWindow();
         return g;
     }
+    inline QSize fixedSize()
+    {
+        return QSize(_width, _height);
+    }
 
 private:
     void buildToolBar();
+    int _width;
+    int _height;
     TabWidget *_tabs;
     QToolBar *_toolbar;
     QWidget *_stretch;

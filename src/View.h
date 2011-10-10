@@ -92,8 +92,10 @@ private:
     void selectWordAround(int row, int column);
     bool isConnected();
     int characterFromKeyPress(int key, Qt::KeyboardModifiers mod, bool *ok);
-    void handleArrowKey(int key);
-    void handleForwardDelete();
+    void handleArrowKey(int key);   // Up, Down, Left, Right
+    void handleJumpKey(int key);    // PgUp, PgDn, Home, End
+    void handleForwardDeleteKey();
+    void handleAsciiDelete();       // 0x7f
     inline QColor foregroundColorOf(BBS::CellAttribute &attr)
     {
         // NOTE: Get color from global preference considering bold
