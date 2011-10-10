@@ -57,6 +57,7 @@ void Controller::connectWithAddress(QString address)
     QString name = address;
     _window->tabs()->setTabText(current, name);
     View *view = static_cast<View *>(_window->tabs()->widget(current));
+    Connection::Terminal *t = new Connection::Terminal(view);
     Connection::AbstractConnection *connection;
     if (address.startsWith("ssh://"))
         return; // NOTE: Handle ssh
@@ -64,13 +65,13 @@ void Controller::connectWithAddress(QString address)
     {
         address = address.section("://", 1);
         connection = new Connection::Telnet();
+        t->setConnection(connection, BBS::ConnectionTelnet);
     }
     else
     {
         connection = new Connection::Telnet();
+        t->setConnection(connection, BBS::ConnectionTelnet);
     }
-    Connection::Terminal *t = new Connection::Terminal(view);
-    t->setConnection(connection);
     view->setTerminal(t);
     view->setFocus(Qt::OtherFocusReason);
     connection->connectTo(address, 23);

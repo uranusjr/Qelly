@@ -13,11 +13,6 @@ namespace Connection
 
 class Site;
 
-enum
-{
-    PortDefault = -1
-};
-
 class AbstractConnection : public QObject
 {
     Q_OBJECT
@@ -25,11 +20,7 @@ class AbstractConnection : public QObject
 public:
     explicit AbstractConnection(QObject *parent = 0);
     virtual bool connectTo(Site *s) = 0;
-    virtual bool connectTo(QString &address, qint16 port = PortDefault) = 0;
-    static QString type()
-    {
-        return "AbstractConnection";
-    }
+    virtual bool connectTo(QString &address, qint16 port) = 0;
 
 public slots:
     virtual void close() = 0;

@@ -13,11 +13,6 @@ namespace UJ
 namespace Connection
 {
 
-enum
-{
-    PortDefaultTelnet = 23
-};
-
 class Telnet : public AbstractConnection
 {
     Q_OBJECT
@@ -26,11 +21,7 @@ public:
     explicit Telnet(QObject *parent = 0);
     virtual ~Telnet();
     virtual bool connectTo(Site *s);
-    virtual bool connectTo(QString &address, qint16 port = PortDefaultTelnet);
-    static QString type()
-    {
-        return "Telnet";
-    }
+    virtual bool connectTo(QString &address, qint16 port);
 
 signals:
     void receivedBytes(QByteArray data);

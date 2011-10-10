@@ -33,6 +33,12 @@ enum AnsiColorKey
     ColorKeyDoubleEsc
 };
 
+enum Connection
+{
+    ConnectionTelnet,
+    ConnectionSsh
+};
+
 union CellAttribute
 {
     ushort v;

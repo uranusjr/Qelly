@@ -1008,6 +1008,7 @@ void View::setTerminal(Connection::Terminal *terminal)
     if (_terminal == terminal)
         return;
     disconnect(_terminal);
+    delete _terminal;
     _terminal = terminal;
     if (!_terminal)
         return;

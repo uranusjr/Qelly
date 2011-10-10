@@ -3,6 +3,7 @@
 #include <QSet>
 #include "AbstractConnection.h"
 #include "Site.h"
+#include "Telnet.h"
 #include <QDebug>
 
 namespace UJ
@@ -1072,10 +1073,22 @@ void Terminal::setEncoding(BBS::Encoding encoding)
     connection()->site()->setEncoding(encoding);
 }
 
-void Terminal::setConnection(AbstractConnection *connection)
+void Terminal::setConnection(AbstractConnection *connection,
+                             BBS::Connection type)
 {
     if (_connection)
-        delete _connection;
+    {
+        switch (type)
+        {
+        case BBS::ConnectionTelnet:
+            delete static_cast<Telnet *>(_connection);
+            break;
+        case BBS::ConnectionSsh:
+            break;      // NOTE: Implement SSH
+        default:
+            delete _connection;
+        }
+    }
     _connection = connection;
     if (!_connection)
         return;
