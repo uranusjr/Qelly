@@ -259,7 +259,7 @@ void View::mouseReleaseEvent(QMouseEvent *e)
         bool hasUrl = false;
         QString url = terminal()->urlStringAt(index / _column, index % _column,
                                               &hasUrl);
-        if (hasUrl && (e->modifiers() & UJ::MOD))
+        if (hasUrl && !(e->modifiers() & UJ::MOD))
         {
             // NOTE: Should we implement image previewer at all?
             QDesktopServices::openUrl(QUrl(url, QUrl::TolerantMode));
