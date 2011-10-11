@@ -645,9 +645,9 @@ void View::updateText(int row, int x)
 {
     // NOTE: Get padding spaces from global preferences
     int sglPadLeft = 0;
-    int sglPadBott = 5;
+    int sglPadBott = 6;
     int dblPadLeft = 0;
-    int dblPadBott = 1;
+    int dblPadBott = 3;
     QFont sglFont("Courier New", 21);  // NOTE: Get font from global preferences
     QFont dblFont("LiSong Pro", 23);   // NOTE: Get font from global preferences
     int off;
