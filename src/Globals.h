@@ -33,6 +33,18 @@ enum AnsiColorKey
     ColorKeyDoubleEsc
 };
 
+enum Size
+{
+    SizeRowCount = 24,
+    SizeColumnCount = 80
+};
+
+enum ColorIndex
+{
+    ColorIndexBackground = 0,
+    ColorIndexForeground = 7
+};
+
 union CellAttribute
 {
     ushort v;

@@ -1,4 +1,5 @@
 #include "Site.h"
+#include "SharedPreferences.h"
 
 namespace UJ
 {
@@ -10,9 +11,11 @@ Site::Site(QString address, QString name, QObject *parent) : QObject(parent)
 {
     setName(name);
     setAddress(address);
-    setEncoding(BBS::EncodingBig5);     // NOTE: Set to global preference
-    setColorKey(BBS::ColorKeyCtrlU);
-    setManualDoubleByte(false);
+    Qelly::SharedPreferences *prefs =
+            Qelly::SharedPreferences::sharedInstance();
+    setEncoding(prefs->defaultEncoding());
+    setColorKey(prefs->defaultColorKey());
+    setManualDoubleByte(prefs->manualDoubleByte());
 }
 
 }   // namespace Connection

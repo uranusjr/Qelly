@@ -27,7 +27,9 @@
 #include <QUrl>
 #include "AbstractConnection.h"
 #include "Encodings.h"
+#include "Globals.h"
 #include "Terminal.h"
+#include "SharedPreferences.h"
 #include "Site.h"
 #include "UJCommonDefs.h"
 #include <QDebug>
@@ -42,6 +44,7 @@ View::View(QWidget *parent) : Widget(parent)
 {
     _backImage = 0;
     _terminal = 0;
+    _prefs = SharedPreferences::sharedInstance();
     buildInfo();
     setFocusPolicy(Qt::ClickFocus);
     setAttribute(Qt::WA_InputMethodEnabled);
@@ -56,11 +59,10 @@ View::~View()
 
 void View::buildInfo()
 {
-    // NOTE: Get the preference object
-    _cellWidth = 12;    // NOTE: Use global preferences
-    _cellHeight = 25;   // NOTE: Use global preferences
-    _row = 24;          // NOTE: Use global preferences
-    _column = 80;       // NOTE: Use global preferences
+    _cellWidth = _prefs->cellWidth();
+    _cellHeight = _prefs->cellHeight();
+    _row = BBS::SizeRowCount;
+    _column = BBS::SizeColumnCount;
 
     if (_backImage)
         delete _backImage;
@@ -572,6 +574,7 @@ void View::updateBackImage()
                 updateBackground(y, start, x);
             }
         }
+
         // Foreground
         updateText(y);
 
@@ -595,15 +598,16 @@ void View::updateBackground(int row, int startColumn, int endColumn)
         if (x != endColumn)
             now = cells[x].attr;
 
-        if (now.f.bColorIndex != last.f.bColorIndex ||
-                now.f.bright != last.f.bright ||
-                x == endColumn)
+        bool s = now.f.bColorIndex != last.f.bColorIndex ||
+                 (now.f.reversed & now.f.bright)
+                    != (last.f.reversed & last.f.bright) ||
+                 x == endColumn;
+        if (s)
         {
-            // NOTE: Get bg color of last from global prefernce
-            QColor color = QColor(Qt::black);
             painter.fillRect((x - length) * _cellWidth, row * _cellHeight,
                              length * _cellWidth, _cellHeight,
-                             Qt::SolidPattern);
+                             _prefs->color(last.f.bColorIndex,
+                                           last.f.reversed && last.f.bright));
             length = 1;
             last = now;
         }
@@ -614,6 +618,7 @@ void View::updateBackground(int row, int startColumn, int endColumn)
     }
     painter.end();
 
+    Q_UNUSED(rect); // NOTE: Restrict update region
     update();
 }
 
@@ -643,14 +648,12 @@ void View::updateText(int row)
 
 void View::updateText(int row, int x)
 {
-    // NOTE: Get padding spaces from global preferences
-    int sglPadLeft = 0;
-    int sglPadBott = 6;
-    int dblPadLeft = 0;
-    int dblPadBott = 3;
-    QFont sglFont("Courier New", 21);  // NOTE: Get font from global preferences
-    QFont dblFont("LiSong Pro", 23);   // NOTE: Get font from global preferences
-    int off;
+    int sglPadLeft = _prefs->defaultFontPaddingLeft();
+    int sglPadBott = _prefs->defaultFontPaddingBottom();
+    int dblPadLeft = _prefs->doubleByteFontPaddingLeft();
+    int dblPadBott = _prefs->doubleByteFontPaddingBottom();
+    QFont sglFont = _prefs->defaultFont();
+    QFont dblFont = _prefs->doubleByteFont();
     BBS::Cell *cells = terminal()->cellsAtRow(row);
     BBS::CellAttribute &attr = cells[x].attr;
     ushort code;
@@ -659,17 +662,25 @@ void View::updateText(int row, int x)
     case 0: // Not double byte
         painter.begin(_backImage);
         painter.setFont(sglFont);
-        painter.setPen(foregroundColorOf(attr));
+        painter.setPen(_prefs->color(attr.f.fColorIndex, attr.f.bright));
         code = cells[x].byte ? cells[x].byte : ' ';
         painter.drawText(x * _cellWidth + sglPadLeft,
                          (row + 1) * _cellHeight - sglPadBott,
                          QChar(code));
-        if (!cells[x - 1].attr.f.doubleByte)
+        // FIXME: Why is the previous character chipped off and needed to be
+        // redrawn?
+        if (x != 0)
         {
-            code = cells[x - 1].byte ? cells[x - 1].byte : ' ';
-            painter.drawText((x - 1) * _cellWidth + sglPadLeft,
-                             (row + 1) * _cellHeight - sglPadBott,
-                             QChar(code));
+            BBS::CellAttribute &olda = cells[x - 1].attr;
+            if (!olda.f.doubleByte)
+            {
+                painter.setPen(_prefs->color(olda.f.fColorIndex,
+                                             olda.f.bright));
+                code = cells[x - 1].byte ? cells[x - 1].byte : ' ';
+                painter.drawText((x - 1) * _cellWidth + sglPadLeft,
+                                 (row + 1) * _cellHeight - sglPadBott,
+                                 QChar(code));
+            }
         }
         painter.end();
         break;
@@ -693,7 +704,7 @@ void View::updateText(int row, int x)
         }
         if (isSpecialSymbol(code))
         {
-            paintSpecialSymbol(code, row, x - 1,
+            drawSpecialSymbol(code, row, x - 1,
                                cells[x - 1].attr, cells[x].attr);
         }
         else
@@ -701,14 +712,14 @@ void View::updateText(int row, int x)
             if (fColorIndex(cells[x - 1].attr) != fColorIndex(cells[x].attr) ||
                     fBright(cells[x - 1].attr) != fBright(cells[x].attr))
             {
-                paintDoubleColor(code, row, x - 1,
+                drawDoubleColor(code, row, x - 1,
                                  cells[x - 1].attr, cells[x].attr);
             }
             else
             {
                 painter.begin(_backImage);
                 painter.setFont(dblFont);
-                painter.setPen(foregroundColorOf(attr));
+                painter.setPen(_prefs->color(attr.f.fColorIndex, attr.f.bright));
                 painter.drawText((x - 1) * _cellWidth + dblPadLeft,
                                  (row + 1) * _cellHeight - dblPadBott,
                                  QChar(code));
@@ -718,7 +729,7 @@ void View::updateText(int row, int x)
     }
 }
 
-void View::paintSpecialSymbol(ushort code, int row, int column,
+void View::drawSpecialSymbol(ushort code, int row, int column,
                               BBS::CellAttribute left, BBS::CellAttribute right)
 {
     //  0   1   2
@@ -736,6 +747,7 @@ void View::paintSpecialSymbol(ushort code, int row, int column,
                  row * h + h/2, row * h + h/2, row * h + h/2,
                  (row + 1) * h, (row + 1) * h, (row + 1) * h};
     painter.begin(_backImage);
+    painter.setPen(Qt::NoPen);
     QPoint points[4];
     switch (code)
     {
@@ -747,77 +759,90 @@ void View::paintSpecialSymbol(ushort code, int row, int column,
     case 0x2586:    // ▆ Lower three quarters block
     case 0x2587:    // ▇ Lower seven eights block
     case 0x2588:    // █ Full block
-        painter.fillRect(xs[0], ys[0] + h * (0x2588 - code) / 8,
-                         w, h * (code - 0x2580) / 8, foregroundColorOf(left));
-        painter.fillRect(xs[1], ys[1] + h * (0x2588 - code) / 8,
-                         w, h * (code - 0x2580) / 8, foregroundColorOf(right));
+        painter.fillRect(xs[0], ys[6] - h * (code - 0x2580) / 8,
+                         w, h * (code - 0x2580) / 8,
+                         _prefs->color(left.f.fColorIndex, left.f.bright));
+        painter.fillRect(xs[1], ys[7] - h * (code - 0x2580) / 8,
+                         w, h * (code - 0x2580) / 8,
+                         _prefs->color(right.f.fColorIndex, right.f.bright));
         break;
     case 0x2589:    // ▉ Left seven eights block
     case 0x258a:    // ▊ Left three quarters block
     case 0x258b:    // ▋ Left five eighths block
-        painter.fillRect(xs[0], ys[0], w, h, foregroundColorOf(left));
+        painter.fillRect(xs[0], ys[0], w, h,
+                         _prefs->color(left.f.fColorIndex, left.f.bright));
         painter.fillRect(xs[1], ys[1], w * (0x258c - code) / 8, h,
-                         foregroundColorOf(right));
+                         _prefs->color(right.f.fColorIndex, right.f.bright));
         break;
     case 0x258c:    // ▌ Left half block
     case 0x258d:    // ▍ Left three eighths block
     case 0x258e:    // ▎ Left one quarter block
     case 0x258f:    // ▏ Left one eighth block
         painter.fillRect(xs[0], ys[0], w * (0x2590 - code) / 8, h,
-                         foregroundColorOf(left));
+                         _prefs->color(left.f.fColorIndex, left.f.bright));
         break;
     case 0x25e2:    // ◢ Black lower right triangle
         //painter.setPen(Qt::SolidLine);
-        painter.setPen(Qt::NoPen);
-        painter.setBrush(QBrush(foregroundColorOf(left), Qt::SolidPattern));
+        painter.setBrush(QBrush(_prefs->color(left.f.fColorIndex, left.f.bright),
+                                Qt::SolidPattern));
         points[0] = QPoint(xs[4], ys[4]);
         points[1] = QPoint(xs[7], ys[7]);
         points[2] = QPoint(xs[6], ys[6]);
         painter.drawPolygon(points, 3);
-        painter.setBrush(QBrush(foregroundColorOf(right), Qt::SolidPattern));
+        painter.setBrush(QBrush(_prefs->color(right.f.fColorIndex,
+                                             right.f.bright),
+                                Qt::SolidPattern));
         points[2] = QPoint(xs[8], ys[8]);
         points[3] = QPoint(xs[2], ys[2]);
         painter.drawPolygon(points, 4);
         break;
     case 0x25e3:    // ◣ Black lower left triangle
-        painter.setPen(Qt::NoPen);
-        painter.setBrush(QBrush(foregroundColorOf(left), Qt::SolidPattern));
+        painter.setBrush(QBrush(_prefs->color(left.f.fColorIndex, left.f.bright),
+                                Qt::SolidPattern));
         points[0] = QPoint(xs[4], ys[4]);
         points[1] = QPoint(xs[7], ys[7]);
         points[2] = QPoint(xs[6], ys[6]);
         points[3] = QPoint(xs[0], ys[0]);
         painter.drawPolygon(points, 4);
-        painter.setBrush(QBrush(foregroundColorOf(right), Qt::SolidPattern));
+        painter.setBrush(QBrush(_prefs->color(right.f.fColorIndex,
+                                             right.f.bright),
+                                Qt::SolidPattern));
         points[2] = QPoint(xs[8], ys[8]);
         painter.drawPolygon(points, 3);
         break;
     case 0x25e4:    // ◤ Black upper left triangle
-        painter.setPen(Qt::NoPen);
-        painter.setBrush(QBrush(foregroundColorOf(left), Qt::SolidPattern));
+        painter.setBrush(QBrush(_prefs->color(left.f.fColorIndex, left.f.bright),
+                                Qt::SolidPattern));
         points[0] = QPoint(xs[4], ys[4]);
         points[1] = QPoint(xs[1], ys[1]);
         points[2] = QPoint(xs[0], ys[0]);
         points[3] = QPoint(xs[6], ys[6]);
         painter.drawPolygon(points, 4);
-        painter.setBrush(QBrush(foregroundColorOf(right), Qt::SolidPattern));
+        painter.setBrush(QBrush(_prefs->color(right.f.fColorIndex,
+                                             right.f.bright),
+                                Qt::SolidPattern));
         points[2] = QPoint(xs[2], ys[2]);
         painter.drawPolygon(points, 3);
         break;
     case 0x25e5:    // ◥ Black upper right triangle
-        painter.setPen(Qt::NoPen);
-        painter.setBrush(QBrush(foregroundColorOf(left), Qt::SolidPattern));
+        painter.setBrush(QBrush(_prefs->color(left.f.fColorIndex, left.f.bright),
+                                Qt::SolidPattern));
         points[0] = QPoint(xs[4], ys[4]);
         points[1] = QPoint(xs[1], ys[1]);
         points[2] = QPoint(xs[0], ys[0]);
         painter.drawPolygon(points, 3);
-        painter.setBrush(QBrush(foregroundColorOf(right), Qt::SolidPattern));
+        painter.setBrush(QBrush(_prefs->color(right.f.fColorIndex,
+                                             right.f.bright),
+                                Qt::SolidPattern));
         points[2] = QPoint(xs[2], ys[2]);
         points[3] = QPoint(xs[8], ys[8]);
         painter.drawPolygon(points, 4);
         break;
     case 0x25fc:    // ◼ Black medium square    // paint as a full block
-        painter.fillRect(xs[0], ys[0], w, h, foregroundColorOf(left));
-        painter.fillRect(xs[1], ys[1], w, h, foregroundColorOf(right));
+        painter.fillRect(xs[0], ys[0], w, h,
+                         _prefs->color(left.f.fColorIndex, left.f.bright));
+        painter.fillRect(xs[1], ys[1], w, h,
+                         _prefs->color(right.f.fColorIndex, right.f.bright));
         break;
     default:
         break;
@@ -825,30 +850,29 @@ void View::paintSpecialSymbol(ushort code, int row, int column,
     painter.end();
 }
 
-void View::paintDoubleColor(ushort code, int row, int column,
+void View::drawDoubleColor(ushort code, int row, int column,
                             BBS::CellAttribute left, BBS::CellAttribute right)
 {
-    // NOTE: Get padding spaces from global preferences
-    int dblPadLeft = 0;
-    int dblPadBottom = 1;
-    QFont dblFont("LiSongPro", 23);    // NOTE: Get font from global preferences
+    int dblPadLeft = _prefs->doubleByteFontPaddingLeft();
+    int dblPadBottom = _prefs->doubleByteFontPaddingBottom();
+    QFont dblFont = _prefs->doubleByteFont();
 
     // Left side
     QPixmap lp(_cellWidth, _cellHeight);
-    lp.fill(backgroundColorOf(left));
+    lp.fill(_prefs->color(left.f.bColorIndex));
     painter.begin(&lp);
     painter.setFont(dblFont);
     int height = painter.fontMetrics().height();
-    painter.setPen(foregroundColorOf(left));
+    painter.setPen(_prefs->color(left.f.fColorIndex, left.f.bright));
     painter.drawText(dblPadLeft, height - dblPadBottom, QChar(code));
     painter.end();
 
     // Right side
     QPixmap rp(_cellWidth, _cellHeight);
-    rp.fill(backgroundColorOf(right));
+    rp.fill(_prefs->color(right.f.bColorIndex));
     painter.begin(&rp);
     painter.setFont(dblFont);
-    painter.setPen(foregroundColorOf(right));
+    painter.setPen(_prefs->color(right.f.fColorIndex, right.f.bright));
     painter.drawText(dblPadLeft - _cellWidth, height - dblPadBottom, QChar(code));
     painter.end();
 
@@ -869,7 +893,7 @@ void View::paintEvent(QPaintEvent *e)
 
         // Draw a portion of back image
         painter.drawPixmap(0, 0, *_backImage);
-        drawBlink(r);
+        paintBlink(r);
 
         // URL line
         // NOTE: Preference for URL color and width
@@ -906,20 +930,19 @@ void View::paintEvent(QPaintEvent *e)
 
         // Selection
         if (_selectedLength)
-            drawSelection(r);
+            paintSelection();
     }
     else
     {
         // Clear everything in the widget
-        // NOTE: Nally fills the widget with bg color on disconnection
-        painter.eraseRect(this->rect());
+        painter.fillRect(0, 0, width(), height(), _prefs->backgroundColor());
     }
 
     painter.end();
     return Qx::Widget::paintEvent(e);
 }
 
-void View::drawBlink(QRect &r)
+void View::paintBlink(QRect &r)
 {
     if (!isConnected())
         return;
@@ -934,15 +957,14 @@ void View::drawBlink(QRect &r)
                 continue;
             int colorIndex = a.f.reversed ? a.f.fColorIndex : a.f.bColorIndex;
             bool bright = a.f.reversed ? a.f.bright : false;
-            QColor color = QColor("white"); // NOTE: Get color from preference
-            painter.setPen(color);
+            painter.setPen(_prefs->color(colorIndex, bright));
             painter.fillRect(x * _cellWidth, (y - 1) * _cellHeight,
                              _cellWidth, _cellHeight, Qt::SolidPattern);
         }
     }
 }
 
-void View::drawSelection(QRect &r)
+void View::paintSelection()
 {
     int loc;
     int len;

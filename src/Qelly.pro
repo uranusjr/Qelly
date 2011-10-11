@@ -24,7 +24,8 @@ SOURCES += main.cpp \
     TabWidget.cpp \
     View.cpp \
     UJQxWidget.cpp \
-    Controller.cpp
+    Controller.cpp \
+    SharedPreferences.cpp
 
 HEADERS  += \
     SharedMenuBar.h \
@@ -42,7 +43,8 @@ HEADERS  += \
     TabWidget.h \
     View.h \
     UJQxWidget.h \
-    Controller.h
+    Controller.h \
+    SharedPreferences.h
 
 RESOURCES += \
     GeneralResources.qrc

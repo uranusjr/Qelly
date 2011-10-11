@@ -80,11 +80,12 @@ void Telnet::onSocketConnected()
 
 void Telnet::onSocketReadyRead()
 {
-    QByteArray data;
     while (_socket->bytesAvailable())
-        data += _socket->readAll();
-    if (data.size() > 0)
-        emit receivedBytes(data);
+    {
+        QByteArray data = _socket->read(512);
+        if (data.size() > 0)
+            emit receivedBytes(data);
+    }
 }
 
 void Telnet::onSocketError()

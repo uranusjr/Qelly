@@ -7,7 +7,9 @@
 #include <QTabBar>
 #include <QToolBar>
 #include <QStyle>
+#include "Globals.h"
 #include "SharedMenuBar.h"
+#include "SharedPreferences.h"
 #include "TabWidget.h"
 
 namespace UJ
@@ -22,10 +24,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     setMenuBar(SharedMenuBar::sharedInstance());
     _tabs = new TabWidget(this);
     _tabs->setTabPosition(QTabWidget::North);
-    int cellWidth = 12;     // NOTE: Use global preferences
-    int cellHeight = 25;    // NOTE: Use global preferences
-    int row = 24;           // NOTE: Use global preferences
-    int column = 80;        // NOTE: Use global preferences
+    SharedPreferences *prefs = SharedPreferences::sharedInstance();
+    int cellWidth = prefs->cellWidth();
+    int cellHeight = prefs->cellHeight();
+    int row = BBS::SizeRowCount;
+    int column = BBS::SizeColumnCount;
     _width = column * cellWidth;
     _height = row * cellHeight + _tabs->tabBarHeight();
     setCentralWidget(_tabs);

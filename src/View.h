@@ -37,6 +37,8 @@ class Terminal;
 namespace Qelly
 {
 
+class SharedPreferences;
+
 class View : public Qx::Widget
 {
     Q_OBJECT
@@ -72,12 +74,12 @@ private slots:
     void updateBackground(int row, int startColumn, int endColumn);
     void updateText(int row);
     void updateText(int row, int x);
-    void paintSpecialSymbol(ushort code, int row, int column,
+    void drawSpecialSymbol(ushort code, int row, int column,
                             BBS::CellAttribute left, BBS::CellAttribute right);
-    void paintDoubleColor(ushort code, int row, int column,
+    void drawDoubleColor(ushort code, int row, int column,
                           BBS::CellAttribute left, BBS::CellAttribute right);
-    void drawSelection(QRect &r);
-    void drawBlink(QRect &r);
+    void paintSelection();
+    void paintBlink(QRect &r);
     void refreshHiddenRegion();
     void clearSelection();
     void extendBottom(int start, int end);
@@ -96,16 +98,6 @@ private:
     void handleJumpKey(int key);    // PgUp, PgDn, Home, End
     void handleForwardDeleteKey();
     void handleAsciiDelete();       // 0x7f
-    inline QColor foregroundColorOf(BBS::CellAttribute &attr)
-    {
-        // NOTE: Get color from global preference considering bold
-        return QColor("white");
-    }
-    inline QColor backgroundColorOf(BBS::CellAttribute &attr)
-    {
-        // NOTE: Get color from global preference considering bold
-        return QColor("black");
-    }
     inline int fColorIndex(BBS::CellAttribute &attribute)
     {
         if (attribute.f.reversed)
@@ -162,7 +154,7 @@ private:
         }
         return false;
     }
-    // NOTE: Need a preference object here
+    SharedPreferences *_prefs;
     double _cellWidth;
     double _cellHeight;
     int _row;
@@ -181,7 +173,6 @@ private:
     QVector<QSize> _doubleAdvances;
     Connection::Terminal *_terminal;
     QString _preeditString;
-    bool _blinkOn;    // NOTE: Replace this with a global blink flag
     QPainter painter;
 
 public: // Setters & Getters

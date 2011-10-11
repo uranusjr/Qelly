@@ -2,6 +2,7 @@
 #include <cstring>
 #include <QSet>
 #include "AbstractConnection.h"
+#include "Globals.h"
 #include "Site.h"
 #include <QDebug>
 
@@ -35,8 +36,8 @@ void Terminal::initSettings()
 {
     _savedCursorX = -1;
     _savedCursorY = -1;
-    _row = 24;              // NOTE: To put in shared preferences
-    _column = 80;           // NOTE: To put in shared preferences
+    _row = BBS::SizeRowCount;
+    _column = BBS::SizeColumnCount;
     _scrollBeginRow = 0;
     _scrollEndRow = _row -1;
     _screenReverse = false;
@@ -77,8 +78,8 @@ void Terminal::clearAll()
     _cursorX = 0;
     _cursorY = 0;
     BBS::CellAttribute a;
-    a.f.fColorIndex = 7;    // NOTE: To put in shared preferences
-    a.f.bColorIndex = 0;    // NOTE: To put in shared preferences
+    a.f.fColorIndex = BBS::ColorIndexForeground;
+    a.f.bColorIndex = BBS::ColorIndexBackground;
     a.f.bright = 0;
     a.f.underlined = 0;
     a.f.blinking = 0;
@@ -183,7 +184,7 @@ void Terminal::updateDoubleByteStateForRow(int row)
 
 void Terminal::updateUrlStateForRow(int row)
 {
-    QSet<const char *> protocols;   // NOTE: Use global preferences
+    QSet<const char *> protocols;
     protocols << "http://" << "https://" << "ftp://" << "telnet://"
               << "bbs://"  << "ssh://"   << "mailto:";
 
