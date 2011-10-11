@@ -14,6 +14,7 @@ namespace Connection
 
 Telnet::Telnet(QObject *parent) : AbstractConnection(parent)
 {
+    _type = TypeTelnet;
     _site = 0;
     _state = TOP_LEVEL;
     _synced = false;
@@ -40,7 +41,7 @@ Telnet::~Telnet()
 bool Telnet::connectTo(Site *s)
 {
     QString address = s->address();
-    return connectTo(address);
+    return connectTo(address, DefaultPort);
 }
 
 bool Telnet::connectTo(QString &address, qint16 port)

@@ -180,7 +180,7 @@ public: // Setters & Getters
     {
         return _connection;
     }
-    void setConnection(AbstractConnection *connection, BBS::Connection type);
+    void setConnection(AbstractConnection *connection);
 };
 
 }   // namespace Connection

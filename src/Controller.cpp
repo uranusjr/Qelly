@@ -64,13 +64,13 @@ void Controller::connectWithAddress(QString address)
     else if (address.startsWith("telnet://"))
     {
         address = address.section("://", 1);
-        connection = new Connection::Telnet();
-        t->setConnection(connection, BBS::ConnectionTelnet);
+        connection = new Connection::Telnet(t);
+        t->setConnection(connection);
     }
     else
     {
-        connection = new Connection::Telnet();
-        t->setConnection(connection, BBS::ConnectionTelnet);
+        connection = new Connection::Telnet(t);
+        t->setConnection(connection);
     }
     view->setTerminal(t);
     view->setFocus(Qt::OtherFocusReason);
