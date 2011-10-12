@@ -14,7 +14,6 @@ namespace Connection
 
 Telnet::Telnet(QObject *parent) : AbstractConnection(parent)
 {
-    _type = TypeTelnet;
     _site = 0;
     _state = TOP_LEVEL;
     _synced = false;

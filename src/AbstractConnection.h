@@ -13,13 +13,6 @@ namespace Connection
 
 class Site;
 
-enum Type
-{
-    TypeUnKnown,
-    TypeTelnet,
-    TypeSsh
-};
-
 class AbstractConnection : public QObject
 {
     Q_OBJECT
@@ -28,7 +21,6 @@ public:
     explicit AbstractConnection(QObject *parent = 0);
     virtual bool connectTo(Site *s) = 0;
     virtual bool connectTo(QString &address, qint16 port) = 0;
-    void dealloc();
 
 public slots:
     virtual void close() = 0;
@@ -36,7 +28,6 @@ public slots:
     virtual void sendBytes(QByteArray bytes) = 0;
 
 protected:
-    Type _type;
     Site *_site;
     QString _name;
     QString _address;

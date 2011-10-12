@@ -1076,7 +1076,7 @@ void Terminal::setEncoding(BBS::Encoding encoding)
 void Terminal::setConnection(AbstractConnection *connection)
 {
     if (_connection)
-        _connection->dealloc();
+        _connection->deleteLater();
     _connection = connection;
     if (!_connection)
         return;

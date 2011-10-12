@@ -20,7 +20,6 @@ TRANSLATIONS += UJ_Translate.ts
 SOURCES += main.cpp \
     MainWindow.cpp \
     SharedMenuBar.cpp \
-    Globals.cpp \
     Terminal.cpp \
     Encodings.cpp \
     AbstractConnection.cpp \
@@ -54,3 +53,4 @@ HEADERS  += \
 
 RESOURCES += \
     GeneralResources.qrc
+

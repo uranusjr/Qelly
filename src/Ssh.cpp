@@ -8,7 +8,6 @@ namespace Connection
 
 Ssh::Ssh(QObject *parent) : AbstractConnection(parent)
 {
-    _type = TypeSsh;
 }
 
 }   // namespace Connection
