@@ -21,6 +21,7 @@
 #include <QDesktopServices>
 #include <QMouseEvent>
 #include <QPainter>
+#include <QPaintEvent>
 #include <QPointF>
 #include <QTextCodec>
 #include <QTimer>
@@ -256,6 +257,9 @@ void View::mouseReleaseEvent(QMouseEvent *e)
     if (!_selectedLength && isConnected())
     {
         int index = indexFromPoint(e->pos());
+        qDebug() << terminal()->cellsAtRow(index / _column)[index % _column].byte;
+        qDebug() << terminal()->cellsAtRow(index / _column)[index % _column].attr.f.fColorIndex;
+        qDebug() << terminal()->cellsAtRow(index / _column)[index % _column].attr.f.bColorIndex;
         bool hasUrl = false;
         QString url = terminal()->urlStringAt(index / _column, index % _column,
                                               &hasUrl);
@@ -586,27 +590,23 @@ void View::updateBackImage()
 void View::updateBackground(int row, int startColumn, int endColumn)
 {
     BBS::Cell *cells = terminal()->cellsAtRow(row);
-    QRect rect = QRect(startColumn * _cellWidth, row * _cellHeight,
-                       (endColumn - startColumn) * _cellWidth, _cellHeight);
     BBS::CellAttribute now;
     BBS::CellAttribute last = cells[startColumn].attr;
-    int length;
+    int length = 1;
 
     painter.begin(_backImage);
-    for (int x = startColumn; x <= endColumn; x++)
+    for (int x = startColumn + 1; x <= endColumn; x++)
     {
-        if (x != endColumn)
-            now = cells[x].attr;
-
-        bool s = now.f.bColorIndex != last.f.bColorIndex ||
-                 (now.f.reversed & now.f.bright)
-                    != (last.f.reversed & last.f.bright) ||
-                 x == endColumn;
-        if (s)
+        now = cells[x].attr;
+        bool changed = now.f.bColorIndex != last.f.bColorIndex ||
+                       (now.f.reversed & now.f.bright)
+                            != (last.f.reversed & last.f.bright) ||
+                       x == endColumn;
+        if (changed)
         {
             painter.fillRect((x - length) * _cellWidth, row * _cellHeight,
                              length * _cellWidth, _cellHeight,
-                             _prefs->color(last.f.bColorIndex,
+                             _prefs->bColor(last.f.bColorIndex,
                                            last.f.reversed && last.f.bright));
             length = 1;
             last = now;
@@ -616,10 +616,12 @@ void View::updateBackground(int row, int startColumn, int endColumn)
             length++;
         }
     }
+
     painter.end();
 
-    Q_UNUSED(rect); // NOTE: Restrict update region
-    update();
+    QRect rect = QRect(startColumn * _cellWidth, row * _cellHeight,
+                       (endColumn - startColumn) * _cellWidth, _cellHeight);
+    update(rect);
 }
 
 void View::updateText(int row)
@@ -662,26 +664,11 @@ void View::updateText(int row, int x)
     case 0: // Not double byte
         painter.begin(_backImage);
         painter.setFont(sglFont);
-        painter.setPen(_prefs->color(attr.f.fColorIndex, attr.f.bright));
+        painter.setPen(_prefs->fColor(attr.f.fColorIndex, attr.f.bright));
         code = cells[x].byte ? cells[x].byte : ' ';
         painter.drawText(x * _cellWidth + sglPadLeft,
                          (row + 1) * _cellHeight - sglPadBott,
                          QChar(code));
-        // FIXME: Why is the previous character chipped off and needed to be
-        // redrawn?
-        if (x != 0)
-        {
-            BBS::CellAttribute &olda = cells[x - 1].attr;
-            if (!olda.f.doubleByte)
-            {
-                painter.setPen(_prefs->color(olda.f.fColorIndex,
-                                             olda.f.bright));
-                code = cells[x - 1].byte ? cells[x - 1].byte : ' ';
-                painter.drawText((x - 1) * _cellWidth + sglPadLeft,
-                                 (row + 1) * _cellHeight - sglPadBott,
-                                 QChar(code));
-            }
-        }
         painter.end();
         break;
     case 1: // First half of double byte
@@ -719,7 +706,8 @@ void View::updateText(int row, int x)
             {
                 painter.begin(_backImage);
                 painter.setFont(dblFont);
-                painter.setPen(_prefs->color(attr.f.fColorIndex, attr.f.bright));
+                painter.setPen(_prefs->fColor(attr.f.fColorIndex,
+                                              attr.f.bright));
                 painter.drawText((x - 1) * _cellWidth + dblPadLeft,
                                  (row + 1) * _cellHeight - dblPadBott,
                                  QChar(code));
@@ -761,78 +749,82 @@ void View::drawSpecialSymbol(ushort code, int row, int column,
     case 0x2588:    // █ Full block
         painter.fillRect(xs[0], ys[6] - h * (code - 0x2580) / 8,
                          w, h * (code - 0x2580) / 8,
-                         _prefs->color(left.f.fColorIndex, left.f.bright));
+                         _prefs->fColor(left.f.fColorIndex, left.f.bright));
         painter.fillRect(xs[1], ys[7] - h * (code - 0x2580) / 8,
                          w, h * (code - 0x2580) / 8,
-                         _prefs->color(right.f.fColorIndex, right.f.bright));
+                         _prefs->fColor(right.f.fColorIndex, right.f.bright));
         break;
     case 0x2589:    // ▉ Left seven eights block
     case 0x258a:    // ▊ Left three quarters block
     case 0x258b:    // ▋ Left five eighths block
         painter.fillRect(xs[0], ys[0], w, h,
-                         _prefs->color(left.f.fColorIndex, left.f.bright));
+                         _prefs->fColor(left.f.fColorIndex, left.f.bright));
         painter.fillRect(xs[1], ys[1], w * (0x258c - code) / 8, h,
-                         _prefs->color(right.f.fColorIndex, right.f.bright));
+                         _prefs->fColor(right.f.fColorIndex, right.f.bright));
         break;
     case 0x258c:    // ▌ Left half block
     case 0x258d:    // ▍ Left three eighths block
     case 0x258e:    // ▎ Left one quarter block
     case 0x258f:    // ▏ Left one eighth block
         painter.fillRect(xs[0], ys[0], w * (0x2590 - code) / 8, h,
-                         _prefs->color(left.f.fColorIndex, left.f.bright));
+                         _prefs->fColor(left.f.fColorIndex, left.f.bright));
         break;
     case 0x25e2:    // ◢ Black lower right triangle
         //painter.setPen(Qt::SolidLine);
-        painter.setBrush(QBrush(_prefs->color(left.f.fColorIndex, left.f.bright),
+        painter.setBrush(QBrush(_prefs->fColor(left.f.fColorIndex,
+                                               left.f.bright),
                                 Qt::SolidPattern));
         points[0] = QPoint(xs[4], ys[4]);
         points[1] = QPoint(xs[7], ys[7]);
         points[2] = QPoint(xs[6], ys[6]);
         painter.drawPolygon(points, 3);
-        painter.setBrush(QBrush(_prefs->color(right.f.fColorIndex,
-                                             right.f.bright),
+        painter.setBrush(QBrush(_prefs->fColor(right.f.fColorIndex,
+                                               right.f.bright),
                                 Qt::SolidPattern));
         points[2] = QPoint(xs[8], ys[8]);
         points[3] = QPoint(xs[2], ys[2]);
         painter.drawPolygon(points, 4);
         break;
     case 0x25e3:    // ◣ Black lower left triangle
-        painter.setBrush(QBrush(_prefs->color(left.f.fColorIndex, left.f.bright),
+        painter.setBrush(QBrush(_prefs->fColor(left.f.fColorIndex,
+                                               left.f.bright),
                                 Qt::SolidPattern));
         points[0] = QPoint(xs[4], ys[4]);
         points[1] = QPoint(xs[7], ys[7]);
         points[2] = QPoint(xs[6], ys[6]);
         points[3] = QPoint(xs[0], ys[0]);
         painter.drawPolygon(points, 4);
-        painter.setBrush(QBrush(_prefs->color(right.f.fColorIndex,
-                                             right.f.bright),
+        painter.setBrush(QBrush(_prefs->fColor(right.f.fColorIndex,
+                                               right.f.bright),
                                 Qt::SolidPattern));
         points[2] = QPoint(xs[8], ys[8]);
         painter.drawPolygon(points, 3);
         break;
     case 0x25e4:    // ◤ Black upper left triangle
-        painter.setBrush(QBrush(_prefs->color(left.f.fColorIndex, left.f.bright),
+        painter.setBrush(QBrush(_prefs->fColor(left.f.fColorIndex,
+                                               left.f.bright),
                                 Qt::SolidPattern));
         points[0] = QPoint(xs[4], ys[4]);
         points[1] = QPoint(xs[1], ys[1]);
         points[2] = QPoint(xs[0], ys[0]);
         points[3] = QPoint(xs[6], ys[6]);
         painter.drawPolygon(points, 4);
-        painter.setBrush(QBrush(_prefs->color(right.f.fColorIndex,
-                                             right.f.bright),
+        painter.setBrush(QBrush(_prefs->fColor(right.f.fColorIndex,
+                                               right.f.bright),
                                 Qt::SolidPattern));
         points[2] = QPoint(xs[2], ys[2]);
         painter.drawPolygon(points, 3);
         break;
     case 0x25e5:    // ◥ Black upper right triangle
-        painter.setBrush(QBrush(_prefs->color(left.f.fColorIndex, left.f.bright),
+        painter.setBrush(QBrush(_prefs->fColor(left.f.fColorIndex,
+                                               left.f.bright),
                                 Qt::SolidPattern));
         points[0] = QPoint(xs[4], ys[4]);
         points[1] = QPoint(xs[1], ys[1]);
         points[2] = QPoint(xs[0], ys[0]);
         painter.drawPolygon(points, 3);
-        painter.setBrush(QBrush(_prefs->color(right.f.fColorIndex,
-                                             right.f.bright),
+        painter.setBrush(QBrush(_prefs->fColor(right.f.fColorIndex,
+                                               right.f.bright),
                                 Qt::SolidPattern));
         points[2] = QPoint(xs[2], ys[2]);
         points[3] = QPoint(xs[8], ys[8]);
@@ -840,9 +832,9 @@ void View::drawSpecialSymbol(ushort code, int row, int column,
         break;
     case 0x25fc:    // ◼ Black medium square    // paint as a full block
         painter.fillRect(xs[0], ys[0], w, h,
-                         _prefs->color(left.f.fColorIndex, left.f.bright));
+                         _prefs->fColor(left.f.fColorIndex, left.f.bright));
         painter.fillRect(xs[1], ys[1], w, h,
-                         _prefs->color(right.f.fColorIndex, right.f.bright));
+                         _prefs->fColor(right.f.fColorIndex, right.f.bright));
         break;
     default:
         break;
@@ -859,20 +851,20 @@ void View::drawDoubleColor(ushort code, int row, int column,
 
     // Left side
     QPixmap lp(_cellWidth, _cellHeight);
-    lp.fill(_prefs->color(left.f.bColorIndex));
+    lp.fill(_prefs->bColor(left.f.bColorIndex));
     painter.begin(&lp);
     painter.setFont(dblFont);
     int height = painter.fontMetrics().height();
-    painter.setPen(_prefs->color(left.f.fColorIndex, left.f.bright));
+    painter.setPen(_prefs->fColor(left.f.fColorIndex, left.f.bright));
     painter.drawText(dblPadLeft, height - dblPadBottom, QChar(code));
     painter.end();
 
     // Right side
     QPixmap rp(_cellWidth, _cellHeight);
-    rp.fill(_prefs->color(right.f.bColorIndex));
+    rp.fill(_prefs->bColor(right.f.bColorIndex));
     painter.begin(&rp);
     painter.setFont(dblFont);
-    painter.setPen(_prefs->color(right.f.fColorIndex, right.f.bright));
+    painter.setPen(_prefs->fColor(right.f.fColorIndex, right.f.bright));
     painter.drawText(dblPadLeft - _cellWidth, height - dblPadBottom, QChar(code));
     painter.end();
 
@@ -892,7 +884,7 @@ void View::paintEvent(QPaintEvent *e)
         QRect r = e->rect();
 
         // Draw a portion of back image
-        painter.drawPixmap(0, 0, *_backImage);
+        painter.drawPixmap(r.left(), r.top(), r.width(), r.height(), *_backImage);
         paintBlink(r);
 
         // URL line
@@ -957,7 +949,7 @@ void View::paintBlink(QRect &r)
                 continue;
             int colorIndex = a.f.reversed ? a.f.fColorIndex : a.f.bColorIndex;
             bool bright = a.f.reversed ? a.f.bright : false;
-            painter.setPen(_prefs->color(colorIndex, bright));
+            painter.setPen(_prefs->fColor(colorIndex, bright));
             painter.fillRect(x * _cellWidth, (y - 1) * _cellHeight,
                              _cellWidth, _cellHeight, Qt::SolidPattern);
         }
