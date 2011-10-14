@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/fonts">
+        <file>arplmingu20lt.ttf</file>
+    </qresource>
+</RCC>

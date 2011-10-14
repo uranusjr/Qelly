@@ -52,5 +52,7 @@ HEADERS  += \
     SharedPreferences.h
 
 RESOURCES += \
-    GeneralResources.qrc
+    GeneralResources.qrc \
+    Fonts.qrc
+
 

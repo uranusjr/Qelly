@@ -23,9 +23,12 @@
 #include <QApplication>
 #include <QColor>
 #include <QFont>
+#include <QFontDatabase>
 #include <QPoint>
 #include <QSettings>
 #include "Globals.h"
+#include <QLabel>
+#include <QDebug>
 
 namespace UJ
 {
@@ -41,6 +44,7 @@ public:
     explicit SharedPreferences(QObject *parent = 0) : QObject(parent)
     {
         _settings = new QSettings("uranusjr.org", "qelly", this);
+        QFontDatabase::addApplicationFont(":/fonts/arplmingu20lt.ttf");
     }
     static inline SharedPreferences *sharedInstance()
     {
@@ -143,8 +147,7 @@ public: // Setters & Getters
     }
     inline QFont doubleByteFont() const
     {
-        QFont defaultFont = QApplication::font();
-        defaultFont.setPointSize(23);
+        QFont defaultFont("AR PLMingU20 Light", 23);
         return _settings->value("double byte font", defaultFont).value<QFont>();
     }
     inline void setDoubleByteFont(QFont font)
