@@ -4,7 +4,6 @@
 #include <QTcpSocket>
 #include "YLTelnet.h"
 #include "Site.h"
-#include <QDebug>
 
 namespace UJ
 {
@@ -108,6 +107,8 @@ void Telnet::processBytes(QByteArray bytes)
         switch (_state)
         {
         case TOP_LEVEL:
+            handleStateTopLevel(c, &buffer);
+            break;
         case SEENCR:
             handleStateSeenCr(c, &buffer);
             break;
@@ -146,14 +147,34 @@ void Telnet::processBytes(QByteArray bytes)
         }
     }
 
-    QByteArray data;
     int chunk_sz = 1024;
     while (!buffer.isEmpty())
     {
+        QByteArray data;
         int length = buffer.size() < chunk_sz ? buffer.size() : chunk_sz;
         for (int i = 0; i < length; i++)
             data.append(buffer.dequeue());
         emit processedBytes(data);
+    }
+}
+
+void Telnet::handleStateTopLevel(uchar c, QQueue<uchar> *buffer)
+{
+    switch (c)
+    {
+    case IAC:
+        _state = SEENIAC;
+        break;
+    default:
+        if (!_synced)
+            buffer->enqueue(c);
+        else if (c == DM)
+            _synced = false;
+        if (c == CR)
+            _state = SEENCR;
+        else
+            _state = TOP_LEVEL;
+        break;
     }
 }
 
@@ -169,9 +190,7 @@ void Telnet::handleStateSeenCr(uchar c, QQueue<uchar> *buffer)
         break;
     default:
         if (!_synced)
-        {
             buffer->enqueue(c);
-        }
         else if (c == DM)
             _synced = false;
         if (c == CR)
@@ -198,7 +217,7 @@ void Telnet::handleStateSeenIac(uchar c)
     case WONT:
         _state = SEENWONT;
         break;
-    case SEENSB:
+    case SB:
         _state = SEENSB;
         break;
     case DM:
@@ -255,11 +274,12 @@ void Telnet::handleStateSeenDo(uchar c)
 
 void Telnet::handleStateSubNegIac(uchar c)
 {
-    QByteArray bs;
     if (c == SE)
     {
-        if (_sbOption == TELOPT_TTYPE && _sbBuffer->at(0) == TELQUAL_SEND)
+        if (_sbOption == TELOPT_TTYPE &&
+                _sbBuffer->size() == 1 && _sbBuffer->at(0) == TELQUAL_SEND)
         {
+            QByteArray bs;
             bs.append(static_cast<char>(IAC));
             bs.append(static_cast<char>(SB));
             bs.append(static_cast<char>(TELOPT_TTYPE));

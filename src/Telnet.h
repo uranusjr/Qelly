@@ -43,6 +43,7 @@ private slots:
     void onSocketDisconnected();
 
 private:
+    void handleStateTopLevel(uchar c, QQueue<uchar> *buffer);
     void handleStateSeenCr(uchar c, QQueue<uchar> *buffer);
     void handleStateSeenIac(uchar c);
     void handleStateSeenWill(uchar c);
