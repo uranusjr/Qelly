@@ -138,8 +138,8 @@ public: // Setters & Getters
 
     inline QFont defaultFont() const
     {
-        return _settings->value("default font",
-                             QFont("Courier New", 21)).value<QFont>();
+        QFont defaultFont("Courier New", 22);
+        return _settings->value("default font", defaultFont).value<QFont>();
     }
     inline void setDefaultFont(QFont font)
     {
@@ -147,7 +147,7 @@ public: // Setters & Getters
     }
     inline QFont doubleByteFont() const
     {
-        QFont defaultFont("AR PLMingU20 Light", 23);
+        QFont defaultFont("AR PLMingU20 Light", 22);
         return _settings->value("double byte font", defaultFont).value<QFont>();
     }
     inline void setDoubleByteFont(QFont font)
