@@ -51,6 +51,12 @@ public:
 
 public slots:
     void updateScreen();
+    void updateBackImage();
+    void updateBackground(int row, int startColumn, int endColumn);
+    void updateText(int row);
+    void updateText(int row, int x);
+    void extendBottom(int start, int end);
+    void extendTop(int start, int end);
 
 protected:
     void mousePressEvent(QMouseEvent *e);
@@ -70,10 +76,6 @@ private slots:
     {
         update(column * _cellWidth, row * _cellHeight, _cellWidth, _cellHeight);
     }
-    void updateBackImage();
-    void updateBackground(int row, int startColumn, int endColumn);
-    void updateText(int row);
-    void updateText(int row, int x);
     void drawSpecialSymbol(ushort code, int row, int column,
                             BBS::CellAttribute left, BBS::CellAttribute right);
     void drawDoubleColor(ushort code, int row, int column,
@@ -82,8 +84,6 @@ private slots:
     void paintBlink(QRect &r);
     void refreshHiddenRegion();
     void clearSelection();
-    void extendBottom(int start, int end);
-    void extendTop(int start, int end);
     void popInsertBuffer();
 
 private:

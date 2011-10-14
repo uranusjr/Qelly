@@ -147,7 +147,7 @@ void Telnet::processBytes(QByteArray bytes)
         }
     }
 
-    int chunk_sz = 1024;
+    int chunk_sz = 256;
     while (!buffer.isEmpty())
     {
         QByteArray data;

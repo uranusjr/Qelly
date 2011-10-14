@@ -10,6 +10,11 @@
 namespace UJ
 {
 
+namespace Qelly
+{
+class View;
+}
+
 namespace Connection
 {
 
@@ -39,6 +44,9 @@ public:
 
 signals:
     void dataProcessed();
+    void screenUpdated();
+    void shouldExtendTop(int start, int end);
+    void shouldExtendBottom(int start, int end);
 
 public slots:
     void startConnection();
@@ -70,8 +78,8 @@ private:
     void setByteUnderCursor(uchar c);
     inline void moveCursorTo(int x, int y)
     {
-        _cursorX = x < 0 ? 0 : (_cursorX >= _column ? _column - 1 : x);
-        _cursorY = y < 0 ? 0 : (_cursorY >= _row ? _row - 1 : y);
+        _cursorX = x < 0 ? 0 : (x >= _column ? _column - 1 : x);
+        _cursorY = y < 0 ? 0 : (y >= _row ? _row - 1 : y);
     }
     inline int popLineCount()
     {
@@ -101,6 +109,7 @@ private:
     void handleControlDsr();
     void handleControlDecstbm();
 
+    Qelly::View *_view;
     AbstractConnection *_connection;
     QQueue<int> *_csArg;
     QQueue<int> *_csBuf;
@@ -175,6 +184,10 @@ public: // Setters & Getters
     {
         _hasMessage = hasMessage;
         // NOTE: Change Tab Icon...Maybe should be a signal connected to view
+    }
+    inline void setView(Qelly::View *view)
+    {
+        _view = view;
     }
     inline AbstractConnection *connection() const
     {

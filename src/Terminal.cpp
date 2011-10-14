@@ -4,6 +4,7 @@
 #include "AbstractConnection.h"
 #include "Globals.h"
 #include "Site.h"
+#include "View.h"
 #include <QDebug>
 
 namespace UJ
@@ -234,7 +235,10 @@ void Terminal::goOneRowDown(bool updateView)
     if (_cursorY == _scrollEndRow)
     {
         if (updateView)
-            ;   // NOTE: Tell View to update and extend bottom
+        {
+            _view->updateBackImage();
+            _view->extendBottom(_scrollBeginRow, _scrollEndRow);
+        }
         BBS::Cell *emptyLine = _cells[_scrollBeginRow];
         clearRow(_scrollBeginRow);
         for (int x = _scrollBeginRow; x < _scrollEndRow; x++)
@@ -245,7 +249,7 @@ void Terminal::goOneRowDown(bool updateView)
     else
     {
         _cursorY++;
-        if (_cursorY >= _scrollEndRow)
+        if (_cursorY >= _row)
             _cursorY = _row - 1;
     }
 }
@@ -255,7 +259,10 @@ void Terminal::goOneRowUp(bool updateView)
     if (_cursorY == _scrollBeginRow)
     {
         if (updateView)
-            ;   // NOTE: Tell view to update & extend top
+        {
+            _view->updateBackImage();
+            _view->extendTop(_scrollBeginRow, _scrollEndRow);
+        }
         BBS::Cell *emptyLine = _cells[_scrollEndRow];
         clearRow(_scrollEndRow);
         for (int x = _scrollEndRow; x > _scrollBeginRow; x--)
@@ -284,11 +291,14 @@ void Terminal::processIncomingData(QByteArray data)
         case StateEscape:
             handleEscapeDataInput(c, &i, data);
             break;
+        case StateControl:
+            handleControlDataInput(c);
+            break;
         case StateScs:
             _state = StateNormal;   // NOTE: NEED IMPLEMENTATION
             break;
-        case StateControl:
-            handleControlDataInput(c);
+        default:
+            break;
         }
     }
 
@@ -414,6 +424,7 @@ void Terminal::handleEscapeDataInput(uchar c, int *p_i, QByteArray &data)
     case ESC_DECRC: // Restore cursor
         _cursorX = _savedCursorX;
         _cursorY = _savedCursorY;
+        _state = StateNormal;
         break;
     case ESC_HASH:
         handleEscapeHash(p_i, data);
@@ -569,7 +580,7 @@ void Terminal::handleControlNonSimpleShiftingInputs(uchar c)
             _cursorY = 0;
         break;
     case CSI_CHA:
-        p = _csArg->isEmpty() ? 0 : popLineCount() - 1;
+        p = popLineCount() - 1;
         moveCursorTo(p, _cursorY);
         break;
     case CSI_HVP:   // Cursor position
@@ -755,7 +766,7 @@ void Terminal::handleControlDl()
 
 void Terminal::handleControlDch()
 {
-    int p = popLineCount();
+    int p = _csArg->size() == 1 ? popLineCount() : 1;
     for (int x = _cursorX; x <= _column - 1; x++)
     {
         if (x <= _column - 1 - p)
@@ -778,17 +789,19 @@ void Terminal::handleControlDa()
     switch (_standard)
     {
     case StandardVT100: // x1b = ESC
-        cmd.append("\x1b[?1;0c");
+        cmd.append('\x1b');
+        cmd.append("[?1;0c");
         break;
     case StandardVT102: // x1b = ESC
-        cmd.append("\x1b[?6c");
+        cmd.append('\x1b');
+        cmd.append("[?6c");
         break;
     default:
         break;
     }
     if (_csArg->isEmpty())
         connection()->sendBytes(cmd);
-    else if (_csArg->size() == 1 && _csArg->head() == 0)
+    else if (_csArg->size() == 1 && _csArg->dequeue() == 0)
         connection()->sendBytes(cmd);
 }
 
@@ -817,7 +830,7 @@ void Terminal::handleControlSm()
                 p = _csArg->dequeue();
                 switch (p)
                 {
-                case 3:     // Number of columns <- 132
+                case 3:     // Set number of columns to 132
                     clear = true;
                     _originRelative = false;
                     _scrollBeginRow = 0;
@@ -891,7 +904,7 @@ void Terminal::handleControlRm()
                     _scrollEndRow = _row - 1;
                     break;
                 case 5:     // Reverse
-                    if (!_screenReverse)
+                    if (_screenReverse)
                     {
                         _screenReverse = false;
                         _reversed = !_reversed;
@@ -907,6 +920,8 @@ void Terminal::handleControlRm()
                 case 4:     // Smooth scrolling
                 case 8:     // Auto-repeating
                 case 9:     // Interlacing
+                    break;
+                default:
                     break;
                 }
             }
@@ -980,15 +995,21 @@ void Terminal::handleControlDsr()
     switch (p)
     {
     case 5:     // Report device OK (\x1b = ESC)
-        cmd.append("\x1b[0n");
+        cmd.append('\x1b');
+        cmd.append("[;0n");
         connection()->sendBytes(cmd);
         break;
     case 6:     // Report cursor ESC[{y};{x}R  ({x}, {y} indicate position)
-        cmd.append("\x1b[");
-        cmd.append(QString::number(_cursorY + 1));
+        cmd.append('\x1b');
+        cmd.append('[');
+        if (_cursorY + 1 >= 10)
+            cmd.append('0' + ((_cursorY + 1) / 10));
+        cmd.append('0' + (_cursorY + 1) % 10);
         cmd.append(';');
-        cmd.append(QString::number(_cursorX + 1));
-        cmd.append(CSI_CPR);
+        if (_cursorX + 1 >= 10)
+            cmd.append('0' + ((_cursorX + 1) / 10));
+        cmd.append('0' + (_cursorX + 1) % 10);
+        cmd.append('R');
         connection()->sendBytes(cmd);
         break;
     default:
@@ -1005,10 +1026,10 @@ void Terminal::handleControlDecstbm()
     }
     else if (_csArg->size() == 2)
     {
-        int large = _csArg->dequeue();
         int small = _csArg->dequeue();
-        if (small > large)
-        {               // Swap
+        int large = _csArg->dequeue();
+        if (small > large)  // Swap
+        {
             int t = small;
             small = large;
             large = t;

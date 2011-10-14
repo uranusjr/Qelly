@@ -257,9 +257,6 @@ void View::mouseReleaseEvent(QMouseEvent *e)
     if (!_selectedLength && isConnected())
     {
         int index = indexFromPoint(e->pos());
-        qDebug() << terminal()->cellsAtRow(index / _column)[index % _column].byte;
-        qDebug() << terminal()->cellsAtRow(index / _column)[index % _column].attr.f.fColorIndex;
-        qDebug() << terminal()->cellsAtRow(index / _column)[index % _column].attr.f.bColorIndex;
         bool hasUrl = false;
         QString url = terminal()->urlStringAt(index / _column, index % _column,
                                               &hasUrl);
@@ -1005,10 +1002,32 @@ void View::refreshHiddenRegion()
 
 void View::extendBottom(int start, int end)
 {
+    int width = _column * _cellWidth;
+    int height = (end - start + 1) * _cellHeight;
+    QPixmap m(width, height);
+    painter.begin(&m);
+    painter.drawPixmap(0, -(start * _cellHeight), width, height, *_backImage);
+    painter.end();
+    painter.begin(_backImage);
+    painter.drawPixmap(0, (start - 1) * _cellHeight, width, height, m);
+    painter.fillRect(0, end * _cellHeight, width, _cellHeight,
+                     _prefs->backgroundColor());
+    painter.end();
 }
 
 void View::extendTop(int start, int end)
 {
+    int width = _column * _cellWidth;
+    int height = (end - start + 1) * _cellHeight;
+    QPixmap m(width, height);
+    painter.begin(&m);
+    painter.drawPixmap(0, -(start * _cellHeight), width, height, *_backImage);
+    painter.end();
+    painter.begin(_backImage);
+    painter.drawPixmap(0, (start + 1) * _cellHeight, width, height, m);
+    painter.fillRect(0, start * _cellHeight, width, _cellHeight,
+                     _prefs->backgroundColor());
+    painter.end();
 }
 
 bool View::isConnected()
@@ -1026,9 +1045,15 @@ void View::setTerminal(Connection::Terminal *terminal)
     _terminal = terminal;
     if (!_terminal)
         return;
+    _terminal->setView(this);
     connect(_terminal, SIGNAL(dataProcessed()), this, SLOT(updateScreen()));
     connect(this, SIGNAL(hasBytesToSend(QByteArray)),
             _terminal->connection(), SLOT(sendBytes(QByteArray)));
+    connect(_terminal, SIGNAL(screenUpdated()), this, SLOT(updateBackImage()));
+    connect(_terminal, SIGNAL(shouldExtendTop(int,int)),
+            this, SLOT(extendTop(int,int)));
+    connect(_terminal, SIGNAL(shouldExtendBottom(int,int)),
+            this, SLOT(extendBottom(int,int)));
 }
 
 }   // namespace Qelly
