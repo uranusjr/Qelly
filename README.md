@@ -31,9 +31,4 @@ Qelly uses Qt under the terms of GPL v3. Qt is a product of Nokia Corp.. Nokia,
 Qt, and their respective logos are trademarks of Nokia Corp.. See the Qt website
 for more information: http://qt.nokia.com/
 
-The default Chinese, Japanese and Korean (CJK) character font is AR PLMingU20
-Light (文鼎ＰＬ明體U20-L). The font is provided by Arphic Techonology (文鼎科技)
-under the terms of Arphic Public License (Arphic PL). A copy of the license
-should have been included with this file. Visit the official website of Arphic
-Techonology for more information: http://www.arphic.com/
 
