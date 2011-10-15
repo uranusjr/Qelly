@@ -20,10 +20,10 @@
 #define VIEW_H
 
 #include "UJQxWidget.h"
-#include <QPainter>
 #include <QQueue>
 #include <QVector>
 #include "Globals.h"
+class QPainter;
 class QTimer;
 
 namespace UJ
@@ -175,7 +175,7 @@ private:
     QVector<QSize> _doubleAdvances;
     Connection::Terminal *_terminal;
     QString _preeditString;
-    QPainter painter;
+    QPainter *_painter;
     QString _address;
 
 public: // Setters & Getters
