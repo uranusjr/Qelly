@@ -44,7 +44,6 @@ public:
     explicit SharedPreferences(QObject *parent = 0) : QObject(parent)
     {
         _settings = new QSettings("uranusjr.org", "qelly", this);
-        QFontDatabase::addApplicationFont(":/fontscjk/arplmingu20lt.ttf");
     }
     static inline SharedPreferences *sharedInstance()
     {
@@ -148,7 +147,7 @@ public: // Setters & Getters
     }
     inline QFont doubleByteFont() const
     {
-        QFont defaultFont("AR PLMingU20 Light", 22);
+        QFont defaultFont("ar pl uming cn", 22);
         return _settings->value("double byte font", defaultFont).value<QFont>();
     }
     inline void setDoubleByteFont(QFont font)
