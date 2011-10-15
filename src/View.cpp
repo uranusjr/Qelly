@@ -43,6 +43,7 @@ namespace Qelly
 
 View::View(QWidget *parent) : Widget(parent)
 {
+    _address = "";
     _backImage = 0;
     _terminal = 0;
     _prefs = SharedPreferences::sharedInstance();
@@ -223,6 +224,11 @@ void View::selectWordAround(int row, int column)
             break;
         column++;
     }
+}
+
+void View::focusInEvent(QFocusEvent *)
+{
+    emit shouldChangeAddress(_address);
 }
 
 void View::mouseTripleClickEvent(QMouseEvent *e)
@@ -851,9 +857,8 @@ void View::drawDoubleColor(ushort code, int row, int column,
     lp.fill(_prefs->bColor(left.f.bColorIndex));
     painter.begin(&lp);
     painter.setFont(dblFont);
-    int height = painter.fontMetrics().height();
     painter.setPen(_prefs->fColor(left.f.fColorIndex, left.f.bright));
-    painter.drawText(dblPadLeft, height - dblPadBottom, QChar(code));
+    painter.drawText(dblPadLeft, _cellHeight - dblPadBottom, QChar(code));
     painter.end();
 
     // Right side
@@ -862,14 +867,15 @@ void View::drawDoubleColor(ushort code, int row, int column,
     painter.begin(&rp);
     painter.setFont(dblFont);
     painter.setPen(_prefs->fColor(right.f.fColorIndex, right.f.bright));
-    painter.drawText(dblPadLeft - _cellWidth, height - dblPadBottom, QChar(code));
+    painter.drawText(dblPadLeft - _cellWidth, _cellHeight - dblPadBottom,
+                     QChar(code));
     painter.end();
 
     // Draw the left half of left side, right half of the right side
     painter.begin(_backImage);
     painter.setBackgroundMode(Qt::TransparentMode);
-    painter.drawPixmap((column - 1) * _cellWidth, row * _cellHeight, lp);
-    painter.drawPixmap(column * _cellWidth, row * _cellHeight, rp);
+    painter.drawPixmap(column * _cellWidth, row * _cellHeight, lp);
+    painter.drawPixmap((column + 1) * _cellWidth, row * _cellHeight, rp);
     painter.end();
 }
 

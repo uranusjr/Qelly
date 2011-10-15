@@ -1,9 +1,11 @@
 #include "MainWindow.h"
 #include <QApplication>
+#include <QCloseEvent>
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QLineEdit>
 #include <QMenuBar>
+#include <QMessageBox>
 #include <QTabBar>
 #include <QToolBar>
 #include <QStyle>
@@ -11,6 +13,7 @@
 #include "SharedMenuBar.h"
 #include "SharedPreferences.h"
 #include "TabWidget.h"
+#include "View.h"
 
 namespace UJ
 {
@@ -54,7 +57,7 @@ void MainWindow::buildToolBar()
                                     QString("</small>"));
     inputLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     inputLabel->setAlignment(Qt::AlignCenter);
-    inputLabel->setFocusPolicy(Qt::NoFocus);
+    inputLabel->setFocusPolicy(Qt::ClickFocus);
     _inputFrame = new QWidget();
     _inputFrame->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     QVBoxLayout *inputLayout = new QVBoxLayout(_inputFrame);
@@ -82,6 +85,12 @@ void MainWindow::buildToolBar()
                         tr("Double Byte"));
     setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
     setUnifiedTitleAndToolBarOnMac(true);
+}
+
+void MainWindow::closeEvent(QCloseEvent *e)
+{
+    e->ignore();
+    emit windowShouldClose();
 }
 
 }   // namespace Qelly

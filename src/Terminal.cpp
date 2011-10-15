@@ -282,14 +282,6 @@ void Terminal::processIncomingData(QByteArray data)
     for (int i = 0; i < data.size(); i++)
     {
         uchar c = static_cast<uchar>(data[i]);
-        if (c >= 33 && c <= 0x7e)
-            qDebug() << (char)c;
-        else if (c == 32)
-            qDebug() << "Space";
-        else if (c > 0x7e)
-            qDebug() << "Double byte";
-        else
-            qDebug() << "Unpritable" << c;
         switch (_state)
         {
         case StateNormal:

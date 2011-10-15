@@ -31,6 +31,12 @@ public:
         return QSize(_width, _height);
     }
 
+protected:
+    void closeEvent(QCloseEvent *e);
+
+signals:
+    void windowShouldClose();
+
 private:
     void buildToolBar();
     int _width;

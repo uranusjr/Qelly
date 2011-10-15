@@ -326,8 +326,6 @@ void Telnet::sendBytes(QByteArray bytes)
     default:
         break;
     }
-    for (int i = 0; i < bytes.size(); i++)
-        qDebug() << "..........sending" << (uint)((uchar)bytes[i]);
     qint64 sz = _socket->write(bytes);
     if (sz == bytes.size())
         return;

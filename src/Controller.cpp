@@ -17,7 +17,9 @@
  *****************************************************************************/
 
 #include "Controller.h"
+#include <QApplication>
 #include <QLineEdit>
+#include <QMessageBox>
 #include "MainWindow.h"
 #include "SharedMenuBar.h"
 #include "TabWidget.h"
@@ -41,8 +43,10 @@ Controller::Controller(QObject *parent) : QObject(parent)
     connect(menu, SIGNAL(fileCloseTab()), this, SLOT(closeTab()));
     connect(_window->address(), SIGNAL(returnPressed()),
             this, SLOT(onAddressReturnPressed()));
+    connect(_window, SIGNAL(windowShouldClose()), this, SLOT(closeWindow()));
     _window->show();
     _window->setFixedSize(_window->fixedSize());
+    _window->address()->setFocus(Qt::ActiveWindowFocusReason);
 }
 
 Controller::~Controller()
@@ -52,11 +56,10 @@ Controller::~Controller()
 
 void Controller::connectWithAddress(QString address)
 {
-    int current = _window->tabs()->currentIndex();
     // NOTE: Search saved sites for matching address
     QString name = address;
-    _window->tabs()->setTabText(current, name);
-    View *view = static_cast<View *>(_window->tabs()->widget(current));
+    _window->tabs()->setTabText(_window->tabs()->currentIndex(), name);
+    View *view = currentView();
     Connection::Terminal *t = new Connection::Terminal(view);
     Connection::AbstractConnection *connection;
     if (address.startsWith("ssh://"))
@@ -73,13 +76,17 @@ void Controller::connectWithAddress(QString address)
         t->setConnection(connection);
     }
     view->setTerminal(t);
+    view->setAddress(_window->address()->text());
     view->setFocus(Qt::OtherFocusReason);
+    connect(view, SIGNAL(shouldChangeAddress(QString &)),
+            this, SLOT(changeAddressField(QString &)));
     connection->connectTo(address, 23);
 }
 
 void Controller::addTab()
 {
     _window->tabs()->addTab(new View(), "");
+    _window->address()->setText(QString());
     _window->address()->setFocus(Qt::ShortcutFocusReason);
 }
 
@@ -91,14 +98,109 @@ void Controller::focusAddressField()
 void Controller::closeTab()
 {
     TabWidget *tabs = _window->tabs();
-    tabs->closeTab(tabs->currentIndex());
+    if (currentView()->isConnected())
+    {
+        QMessageBox *sure = new QMessageBox(_window);
+        sure->setIcon(QMessageBox::Warning);
+        sure->setText(tr("Are you sure you want to close this tab?"));
+        sure->setInformativeText(
+            tr("The connection is still alive. If you close this tab, the "
+               "connection will be lost. Do you want to close this tab "
+               "anyway?"));
+        sure->setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+        sure->setWindowModality(Qt::WindowModal);
+        sure->setFocus(Qt::PopupFocusReason);
+        switch (sure->exec())
+        {
+        case QMessageBox::Ok:
+            tabs->closeTab(tabs->currentIndex());
+            break;
+        case QMessageBox::Cancel:
+            break;
+        default:
+            break;
+        }
+        sure->deleteLater();
+    }
+    else
+    {
+        if (tabs->count())
+            tabs->closeTab(tabs->currentIndex());
+    }
+
+    if (currentView())
+    {
+        currentView()->setFocus(Qt::TabFocusReason);
+    }
+    else
+    {
+        _window->address()->setFocus(Qt::TabFocusReason);
+        _window->address()->setText(QString());
+    }
+}
+
+void Controller::closeWindow()
+{
+    int count = 0;
+    for (int i = 0; i < _window->tabs()->count(); i++)
+    {
+        if (static_cast<View *>(_window->tabs()->widget(i))->isConnected())
+            count++;
+    }
+
+    if (count)
+    {
+        QMessageBox *sure = new QMessageBox(_window);
+        sure->setIcon(QMessageBox::Warning);
+        sure->setText(tr("Are you sure you want to quit Qelly?"));
+        sure->setInformativeText(
+            tr("There are %n tab(s) open in Qelly. Do you want to quit anyway?",
+               "", count));
+        sure->setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+        sure->setWindowModality(Qt::WindowModal);
+        sure->setFocus(Qt::PopupFocusReason);
+
+        switch (sure->exec())
+        {
+        case QMessageBox::Ok:
+            qApp->quit();
+            break;
+        case QMessageBox::Cancel:
+            break;
+        default:
+            break;
+        }
+        sure->deleteLater();
+    }
+    else
+    {
+        qApp->quit();
+    }
 }
 
 void Controller::onAddressReturnPressed()
 {
-    if (!_window->tabs()->count())
-        _window->tabs()->addTab(new View(), "");
-    connectWithAddress(_window->address()->text());
+    QString address = _window->address()->text();
+    if (!address.size())
+        return;
+
+    if (!_window->tabs()->count() ||
+            static_cast<View *>(_window->tabs()->currentWidget())->terminal())
+    {
+        int newTab = _window->tabs()->addTab(new View(), "");
+        _window->tabs()->setCurrentIndex(newTab);
+    }
+    connectWithAddress(address);
+}
+
+void Controller::changeAddressField(QString &address)
+{
+    _window->address()->setText(address);
+}
+
+View *Controller::currentView() const
+{
+    return static_cast<View *>(_window->tabs()->currentWidget());
 }
 
 }   // namespace Qelly

@@ -28,6 +28,7 @@ namespace Qelly
 {
 
 class MainWindow;
+class View;
 
 class Controller : public QObject
 {
@@ -42,9 +43,12 @@ public slots:
     void addTab();
     void focusAddressField();
     void closeTab();
+    void closeWindow();
     void onAddressReturnPressed();
+    void changeAddressField(QString &address);
 
 private:
+    View *currentView() const;
     MainWindow *_window;
 
 };

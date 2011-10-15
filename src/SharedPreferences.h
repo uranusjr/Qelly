@@ -138,7 +138,8 @@ public: // Setters & Getters
 
     inline QFont defaultFont() const
     {
-        QFont defaultFont("Courier New", 22);
+        QFont defaultFont("Monospace", 21);
+        defaultFont.setStyleHint(QFont::TypeWriter);
         return _settings->value("default font", defaultFont).value<QFont>();
     }
     inline void setDefaultFont(QFont font)

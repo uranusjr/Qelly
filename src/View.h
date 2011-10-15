@@ -47,7 +47,7 @@ public:
     explicit View(QWidget *parent = 0);
     virtual ~View();
     bool needBlinking();
-    void insertText(QString &string, uint delayMs = 0);
+    bool isConnected();
 
 public slots:
     void updateScreen();
@@ -57,6 +57,7 @@ public slots:
     void updateText(int row, int x);
     void extendBottom(int start, int end);
     void extendTop(int start, int end);
+    void insertText(QString &string, uint delayMs = 0);
 
 protected:
     void mousePressEvent(QMouseEvent *e);
@@ -67,9 +68,11 @@ protected:
     void keyPressEvent(QKeyEvent *e);
     void inputMethodEvent(QInputMethodEvent *e);
     void paintEvent(QPaintEvent *e);
+    void focusInEvent(QFocusEvent *);
 
 signals:
     void hasBytesToSend(QByteArray bytes);
+    void shouldChangeAddress(QString &address);
 
 private slots:
     inline void displayCellAt(int row, int column)
@@ -92,7 +95,6 @@ private:
     int indexFromPoint(QPoint p);
     void moveCursorTo(int destRow, int destCol);
     void selectWordAround(int row, int column);
-    bool isConnected();
     int characterFromKeyPress(int key, Qt::KeyboardModifiers mod, bool *ok);
     void handleArrowKey(int key);   // Up, Down, Left, Right
     void handleJumpKey(int key);    // PgUp, PgDn, Home, End
@@ -174,6 +176,7 @@ private:
     Connection::Terminal *_terminal;
     QString _preeditString;
     QPainter painter;
+    QString _address;
 
 public: // Setters & Getters
     inline Connection::Terminal *terminal() const
@@ -181,6 +184,10 @@ public: // Setters & Getters
         return _terminal;
     }
     void setTerminal(Connection::Terminal *terminal);
+    inline void setAddress(QString address)
+    {
+        _address = address;
+    }
 };
 
 }   // namespace Qelly
