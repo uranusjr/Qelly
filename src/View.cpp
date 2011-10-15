@@ -611,9 +611,10 @@ void View::updateBackground(int row, int startColumn, int endColumn)
         if (changed)
         {
             _painter->fillRect((x - length) * _cellWidth, row * _cellHeight,
-                             length * _cellWidth, _cellHeight,
-                             _prefs->bColor(last.f.bColorIndex,
-                                           last.f.reversed && last.f.bright));
+                               length * _cellWidth, _cellHeight,
+                               _prefs->bColor(last.f.bColorIndex,
+                                              last.f.reversed &&
+                                                            last.f.bright));
             length = 1;
             last = now;
         }
@@ -673,8 +674,8 @@ void View::updateText(int row, int x)
         _painter->setPen(_prefs->fColor(attr.f.fColorIndex, attr.f.bright));
         code = cells[x].byte ? cells[x].byte : ' ';
         _painter->drawText(x * _cellWidth + sglPadLeft,
-                         (row + 1) * _cellHeight - sglPadBott,
-                         QChar(code));
+                           (row + 1) * _cellHeight - sglPadBott,
+                           QChar(code));
         _painter->end();
         break;
     case 1: // First half of double byte
@@ -713,10 +714,10 @@ void View::updateText(int row, int x)
                 _painter->begin(_backImage);
                 _painter->setFont(dblFont);
                 _painter->setPen(_prefs->fColor(attr.f.fColorIndex,
-                                              attr.f.bright));
+                                                attr.f.bright));
                 _painter->drawText((x - 1) * _cellWidth + dblPadLeft,
-                                 (row + 1) * _cellHeight - dblPadBott,
-                                 QChar(code));
+                                   (row + 1) * _cellHeight - dblPadBott,
+                                   QChar(code));
                 _painter->end();
             }
         }
@@ -754,38 +755,38 @@ void View::drawSpecialSymbol(ushort code, int row, int column,
     case 0x2587:    // ▇ Lower seven eights block
     case 0x2588:    // █ Full block
         _painter->fillRect(xs[0], ys[6] - h * (code - 0x2580) / 8,
-                         w, h * (code - 0x2580) / 8,
-                         _prefs->fColor(left.f.fColorIndex, left.f.bright));
+                           w, h * (code - 0x2580) / 8,
+                           _prefs->fColor(left.f.fColorIndex, left.f.bright));
         _painter->fillRect(xs[1], ys[7] - h * (code - 0x2580) / 8,
-                         w, h * (code - 0x2580) / 8,
-                         _prefs->fColor(right.f.fColorIndex, right.f.bright));
+                           w, h * (code - 0x2580) / 8,
+                           _prefs->fColor(right.f.fColorIndex, right.f.bright));
         break;
     case 0x2589:    // ▉ Left seven eights block
     case 0x258a:    // ▊ Left three quarters block
     case 0x258b:    // ▋ Left five eighths block
         _painter->fillRect(xs[0], ys[0], w, h,
-                         _prefs->fColor(left.f.fColorIndex, left.f.bright));
+                           _prefs->fColor(left.f.fColorIndex, left.f.bright));
         _painter->fillRect(xs[1], ys[1], w * (0x258c - code) / 8, h,
-                         _prefs->fColor(right.f.fColorIndex, right.f.bright));
+                           _prefs->fColor(right.f.fColorIndex, right.f.bright));
         break;
     case 0x258c:    // ▌ Left half block
     case 0x258d:    // ▍ Left three eighths block
     case 0x258e:    // ▎ Left one quarter block
     case 0x258f:    // ▏ Left one eighth block
         _painter->fillRect(xs[0], ys[0], w * (0x2590 - code) / 8, h,
-                         _prefs->fColor(left.f.fColorIndex, left.f.bright));
+                           _prefs->fColor(left.f.fColorIndex, left.f.bright));
         break;
     case 0x25e2:    // ◢ Black lower right triangle
         //_painter->setPen(Qt::SolidLine);
         _painter->setBrush(QBrush(_prefs->fColor(left.f.fColorIndex,
-                                               left.f.bright),
+                                                 left.f.bright),
                                 Qt::SolidPattern));
         points[0] = QPoint(xs[4], ys[4]);
         points[1] = QPoint(xs[7], ys[7]);
         points[2] = QPoint(xs[6], ys[6]);
         _painter->drawPolygon(points, 3);
         _painter->setBrush(QBrush(_prefs->fColor(right.f.fColorIndex,
-                                               right.f.bright),
+                                                 right.f.bright),
                                 Qt::SolidPattern));
         points[2] = QPoint(xs[8], ys[8]);
         points[3] = QPoint(xs[2], ys[2]);
@@ -793,7 +794,7 @@ void View::drawSpecialSymbol(ushort code, int row, int column,
         break;
     case 0x25e3:    // ◣ Black lower left triangle
         _painter->setBrush(QBrush(_prefs->fColor(left.f.fColorIndex,
-                                               left.f.bright),
+                                                 left.f.bright),
                                 Qt::SolidPattern));
         points[0] = QPoint(xs[4], ys[4]);
         points[1] = QPoint(xs[7], ys[7]);
@@ -801,14 +802,14 @@ void View::drawSpecialSymbol(ushort code, int row, int column,
         points[3] = QPoint(xs[0], ys[0]);
         _painter->drawPolygon(points, 4);
         _painter->setBrush(QBrush(_prefs->fColor(right.f.fColorIndex,
-                                               right.f.bright),
+                                                 right.f.bright),
                                 Qt::SolidPattern));
         points[2] = QPoint(xs[8], ys[8]);
         _painter->drawPolygon(points, 3);
         break;
     case 0x25e4:    // ◤ Black upper left triangle
         _painter->setBrush(QBrush(_prefs->fColor(left.f.fColorIndex,
-                                               left.f.bright),
+                                                 left.f.bright),
                                 Qt::SolidPattern));
         points[0] = QPoint(xs[4], ys[4]);
         points[1] = QPoint(xs[1], ys[1]);
@@ -816,21 +817,21 @@ void View::drawSpecialSymbol(ushort code, int row, int column,
         points[3] = QPoint(xs[6], ys[6]);
         _painter->drawPolygon(points, 4);
         _painter->setBrush(QBrush(_prefs->fColor(right.f.fColorIndex,
-                                               right.f.bright),
+                                                 right.f.bright),
                                 Qt::SolidPattern));
         points[2] = QPoint(xs[2], ys[2]);
         _painter->drawPolygon(points, 3);
         break;
     case 0x25e5:    // ◥ Black upper right triangle
         _painter->setBrush(QBrush(_prefs->fColor(left.f.fColorIndex,
-                                               left.f.bright),
+                                                 left.f.bright),
                                 Qt::SolidPattern));
         points[0] = QPoint(xs[4], ys[4]);
         points[1] = QPoint(xs[1], ys[1]);
         points[2] = QPoint(xs[0], ys[0]);
         _painter->drawPolygon(points, 3);
         _painter->setBrush(QBrush(_prefs->fColor(right.f.fColorIndex,
-                                               right.f.bright),
+                                                 right.f.bright),
                                 Qt::SolidPattern));
         points[2] = QPoint(xs[2], ys[2]);
         points[3] = QPoint(xs[8], ys[8]);
@@ -838,9 +839,9 @@ void View::drawSpecialSymbol(ushort code, int row, int column,
         break;
     case 0x25fc:    // ◼ Black medium square    // paint as a full block
         _painter->fillRect(xs[0], ys[0], w, h,
-                         _prefs->fColor(left.f.fColorIndex, left.f.bright));
+                           _prefs->fColor(left.f.fColorIndex, left.f.bright));
         _painter->fillRect(xs[1], ys[1], w, h,
-                         _prefs->fColor(right.f.fColorIndex, right.f.bright));
+                           _prefs->fColor(right.f.fColorIndex, right.f.bright));
         break;
     default:
         break;
@@ -871,7 +872,7 @@ void View::drawDoubleColor(ushort code, int row, int column,
     _painter->setFont(dblFont);
     _painter->setPen(_prefs->fColor(right.f.fColorIndex, right.f.bright));
     _painter->drawText(dblPadLeft - _cellWidth, _cellHeight - dblPadBottom,
-                     QChar(code));
+                       QChar(code));
     _painter->end();
 
     // Draw the left half of left side, right half of the right side
@@ -890,7 +891,8 @@ void View::paintEvent(QPaintEvent *e)
         QRect r = e->rect();
 
         // Draw a portion of back image
-        _painter->drawPixmap(r.left(), r.top(), r.width(), r.height(), *_backImage);
+        _painter->drawPixmap(r.left(), r.top(), r.width(), r.height(),
+                             *_backImage);
         paintBlink(r);
 
         // URL line
@@ -910,7 +912,7 @@ void View::paintEvent(QPaintEvent *e)
                     // NOTE: Prefernce for URL y offset (the -0.5)
                     int yPos = (y + 1) * _cellHeight - 0.5;
                     _painter->drawLine(start *_cellWidth, yPos,
-                                     x * _cellWidth, yPos);
+                                       x * _cellWidth, yPos);
                 }
             }
         }
@@ -957,7 +959,7 @@ void View::paintBlink(QRect &r)
             bool bright = a.f.reversed ? a.f.bright : false;
             _painter->setPen(_prefs->fColor(colorIndex, bright));
             _painter->fillRect(x * _cellWidth, (y - 1) * _cellHeight,
-                             _cellWidth, _cellHeight, Qt::SolidPattern);
+                               _cellWidth, _cellHeight, Qt::SolidPattern);
         }
     }
 }
@@ -989,13 +991,13 @@ void View::paintSelection()
         if (x + len < _column)
         {
             _painter->drawRect(x * _cellWidth, y * _cellHeight,
-                             len * _cellWidth, _cellHeight);
+                               len * _cellWidth, _cellHeight);
             len = 0;
         }
         else
         {
             _painter->drawRect(x * _cellWidth, y * _cellHeight,
-                             (_column - x) * _cellWidth, _cellHeight);
+                               (_column - x) * _cellWidth, _cellHeight);
             len -= _column - x;
         }
         x = 0;
@@ -1020,7 +1022,7 @@ void View::extendBottom(int start, int end)
     _painter->begin(_backImage);
     _painter->drawPixmap(0, (start - 1) * _cellHeight, width, height, m);
     _painter->fillRect(0, end * _cellHeight, width, _cellHeight,
-                     _prefs->backgroundColor());
+                       _prefs->backgroundColor());
     _painter->end();
 }
 
@@ -1035,7 +1037,7 @@ void View::extendTop(int start, int end)
     _painter->begin(_backImage);
     _painter->drawPixmap(0, (start + 1) * _cellHeight, width, height, m);
     _painter->fillRect(0, start * _cellHeight, width, _cellHeight,
-                     _prefs->backgroundColor());
+                       _prefs->backgroundColor());
     _painter->end();
 }
 
