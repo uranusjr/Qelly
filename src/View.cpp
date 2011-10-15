@@ -183,7 +183,7 @@ void View::mouseDoubleClickEvent(QMouseEvent *e)
         int c = _selectedStart % _column;
         terminal()->updateDoubleByteStateForRow(r);
         BBS::Cell *row = terminal()->cellsAtRow(r);
-        switch (row[c].attr.f.doubleByte == 2)
+        switch (row[c].attr.f.doubleByte)
         {
         case 1: // First half of double byte
             _selectedLength = 2;

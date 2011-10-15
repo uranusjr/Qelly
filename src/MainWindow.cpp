@@ -27,13 +27,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     setMenuBar(SharedMenuBar::sharedInstance());
     _tabs = new TabWidget(this);
     _tabs->setTabPosition(QTabWidget::North);
-    SharedPreferences *prefs = SharedPreferences::sharedInstance();
-    int cellWidth = prefs->cellWidth();
-    int cellHeight = prefs->cellHeight();
+    _prefs = SharedPreferences::sharedInstance();
+    int cellWidth = _prefs->cellWidth();
+    int cellHeight = _prefs->cellHeight();
     int row = BBS::SizeRowCount;
     int column = BBS::SizeColumnCount;
     _width = column * cellWidth;
     _height = row * cellHeight + _tabs->tabBarHeight();
+    move(_prefs->windowPosition());
     setCentralWidget(_tabs);
 }
 
@@ -91,6 +92,11 @@ void MainWindow::closeEvent(QCloseEvent *e)
 {
     e->ignore();
     emit windowShouldClose();
+}
+
+void MainWindow::moveEvent(QMoveEvent *e)
+{
+    _prefs->setWindowPosition(e->pos());
 }
 
 }   // namespace Qelly

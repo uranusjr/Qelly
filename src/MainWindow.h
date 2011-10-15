@@ -12,6 +12,7 @@ namespace UJ
 namespace Qelly
 {
 
+class SharedPreferences;
 class TabWidget;
 
 class MainWindow : public QMainWindow
@@ -33,6 +34,7 @@ public:
 
 protected:
     void closeEvent(QCloseEvent *e);
+    void moveEvent(QMoveEvent *e);
 
 signals:
     void windowShouldClose();
@@ -46,6 +48,7 @@ private:
     QWidget *_stretch;
     QWidget *_inputFrame;
     QLineEdit *_address;
+    SharedPreferences *_prefs;
 
 public: // Setts & Getters
     inline QLineEdit *address()
