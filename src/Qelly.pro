@@ -15,6 +15,12 @@ MOC_DIR = ../build
 RCC_DIR = ../build
 UI_DIR = ../build
 
+CONFIG(static) {
+    win32-g++ {
+        LIBS += -static-libgcc -static-libstdc++
+    }
+}
+
 TRANSLATIONS += UJ_Translate.ts
 
 SOURCES += main.cpp \
