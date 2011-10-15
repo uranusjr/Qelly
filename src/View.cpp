@@ -17,7 +17,9 @@
  *****************************************************************************/
 
 #include "View.h"
+#include <QApplication>
 #include <QByteArray>
+#include <QClipboard>
 #include <QDesktopServices>
 #include <QMouseEvent>
 #include <QPainter>
@@ -282,12 +284,13 @@ void View::keyPressEvent(QKeyEvent *e)
 {
     if (isConnected())
     {
-        clearSelection();
+        int key = e->key();
+        if (key != UJ::Key_Mod)
+            clearSelection();
         terminal()->setHasMessage(false);
         QString text = e->text();
         if (text.isEmpty())   // Special key (up, down, etc.) or modified
         {
-            int key = e->key();
             Qt::KeyboardModifiers modifiers = e->modifiers();
             bool ok = false;
             switch (key)
@@ -484,14 +487,12 @@ void View::inputMethodEvent(QInputMethodEvent *e)
 
 void View::insertText(QString &string, uint delayMs)
 {
-
     QByteArray bytes;
     QString &s = string.replace('\n', '\r');
-    QChar lastAscii = QChar('\x7f');
     for (int i = 0; i < s.size(); i++)
     {
         QChar c = s[i];
-        if (c < lastAscii)
+        if (c < QChar('\x7f'))
         {
             uchar b = c.unicode() % 0x100;
             if (!delayMs)
@@ -513,8 +514,8 @@ void View::insertText(QString &string, uint delayMs)
             default:
                 break;
             }
-            uchar bu = c.unicode() / 0x100;
-            uchar bl = c.unicode() % 0x100;
+            uchar bu = code / 0x100;
+            uchar bl = code % 0x100;
             if (!delayMs)
             {
                 bytes.append(bu);
@@ -1039,6 +1040,162 @@ void View::extendTop(int start, int end)
     _painter->fillRect(0, start * _cellHeight, width, _cellHeight,
                        _prefs->backgroundColor());
     _painter->end();
+}
+
+void View::copy()
+{
+    if (!_selectedLength)
+        return;
+
+    int start;
+    int length;
+    if (_selectedLength > 0)
+    {
+        start = _selectedStart;
+        length = _selectedLength;
+    }
+    else
+    {
+        start = _selectedStart + _selectedLength;
+        length = -(_selectedLength);
+    }
+
+    QMimeData *mime = new QMimeData();
+    QString selection = terminal()->stringFromIndex(start, length);
+    mime->setText(selection);
+    mime->setData("application/x-ansi-colored-text",
+                  colorCopyData(start, length));
+    QApplication::clipboard()->setMimeData(mime);
+}
+
+QByteArray View::colorCopyData(int start, int length)
+{
+    QByteArray esc;
+    switch (terminal()->connection()->site()->colorKey())
+    {
+    case BBS::ColorKeyCtrlU:
+        esc.append('\x15');
+        break;
+    case BBS::ColorKeyDoubleEsc:
+        esc.append('\x1b');
+        esc.append('\x1b');
+        break;
+    default:
+        esc.append('\x1b');
+        break;
+    }
+
+    BBS::CellAttribute cleared;
+    cleared.f.bColorIndex = 9;  // NOTE: Use global preferences
+    cleared.f.fColorIndex = 7;
+    cleared.f.blinking = 0;
+    cleared.f.bright = 0;
+    cleared.f.underlined = 0;
+    cleared.f.reversed = 0;
+
+    QByteArray data;
+    int space = 0;
+    BBS::CellAttribute before= cleared;
+    for (int i = start; i < start + length; i++)
+    {
+        int x = i % _column;
+        int y = i / _column;
+        if ((x == 0) && (i != start)) // newline
+        {
+            data.append(esc);
+            data.append("[m");
+            data.append('\n');
+            before = cleared;
+            space = 0;
+        }
+
+        // Identical to the previous one
+        BBS::Cell &cell = terminal()->cellsAtRow(y)[x];
+        if ((cell.attr.f.bColorIndex == before.f.bColorIndex) &&
+            (cell.attr.f.fColorIndex == before.f.fColorIndex) &&
+            (cell.attr.f.blinking == before.f.blinking) &&
+            (cell.attr.f.bright == before.f.bright) &&
+            (cell.attr.f.underlined == before.f.underlined) &&
+            (cell.attr.f.reversed == before.f.reversed))
+        {
+            if ((cell.byte == ' ' || cell.byte == '\0') &&
+                    !cell.attr.f.doubleByte)
+            {
+                space++;
+            }
+            else
+            {
+                for (int j = 0; j < space; j++)
+                    data.append(' ');
+                data.append(cell.byte);
+                space = 0;
+            }
+            continue;
+        }
+
+        before = cell.attr;
+        for (int j = 0; j < space; j++)
+            data.append(' ');
+        space = 0;
+
+        if ((cell.attr.f.bColorIndex == cleared.f.bColorIndex) &&
+            (cell.attr.f.fColorIndex == cleared.f.fColorIndex) &&
+            (cell.attr.f.blinking == cleared.f.blinking) &&
+            (cell.attr.f.bright == cleared.f.bright) &&
+            (cell.attr.f.underlined == cleared.f.underlined) &&
+            (cell.attr.f.reversed == cleared.f.reversed))
+        {
+            data.append(esc);
+            data.append("[m");
+            data.append(cell.byte);
+        }
+        else
+        {
+            data.append(esc);
+            data.append("[0");
+            if (cell.attr.f.bright)
+                data.append(";1");
+            if (cell.attr.f.blinking)
+                data.append(";5");
+            if (cell.attr.f.underlined)
+                data.append(";4");
+            if (cell.attr.f.reversed)
+                data.append(";7");
+            data.append(";3");
+            data.append('0' + cell.attr.f.fColorIndex);
+            data.append(";4");
+            data.append('0' + cell.attr.f.bColorIndex);
+            data.append('m');
+            data.append(cell.byte);
+        }
+    }
+
+    data.append(esc);
+    data.append("[m");
+    return data;
+}
+
+void View::paste()
+{
+    const QMimeData *data = QApplication::clipboard()->mimeData();
+    if (data->hasText())
+    {
+        QString text = data->text();
+        insertText(text, 1);
+    }
+}
+
+void View::pasteColor()
+{
+    const QMimeData *data = QApplication::clipboard()->mimeData();
+    QByteArray bytes = data->data("application/x-ansi-colored-text");
+
+    if (!bytes.isEmpty())
+    {
+        for (int i = 0; i < bytes.size(); i++)
+            _insertBuffer.append(bytes[i]);
+        _insertTimer->start();
+    }
 }
 
 bool View::isConnected()

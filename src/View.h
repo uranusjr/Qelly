@@ -58,6 +58,9 @@ public slots:
     void extendBottom(int start, int end);
     void extendTop(int start, int end);
     void insertText(QString &string, uint delayMs = 0);
+    void copy();
+    void paste();
+    void pasteColor();
 
 protected:
     void mousePressEvent(QMouseEvent *e);
@@ -91,7 +94,7 @@ private slots:
 
 private:
     void buildInfo();
-    QString selection();
+    QByteArray colorCopyData(int start, int length);
     int indexFromPoint(QPoint p);
     void moveCursorTo(int destRow, int destCol);
     void selectWordAround(int row, int column);

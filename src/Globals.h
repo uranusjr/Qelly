@@ -17,12 +17,27 @@ enum Modifiers
 #endif
 };
 
+// Due to a bug in Qt, cmd and control keys are swapped on Macs even when we
+// explicitly disable the swap. We need to swap it back.
+enum Keys
+{
+#ifdef Q_OS_MAC
+    Key_Mod = Qt::Key_Control,
+    Key_Control = Qt::Key_Meta,
+    Key_Meta = Qt::Key_Control
+#else
+    Key_Mod = Qt::Key_Alt,
+    Key_Control = Qt::Key_Control,
+    Key_Meta = Qt::Key_Meta
+#endif
+};
+
 namespace BBS
 {
 
 enum Encoding
 {
-    EncodingUnKnown,
+    EncodingUnknown,
     EncodingBig5,
     EncodingGBK
 };

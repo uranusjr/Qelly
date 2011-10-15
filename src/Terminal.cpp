@@ -1,7 +1,7 @@
 #include "Terminal.h"
-#include <cstring>
 #include <QSet>
 #include "AbstractConnection.h"
+#include "Encodings.h"
 #include "Globals.h"
 #include "Site.h"
 #include "View.h"
@@ -1038,6 +1038,68 @@ void Terminal::handleControlDecstbm()
     }
     _cursorX = 0;
     _cursorY = _scrollBeginRow;
+}
+
+QString Terminal::stringFromIndex(int begin, int length)
+{
+    QString string;
+    uint temp;
+    int space = 0;
+    for (int i = begin; i < begin + length; i++)
+    {
+        int x = i % _column;
+        int y = i / _column;
+        if (x == 0 && i != begin && i - 1 < begin + length) // newline
+        {
+            updateDoubleByteStateForRow(y);
+            string.append(QChar('\r'));
+            space = 0;
+        }
+        BBS::Cell &cell = _cells[y][x];
+        switch (cell.attr.f.doubleByte)
+        {
+        case 0:
+            if (cell.byte == '\0' || cell.byte == ' ')
+            {
+                space++;
+            }
+            else
+            {
+                for (int j = 0; j < space; j++)
+                    string.append(QChar(' '));
+                string.append(QChar(cell.byte));
+                space = 0;
+            }
+            break;
+        case 1:
+            temp = cell.byte;
+            break;
+        case 2:
+            if (temp != 0)
+            {
+                uint code = (temp << 8) + cell.byte - 0x8000;
+                QChar c;
+                switch (connection()->site()->encoding())
+                {
+                case BBS::EncodingBig5:
+                    c = QChar(YL::B2U[code]);
+                    break;
+                case BBS::EncodingGBK:
+                    c = QChar(YL::G2U[code]);
+                    break;
+                default:
+                    c = QChar();
+                    break;
+                }
+                for (int j = 0; j < space; j++)
+                    string.append(QChar(' '));
+                string.append(c);
+                space = 0;
+            }
+            break;
+        }
+    }
+    return string;
 }
 
 QString Terminal::urlStringAt(int row, int column, bool *hasUrl)

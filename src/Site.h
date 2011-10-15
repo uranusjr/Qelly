@@ -67,7 +67,6 @@ public:     // Setters & Getters
     {
         _manualDoubleByte = db;
     }
-
 };
 
 }       // namespace Connection

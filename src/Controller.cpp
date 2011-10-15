@@ -43,6 +43,10 @@ Controller::Controller(QObject *parent) : QObject(parent)
     connect(menu, SIGNAL(fileCloseTab()), this, SLOT(closeTab()));
     connect(_window->address(), SIGNAL(returnPressed()),
             this, SLOT(onAddressReturnPressed()));
+    connect(menu, SIGNAL(fileCloseWindow()), this, SLOT(closeWindow()));
+    connect(menu, SIGNAL(editCopy()), this, SLOT(copy()));
+    connect(menu, SIGNAL(editPaste()), this, SLOT(paste()));
+    connect(menu, SIGNAL(editPasteColor()), this, SLOT(pasteColor()));
     connect(_window, SIGNAL(windowShouldClose()), this, SLOT(closeWindow()));
     _window->show();
     _window->setFixedSize(_window->fixedSize());
@@ -83,6 +87,11 @@ void Controller::connectWithAddress(QString address)
     connection->connectTo(address, 23);
 }
 
+void Controller::focusAddressField()
+{
+    _window->address()->setFocus(Qt::ShortcutFocusReason);
+}
+
 void Controller::addTab()
 {
     _window->tabs()->addTab(new View(), "");
@@ -90,15 +99,10 @@ void Controller::addTab()
     _window->address()->setFocus(Qt::ShortcutFocusReason);
 }
 
-void Controller::focusAddressField()
-{
-    _window->address()->setFocus(Qt::ShortcutFocusReason);
-}
-
 void Controller::closeTab()
 {
     TabWidget *tabs = _window->tabs();
-    if (currentView()->isConnected())
+    if (currentView() != 0 && currentView()->isConnected())
     {
         QMessageBox *sure = new QMessageBox(_window);
         sure->setIcon(QMessageBox::Warning);
@@ -141,6 +145,12 @@ void Controller::closeTab()
 
 void Controller::closeWindow()
 {
+    if (!_window->tabs()->count())
+    {
+        qApp->quit();
+        return;
+    }
+
     int count = 0;
     for (int i = 0; i < _window->tabs()->count(); i++)
     {
@@ -176,6 +186,33 @@ void Controller::closeWindow()
     {
         qApp->quit();
     }
+}
+
+void Controller::copy()
+{
+    View *view = currentView();
+    if (!view || !view->isConnected())
+        return;
+
+    view->copy();
+}
+
+void Controller::paste()
+{
+    View *view = currentView();
+    if (!view || !view->isConnected())
+        return;
+
+    view->paste();
+}
+
+void Controller::pasteColor()
+{
+    View *view = currentView();
+    if (!view || !view->isConnected())
+        return;
+
+    view->pasteColor();
 }
 
 void Controller::onAddressReturnPressed()

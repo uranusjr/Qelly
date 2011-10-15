@@ -29,7 +29,6 @@ signals:
     void fileReconnect();
     void fileCloseWindow();
     void fileCloseTab();
-    void editCut();
     void editCopy();
     void editPaste();
     void editPasteWrap();

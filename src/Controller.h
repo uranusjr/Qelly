@@ -40,10 +40,13 @@ public:
 
 public slots:
     void connectWithAddress(QString address);
-    void addTab();
     void focusAddressField();
+    void addTab();
     void closeTab();
     void closeWindow();
+    void copy();
+    void paste();
+    void pasteColor();
     void onAddressReturnPressed();
     void changeAddressField(QString &address);
 

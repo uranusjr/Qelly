@@ -32,7 +32,7 @@ SharedMenuBar::SharedMenuBar(QWidget *parent) : QMenuBar(parent)
     menu->addAction(tr("Copy"), this, SIGNAL(editCopy()),
                     QKeySequence(UJ::MOD | Qt::Key_C));
     menu->addAction(tr("Paste"), this, SIGNAL(editPaste()),
-                    QKeySequence(UJ::MOD | Qt::Key_P));
+                    QKeySequence(UJ::MOD | Qt::Key_V));
     menu->addAction(tr("Paste Wrap"), this, SIGNAL(editPasteWrap()),
                     QKeySequence(UJ::MOD | Qt::SHIFT | Qt::Key_V));
 #ifdef Q_WS_MAC

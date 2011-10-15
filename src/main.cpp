@@ -9,8 +9,8 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     // Shortcuts are Cmd-based on Macs and Alt-based on others for us!!
-    // DO NOT use Qt::META and Qt::ALT, but use UJ::MOD and UJ::ALT in
-    // Globals.h instead.
+    // DO NOT use Qt::META, Qt::ALT, Qt::Key_Control and Qt::Key_Meta, but use
+    // UJ::MOD, UJ::ALT, UJ::Key_Control and UJ::Key_Meta in Globals.h instead.
     a.setAttribute(Qt::AA_MacDontSwapCtrlAndMeta);
 
     QTextCodec *codec = QTextCodec::codecForName("System");
