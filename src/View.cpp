@@ -573,11 +573,12 @@ void View::updateBackImage()
     for (int y = 0; y < _row; y++)
     {
         // Background
+        int start = _column;
         for (int x = 0; x < _column; x++)
         {
             if (terminal()->isDiryAt(y, x))
             {
-                int start = x;
+                start = x;
                 while (x < _column && terminal()->isDiryAt(y, x))
                     x++;
                 updateBackground(y, start, x);
