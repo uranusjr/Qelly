@@ -90,7 +90,6 @@ void Terminal::clearAll()
     _emptyAttr = a.v;
     for (int i = 0; i < _row; i++)
         clearRow(i);
-
     _csBuf->clear();
     _csArg->clear();
 
@@ -283,6 +282,14 @@ void Terminal::processIncomingData(QByteArray data)
     for (int i = 0; i < data.size(); i++)
     {
         uchar c = static_cast<uchar>(data[i]);
+        if (c >= 33 && c <= 0x7e)
+            qDebug() << (char)c;
+        else if (c == 32)
+            qDebug() << "Space";
+        else if (c > 0x7e)
+            qDebug() << "Double byte";
+        else
+            qDebug() << "Unpritable" << c;
         switch (_state)
         {
         case StateNormal:

@@ -127,6 +127,7 @@ void Telnet::processBytes(QByteArray bytes)
             break;
         case SEENDONT:
             sendCommand(WONT, c);
+            _state = TOP_LEVEL;
             break;
         case SEENSB:
             _sbOption = c;
@@ -253,12 +254,15 @@ void Telnet::handleStateSeenDo(uchar c)
     {
     case TELOPT_NAWS:
         sendCommand(WILL, c);
-        bs.append(static_cast<char>(IAC));
-        bs.append(static_cast<char>(SB));
-        bs.append(static_cast<char>(TELOPT_NAWS));
-        bs.append("\x0\x50\x0\x18");
-        bs.append(static_cast<char>(IAC));
-        bs.append(static_cast<char>(SE));
+        bs.append(IAC);
+        bs.append(SB);
+        bs.append(TELOPT_NAWS);
+        bs.append('\x0');
+        bs.append('\x50');
+        bs.append('\x0');
+        bs.append('\x18');
+        bs.append(IAC);
+        bs.append(SE);
         emit hasBytesToSend(bs);
         break;
     case TELOPT_TTYPE:
@@ -280,13 +284,13 @@ void Telnet::handleStateSubNegIac(uchar c)
                 _sbBuffer->size() == 1 && _sbBuffer->at(0) == TELQUAL_SEND)
         {
             QByteArray bs;
-            bs.append(static_cast<char>(IAC));
-            bs.append(static_cast<char>(SB));
-            bs.append(static_cast<char>(TELOPT_TTYPE));
+            bs.append(IAC);
+            bs.append(SB);
+            bs.append(TELOPT_TTYPE);
             bs.append(static_cast<char>(TELQUAL_IS));
             bs.append("vt100");
-            bs.append(static_cast<char>(IAC));
-            bs.append(static_cast<char>(SE));
+            bs.append(IAC);
+            bs.append(SE);
             emit hasBytesToSend(bs);
         }
         _state = TOP_LEVEL;
@@ -302,7 +306,7 @@ void Telnet::handleStateSubNegIac(uchar c)
 void Telnet::sendCommand(uchar cmd, uchar option)
 {
     QByteArray data;
-    data.append(static_cast<char>(IAC));
+    data.append(IAC);
     data.append(cmd);
     data.append(option);
     emit hasBytesToSend(data);
@@ -322,6 +326,8 @@ void Telnet::sendBytes(QByteArray bytes)
     default:
         break;
     }
+    for (int i = 0; i < bytes.size(); i++)
+        qDebug() << "..........sending" << (uint)((uchar)bytes[i]);
     qint64 sz = _socket->write(bytes);
     if (sz == bytes.size())
         return;

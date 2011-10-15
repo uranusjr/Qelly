@@ -725,9 +725,9 @@ void View::drawSpecialSymbol(ushort code, int row, int column,
     //
     int w = _cellWidth;
     int h = _cellHeight;
-    int xs[9] = {(column - 1) * w, column * w, (column + 1) * w,
-                 (column - 1) * w, column * w, (column + 1) * w,
-                 (column - 1) * w, column * w, (column + 1) * w};
+    int xs[9] = {column * w, (column + 1) * w, (column + 2) * w,
+                 column * w, (column + 1) * w, (column + 2) * w,
+                 column * w, (column + 1) * w, (column + 2) * w};
     int ys[9] = {row * h, row * h, row * h,
                  row * h + h/2, row * h + h/2, row * h + h/2,
                  (row + 1) * h, (row + 1) * h, (row + 1) * h};
