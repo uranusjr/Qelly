@@ -27,14 +27,11 @@ public:
         static MainWindow *g = new MainWindow();
         return g;
     }
-    inline QSize fixedSize()
-    {
-        return QSize(_width, _height);
-    }
 
 protected:
     void closeEvent(QCloseEvent *e);
     void moveEvent(QMoveEvent *e);
+    void resizeEvent(QResizeEvent *e);
 
 signals:
     void windowShouldClose();
@@ -49,6 +46,8 @@ private:
     QWidget *_inputFrame;
     QLineEdit *_address;
     SharedPreferences *_prefs;
+    int _contentHeight;
+    bool _firstRun;
 
 public: // Setts & Getters
     inline QLineEdit *address()
@@ -59,7 +58,10 @@ public: // Setts & Getters
     {
         return _tabs;
     }
-
+    inline void setContentHeight(int height)
+    {
+        _contentHeight = height;
+    }
 };
 
 }   // namespace Qelly

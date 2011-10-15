@@ -22,9 +22,6 @@ public:
 public slots:
     void closeTab(int index);
 
-signals:
-    void tabWillClose(QWidget *tab);
-
 private:
     int _tabBarHeight;
 

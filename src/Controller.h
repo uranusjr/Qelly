@@ -43,6 +43,7 @@ public slots:
     void focusAddressField();
     void addTab();
     void closeTab();
+    void closeTab(int index);
     void closeWindow();
     void copy();
     void paste();
@@ -52,6 +53,7 @@ public slots:
 
 private:
     View *currentView() const;
+    View *viewInTab(int index) const;
     MainWindow *_window;
 
 };

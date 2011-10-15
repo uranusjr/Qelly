@@ -893,8 +893,8 @@ void View::paintEvent(QPaintEvent *e)
         QRect r = e->rect();
 
         // Draw a portion of back image
-        _painter->drawPixmap(r.left(), r.top(), r.width(), r.height(),
-                             *_backImage);
+        _painter->drawPixmap(r.left(), r.top(), *_backImage,
+                             r.left(), r.top(), r.width(), r.height());
         paintBlink(r);
 
         // URL line

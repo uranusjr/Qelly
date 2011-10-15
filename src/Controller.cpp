@@ -20,8 +20,10 @@
 #include <QApplication>
 #include <QLineEdit>
 #include <QMessageBox>
+#include "Globals.h"
 #include "MainWindow.h"
 #include "SharedMenuBar.h"
+#include "SharedPreferences.h"
 #include "TabWidget.h"
 #include "Telnet.h"
 #include "Terminal.h"
@@ -41,16 +43,20 @@ Controller::Controller(QObject *parent) : QObject(parent)
     connect(menu, SIGNAL(fileNewTab()), this, SLOT(addTab()));
     connect(menu, SIGNAL(fileOpenLocation()), this, SLOT(focusAddressField()));
     connect(menu, SIGNAL(fileCloseTab()), this, SLOT(closeTab()));
-    connect(_window->address(), SIGNAL(returnPressed()),
-            this, SLOT(onAddressReturnPressed()));
     connect(menu, SIGNAL(fileCloseWindow()), this, SLOT(closeWindow()));
     connect(menu, SIGNAL(editCopy()), this, SLOT(copy()));
     connect(menu, SIGNAL(editPaste()), this, SLOT(paste()));
     connect(menu, SIGNAL(editPasteColor()), this, SLOT(pasteColor()));
     connect(_window, SIGNAL(windowShouldClose()), this, SLOT(closeWindow()));
+    connect(_window->address(), SIGNAL(returnPressed()),
+            this, SLOT(onAddressReturnPressed()));
+    connect(_window->tabs(), SIGNAL(tabCloseRequested(int)),
+            this, SLOT(closeTab(int)));
+
+    SharedPreferences *prefs = SharedPreferences::sharedInstance();
+    _window->setContentHeight(prefs->cellHeight() * BBS::SizeRowCount);
     _window->show();
-    _window->setFixedSize(_window->fixedSize());
-    _window->address()->setFocus(Qt::ActiveWindowFocusReason);
+    addTab();
 }
 
 Controller::~Controller()
@@ -96,45 +102,55 @@ void Controller::addTab()
 {
     _window->tabs()->addTab(new View(), "");
     _window->address()->setText(QString());
-    _window->address()->setFocus(Qt::ShortcutFocusReason);
+    focusAddressField();
 }
 
 void Controller::closeTab()
 {
+    closeTab(_window->tabs()->currentIndex());
+}
+
+void Controller::closeTab(int index)
+{
     TabWidget *tabs = _window->tabs();
-    if (currentView() != 0 && currentView()->isConnected())
+    View *view = viewInTab(index);
+    if (view)
     {
-        QMessageBox *sure = new QMessageBox(_window);
-        sure->setIcon(QMessageBox::Warning);
-        sure->setText(tr("Are you sure you want to close this tab?"));
-        sure->setInformativeText(
-            tr("The connection is still alive. If you close this tab, the "
-               "connection will be lost. Do you want to close this tab "
-               "anyway?"));
-        sure->setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
-        sure->setWindowModality(Qt::WindowModal);
-        sure->setFocus(Qt::PopupFocusReason);
-        switch (sure->exec())
+        if (view->isConnected())
         {
-        case QMessageBox::Ok:
-            tabs->closeTab(tabs->currentIndex());
-            break;
-        case QMessageBox::Cancel:
-            break;
-        default:
-            break;
+            QMessageBox *sure = new QMessageBox(_window);
+            sure->setIcon(QMessageBox::Warning);
+            sure->setText(tr("Are you sure you want to close this tab?"));
+            sure->setInformativeText(
+                tr("The connection is still alive. If you close this tab, the "
+                   "connection will be lost. Do you want to close this tab "
+                   "anyway?"));
+            sure->setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+            sure->setWindowModality(Qt::WindowModal);
+            sure->setFocus(Qt::PopupFocusReason);
+            switch (sure->exec())
+            {
+            case QMessageBox::Ok:
+                tabs->closeTab(tabs->currentIndex());
+                break;
+            case QMessageBox::Cancel:
+                break;
+            default:
+                break;
+            }
+            sure->deleteLater();
         }
-        sure->deleteLater();
-    }
-    else
-    {
-        if (tabs->count())
-            tabs->closeTab(tabs->currentIndex());
+        else
+        {
+            tabs->closeTab(index);
+        }
     }
 
-    if (currentView())
+    // Finish up after the tab is closed
+    view = viewInTab(_window->tabs()->currentIndex());
+    if (view)
     {
-        currentView()->setFocus(Qt::TabFocusReason);
+        view->setFocus(Qt::TabFocusReason);
     }
     else
     {
@@ -238,6 +254,11 @@ void Controller::changeAddressField(QString &address)
 View *Controller::currentView() const
 {
     return static_cast<View *>(_window->tabs()->currentWidget());
+}
+
+View *Controller::viewInTab(int index) const
+{
+    return static_cast<View *>(_window->tabs()->widget(index));
 }
 
 }   // namespace Qelly

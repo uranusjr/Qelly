@@ -1,5 +1,6 @@
 #include "TabWidget.h"
 #include <QApplication>
+#include "View.h"
 
 namespace UJ
 {
@@ -12,14 +13,13 @@ TabWidget::TabWidget(QWidget *parent) : QTabWidget(parent)
     int size = QApplication::font().pointSize();
     _tabBarHeight = QApplication::fontMetrics().height() * 1.5;
     QString s;
-    s.sprintf("QTabBar::tab { width: 150px; height: %dpx; font: %dpt; }",
-              _tabBarHeight, static_cast<int>(size * 0.9));
+    s.sprintf("QTabBar::tab { width: 150px; font: %dpt; }",
+              static_cast<int>(size * 0.9));
     setStyleSheet(s);
     setDocumentMode(true);
     setTabsClosable(true);
     setMovable(true);
     setUsesScrollButtons(true);
-    connect(this, SIGNAL(tabCloseRequested(int)), this, SLOT(closeTab(int)));
 }
 
 int TabWidget::addTab(QWidget *widget, const QIcon &icon, const QString &label)
@@ -50,7 +50,6 @@ void TabWidget::closeTab(int index)
     removeTab(index);
     for (int i = index; i < count(); i++)
         setTabText(i, tabText(i));
-    emit tabWillClose(w);
     w->deleteLater();
 }
 

@@ -24,18 +24,20 @@ namespace Qelly
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     buildToolBar();
+    setUnifiedTitleAndToolBarOnMac(true);
     setMenuBar(SharedMenuBar::sharedInstance());
     _tabs = new TabWidget(this);
     _tabs->setTabPosition(QTabWidget::North);
     _prefs = SharedPreferences::sharedInstance();
-    int cellWidth = _prefs->cellWidth();
-    int cellHeight = _prefs->cellHeight();
-    int row = BBS::SizeRowCount;
-    int column = BBS::SizeColumnCount;
-    _width = column * cellWidth;
-    _height = row * cellHeight + _tabs->tabBarHeight();
+    _firstRun = false;
+    _contentHeight = 0;
+    QPalette p;
+    p.setBrush(backgroundRole(), QBrush(Qt::black));
+    setPalette(p);
+    setAutoFillBackground(true);
     move(_prefs->windowPosition());
     setCentralWidget(_tabs);
+    setWindowTitle("Qelly");
 }
 
 MainWindow::~MainWindow()
@@ -85,18 +87,33 @@ void MainWindow::buildToolBar()
     _toolbar->addAction(style->standardIcon(QStyle::SP_DirIcon),
                         tr("Double Byte"));
     setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
-    setUnifiedTitleAndToolBarOnMac(true);
 }
 
 void MainWindow::closeEvent(QCloseEvent *e)
 {
     e->ignore();
     emit windowShouldClose();
+
+    return QMainWindow::closeEvent(e);
 }
 
 void MainWindow::moveEvent(QMoveEvent *e)
 {
     _prefs->setWindowPosition(e->pos());
+    return QMainWindow::moveEvent(e);
+}
+
+void MainWindow::resizeEvent(QResizeEvent *e)
+{
+    QSize size = e->size();
+    int height = size.height();
+    if (!_firstRun && height > _contentHeight)
+    {
+        _firstRun = true;
+        setFixedSize(size.width(), height + 3);
+    }
+
+    QMainWindow::resizeEvent(e);
 }
 
 }   // namespace Qelly
