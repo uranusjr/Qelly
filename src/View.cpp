@@ -512,6 +512,7 @@ void View::insertText(QString &string, uint delayMs)
                 code = YL::U2G[c.unicode()];
                 break;
             default:
+                code = 0;
                 break;
             }
             uchar bu = code / 0x100;
