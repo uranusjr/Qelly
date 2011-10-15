@@ -31,10 +31,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     _prefs = SharedPreferences::sharedInstance();
     _firstRun = false;
     _contentHeight = 0;
-    QPalette p;
-    p.setBrush(backgroundRole(), QBrush(Qt::black));
-    setPalette(p);
-    setAutoFillBackground(true);
     move(_prefs->windowPosition());
     setCentralWidget(_tabs);
     setWindowTitle("Qelly");

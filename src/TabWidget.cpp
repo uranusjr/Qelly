@@ -1,5 +1,6 @@
 #include "TabWidget.h"
 #include <QApplication>
+#include <QTabBar>
 #include "View.h"
 
 namespace UJ
@@ -16,6 +17,12 @@ TabWidget::TabWidget(QWidget *parent) : QTabWidget(parent)
     s.sprintf("QTabBar::tab { width: 150px; font: %dpt; }",
               static_cast<int>(size * 0.9));
     setStyleSheet(s);
+    QPalette p;
+    p.setBrush(QPalette::Window, QBrush(Qt::black));
+    setPalette(p);
+    setAutoFillBackground(true);
+    tabBar()->setPalette(QApplication::palette());
+    tabBar()->setAutoFillBackground(true);
     setDocumentMode(true);
     setTabsClosable(true);
     setMovable(true);
