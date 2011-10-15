@@ -53,6 +53,4 @@ HEADERS  += \
 
 RESOURCES += \
     GeneralResources.qrc \
-    Fonts.qrc
-
-
+    FontsCjk.qrc

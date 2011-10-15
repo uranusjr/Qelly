@@ -44,7 +44,7 @@ public:
     explicit SharedPreferences(QObject *parent = 0) : QObject(parent)
     {
         _settings = new QSettings("uranusjr.org", "qelly", this);
-        QFontDatabase::addApplicationFont(":/fonts/arplmingu20lt.ttf");
+        QFontDatabase::addApplicationFont(":/fontscjk/arplmingu20lt.ttf");
     }
     static inline SharedPreferences *sharedInstance()
     {
