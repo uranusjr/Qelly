@@ -1,7 +1,5 @@
 #include "AbstractConnection.h"
 #include "Site.h"
-#include "Ssh.h"
-#include "Telnet.h"
 
 namespace UJ
 {

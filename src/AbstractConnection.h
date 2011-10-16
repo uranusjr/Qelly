@@ -21,11 +21,13 @@ public:
     explicit AbstractConnection(QObject *parent = 0);
     virtual bool connectTo(Site *s) = 0;
     virtual bool connectTo(QString &address, qint16 port) = 0;
+    static const qint16 DefaultPort = -1;
 
 public slots:
     virtual void close() = 0;
     virtual void reconnect() = 0;
     virtual void sendBytes(QByteArray bytes) = 0;
+    virtual void sendCommand(uchar cmd, uchar option) = 0;
 
 protected:
     Site *_site;
