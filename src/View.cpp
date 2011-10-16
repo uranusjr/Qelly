@@ -118,13 +118,13 @@ void View::mousePressEvent(QMouseEvent *e)
     if (isConnected())
     {
         terminal()->setHasMessage(false);
-        _selectedStart = indexFromPoint(e->pos());
-        _selectedLength = 0;
-        update();
 
         // META + click = move the cursor
         if (e->modifiers() & UJ::MOD)
             moveCursorTo(_selectedStart / _column, _selectedStart % _column);
+
+        clearSelection();
+        _selectedStart = indexFromPoint(e->pos());
     }
 
     return Qx::Widget::mousePressEvent(e);
@@ -255,9 +255,22 @@ void View::mouseMoveEvent(QMouseEvent *e)
         int old = _selectedLength;
         _selectedLength = index - _selectedStart + 1;
         if (_selectedLength <= 0)
-            _selectedLength -= 1;
+            _selectedLength--;
         if (old != _selectedLength)
-            update();   // NOTE: Update which region?
+        {
+            int head = _selectedStart + old;
+            if (old > 0)
+                head = _selectedStart < index ? _selectedStart : index;
+            else
+                head = head < index ? head : index;
+            int tail = _selectedStart + old;
+            if (old > 0)
+                tail = _selectedStart > index ? _selectedStart : index;
+            else
+                tail = tail > index ? tail : index;
+            update(0, head / _column * _cellHeight,
+                   _column * _cellWidth, (tail - head + 1) * _cellHeight);
+        }
     }
     return Qx::Widget::mouseMoveEvent(e);
 }
@@ -547,8 +560,23 @@ void View::clearSelection()
 {
     if (_selectedLength)
     {
+        int start = _selectedLength > 0 ?
+                    _selectedStart : _selectedStart + _selectedLength - 1;
+        int length = _selectedLength > 0 ?
+                    _selectedLength : -(_selectedLength - 1);
+        int startY = start / _column;
+        int endY = (start + length) / _column;
+        if (startY == endY)
+        {
+            update(start % _column * _cellWidth, startY * _cellHeight,
+                   length * _cellWidth, _cellHeight);
+        }
+        else
+        {
+            update(0, startY * _cellHeight,
+                   _column * _cellWidth, (endY - startY + 1) * _cellHeight);
+        }
         _selectedLength = 0;
-        update();
     }
 }
 
@@ -562,12 +590,11 @@ void View::updateScreen()
     int y = terminal()->cursorRow();
     if (_x != x || _y != y)
     {
-        //displayCellAt(_x, _y);  // Un-draw the old cursor
+        displayCellAt(_x, _y);  // Un-draw the old cursor
         _x = x;
         _y = y;
     }
-    //displayCellAt(_x, _y);    // Draw current cursor
-    update();
+    displayCellAt(_x, _y);    // Draw current cursor
 }
 
 void View::updateBackImage()
@@ -652,9 +679,8 @@ void View::updateText(int row)
             continue;
         updateText(row, x);
     }
-    //update((start - 1) *_cellWidth, row * _cellHeight,
-    //       _cellWidth, _cellHeight);
-    update();
+    update((start - 1) *_cellWidth, row * _cellHeight,
+           3 * _cellWidth, _cellHeight);
 }
 
 void View::updateText(int row, int x)
