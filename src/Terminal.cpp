@@ -1052,7 +1052,7 @@ QString Terminal::stringFromIndex(int begin, int length)
         if (x == 0 && i != begin && i - 1 < begin + length) // newline
         {
             updateDoubleByteStateForRow(y);
-            string.append(QChar('\r'));
+            string.append(QChar('\n'));
             space = 0;
         }
         BBS::Cell &cell = _cells[y][x];
