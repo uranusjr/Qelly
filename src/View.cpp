@@ -51,7 +51,7 @@ View::View(QWidget *parent) : Widget(parent)
     _prefs = SharedPreferences::sharedInstance();
     _painter = new QPainter();
     buildInfo();
-    setFocusPolicy(Qt::ClickFocus);
+    setFocusPolicy(Qt::StrongFocus);
     setAttribute(Qt::WA_InputMethodEnabled);
     setAttribute(Qt::WA_KeyCompression, false); // One key per key event
     setFixedSize(_cellWidth * _column, _cellHeight * _row);
