@@ -51,7 +51,6 @@ public:
 
 protected:
     void mousePressEvent(QMouseEvent *e);
-    void mouseDoubleClickEvent(QMouseEvent *e);
     virtual void mouseTripleClickEvent(QMouseEvent *);
 
 signals:

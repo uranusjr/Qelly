@@ -38,7 +38,7 @@ Widget::Widget(QWidget *parent) : QWidget(parent)
 
 void Widget::mousePressEvent(QMouseEvent *e)
 {
-    if (e->type() == QEvent::MouseButtonDblClick && _pendingTripleClick)
+    if (_pendingTripleClick)
     {
         _tripleClickTimer->stop();
         _pendingTripleClick = false;
@@ -48,14 +48,12 @@ void Widget::mousePressEvent(QMouseEvent *e)
                           e->modifiers());
         mouseTripleClickEvent(&event);
     }
+    else if (e->type() == QEvent::MouseButtonDblClick)
+    {
+        _pendingTripleClick = true;
+        _tripleClickTimer->start(QApplication::doubleClickInterval());
+    }
     return QWidget::mousePressEvent(e);
-}
-
-void Widget::mouseDoubleClickEvent(QMouseEvent *e)
-{
-    _pendingTripleClick = true;
-    _tripleClickTimer->start(QApplication::doubleClickInterval());
-    return QWidget::mouseDoubleClickEvent(e);
 }
 
 void Widget::mouseTripleClickEvent(QMouseEvent *)
