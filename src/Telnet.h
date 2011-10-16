@@ -24,16 +24,16 @@ public:
     virtual bool connectTo(QString &address, qint16 port);
     static const qint16 DefaultPort = 23;
 
-signals:
-    void receivedBytes(QByteArray data);
-    void hasBytesToSend(QByteArray bytes);
-
 public slots:
     virtual void close();
     virtual void reconnect();
     virtual void processBytes(QByteArray bytes);
     virtual void sendBytes(QByteArray bytes);
-    void sendCommand(uchar cmd, uchar option);
+    virtual void sendCommand(uchar cmd, uchar option);
+
+signals:
+    void receivedBytes(QByteArray data);
+    void hasBytesToSend(QByteArray bytes);
 
 private slots:
     void onSocketHostFound();
