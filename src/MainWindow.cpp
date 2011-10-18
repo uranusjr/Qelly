@@ -89,8 +89,6 @@ void MainWindow::closeEvent(QCloseEvent *e)
 {
     e->ignore();
     emit windowShouldClose();
-
-    return QMainWindow::closeEvent(e);
 }
 
 void MainWindow::moveEvent(QMoveEvent *e)
