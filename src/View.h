@@ -72,6 +72,7 @@ protected:
     void inputMethodEvent(QInputMethodEvent *e);
     void paintEvent(QPaintEvent *e);
     void focusInEvent(QFocusEvent *);
+    void timerEvent(QTimerEvent *);
 
 signals:
     void hasBytesToSend(QByteArray bytes);
@@ -174,6 +175,7 @@ private:
     int _markedLength;
     QPixmap *_backImage;
     bool _backImageFlipped;
+    bool _blinkTicker;
     QVector<QSize> _singleAdvances;
     QVector<QSize> _doubleAdvances;
     Connection::Terminal *_terminal;

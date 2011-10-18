@@ -48,13 +48,15 @@ View::View(QWidget *parent) : Widget(parent)
     _address = "";
     _backImage = 0;
     _terminal = 0;
+    _blinkTicker = false;
     _prefs = SharedPreferences::sharedInstance();
     _painter = new QPainter();
     buildInfo();
     setFocusPolicy(Qt::StrongFocus);
     setAttribute(Qt::WA_InputMethodEnabled);
-    setAttribute(Qt::WA_KeyCompression, false); // One key per key event
+    setAttribute(Qt::WA_KeyCompression, false);     // One key per key event
     setFixedSize(_cellWidth * _column, _cellHeight * _row);
+    startTimer(QApplication::cursorFlashTime());    // NOTE: Use preferences
 }
 
 View::~View()
@@ -110,6 +112,12 @@ int View::indexFromPoint(QPoint p)
     int y = p.ry() / _cellHeight;
 
     return y * _column + x;
+}
+
+void View::timerEvent(QTimerEvent *)
+{
+    _blinkTicker = !_blinkTicker;
+    update();
 }
 
 void View::mousePressEvent(QMouseEvent *e)
@@ -972,7 +980,7 @@ void View::paintEvent(QPaintEvent *e)
 
 void View::paintBlink(QRect &r)
 {
-    if (!isConnected())
+    if (!isConnected() || !_blinkTicker)
         return;
 
     for (int y = r.top() / _cellHeight; y <= r.bottom() / _cellHeight; y++)
@@ -980,14 +988,15 @@ void View::paintBlink(QRect &r)
         BBS::Cell *cells = terminal()->cellsAtRow(y);
         for (int x = r.left() / _cellWidth; x < r.right() / _cellWidth + 1; x++)
         {
-            BBS::CellAttribute a = cells[x].attr;
+            BBS::CellAttribute &a = cells[x].attr;
             if (!a.f.blinking)
                 continue;
             int colorIndex = a.f.reversed ? a.f.fColorIndex : a.f.bColorIndex;
             bool bright = a.f.reversed ? a.f.bright : false;
-            _painter->setPen(_prefs->fColor(colorIndex, bright));
-            _painter->fillRect(x * _cellWidth, (y - 1) * _cellHeight,
-                               _cellWidth, _cellHeight, Qt::SolidPattern);
+            _painter->setPen(Qt::NoPen);
+            _painter->setBrush(QBrush(_prefs->bColor(colorIndex, bright)));
+            _painter->drawRect(x * _cellWidth, y * _cellHeight,
+                               _cellWidth, _cellHeight);
         }
     }
 }
@@ -1131,7 +1140,7 @@ QByteArray View::colorCopyData(int start, int length)
         {
             data.append(esc);
             data.append("[m");
-            data.append('\n');
+            data.append('\r');
             before = cleared;
             space = 0;
         }
