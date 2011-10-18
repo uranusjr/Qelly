@@ -1,4 +1,5 @@
 #include "Terminal.h"
+#include <QApplication>
 #include <QSet>
 #include "AbstractConnection.h"
 #include "Encodings.h"
@@ -66,12 +67,12 @@ void Terminal::initCells()
 void Terminal::startConnection()
 {
     clearAll();
-    // NOTE: Tell view to update
+    _view->update();
 }
 
 void Terminal::closeConnection()
 {
-    // NOTE: Tell view to update
+    _view->update();
 }
 
 void Terminal::clearAll()
@@ -323,7 +324,7 @@ void Terminal::handleNormalDataInput(uchar c)
     case ASC_ACK:   // Flow control
         break;
     case ASC_BEL:   // Bell
-        // NOTE: Ring a bell
+        qApp->beep();
         setHasMessage();
         break;
     case ASC_BS:    // Backspace (^H)
