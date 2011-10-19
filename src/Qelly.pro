@@ -36,7 +36,8 @@ SOURCES += main.cpp \
     View.cpp \
     UJQxWidget.cpp \
     Controller.cpp \
-    SharedPreferences.cpp
+    SharedPreferences.cpp \
+    PreeditTextHolder.cpp
 
 HEADERS  += \
     SharedMenuBar.h \
@@ -55,7 +56,10 @@ HEADERS  += \
     View.h \
     UJQxWidget.h \
     Controller.h \
-    SharedPreferences.h
+    SharedPreferences.h \
+    PreeditTextHolder.h
 
 RESOURCES += \
     GeneralResources.qrc
+
+

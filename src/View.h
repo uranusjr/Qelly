@@ -37,6 +37,7 @@ class Terminal;
 namespace Qelly
 {
 
+class PreeditTextHolder;
 class SharedPreferences;
 
 class View : public Qx::Widget
@@ -73,6 +74,7 @@ protected:
     void paintEvent(QPaintEvent *e);
     void focusInEvent(QFocusEvent *);
     void timerEvent(QTimerEvent *);
+    QVariant inputMethodQuery(Qt::InputMethodQuery q) const;
 
 signals:
     void hasBytesToSend(QByteArray bytes);
@@ -96,6 +98,7 @@ private slots:
 private:
     void buildInfo();
     int indexFromPoint(QPoint p);
+    QPoint pointFromIndex(int x, int y);
     void moveCursorTo(int destRow, int destCol);
     void selectWordAround(int row, int column);
     int characterFromKeyPress(int key, Qt::KeyboardModifiers mod, bool *ok);
@@ -178,9 +181,9 @@ private:
     QVector<QSize> _singleAdvances;
     QVector<QSize> _doubleAdvances;
     Connection::Terminal *_terminal;
-    QString _preeditString;
     QPainter *_painter;
     QString _address;
+    PreeditTextHolder *_preeditHolder;
 
 public: // Setters & Getters
     inline Connection::Terminal *terminal() const
