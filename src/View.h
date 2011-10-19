@@ -95,7 +95,6 @@ private slots:
 
 private:
     void buildInfo();
-    QByteArray colorCopyData(int start, int length);
     int indexFromPoint(QPoint p);
     void moveCursorTo(int destRow, int destCol);
     void selectWordAround(int row, int column);

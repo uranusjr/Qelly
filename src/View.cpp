@@ -1097,15 +1097,67 @@ void View::copy()
     }
 
     QMimeData *mime = new QMimeData();
+
+    // Pure text
     QString selection = terminal()->stringFromIndex(start, length);
     mime->setText(selection);
-    mime->setData("application/x-ansi-colored-text",
-                  colorCopyData(start, length));
+
+    // Color copy
+    BBS::CellAttribute cleared;
+    cleared.f.bColorIndex = 9;  // NOTE: Use global preferences
+    cleared.f.fColorIndex = 7;
+    cleared.f.blinking = 0;
+    cleared.f.bright = 0;
+    cleared.f.underlined = 0;
+    cleared.f.reversed = 0;
+
+    QByteArray data;
+    for (int i = start; i < start + length; i++)
+    {
+        int x = i % _column;
+        int y = i / _column;
+        BBS::Cell &cell = terminal()->cellsAtRow(y)[x];
+        if ((x == 0) && (i != start))   // newline
+        {
+            data.append('\r');
+            data.append(cleared.f.bColorIndex);
+            data.append(cleared.f.fColorIndex);
+            data.append(cleared.f.blinking);
+            data.append(cleared.f.bright);
+            data.append(cleared.f.underlined);
+            data.append(cleared.f.reversed);
+        }
+        data.append(cell.byte);
+        data.append(cell.attr.f.bColorIndex);
+        data.append(cell.attr.f.fColorIndex);
+        data.append(cell.attr.f.blinking);
+        data.append(cell.attr.f.bright);
+        data.append(cell.attr.f.underlined);
+        data.append(cell.attr.f.reversed);
+    }
+    mime->setData("application/x-ansi-colored-text-data", data);
+
     QApplication::clipboard()->setMimeData(mime);
 }
 
-QByteArray View::colorCopyData(int start, int length)
+void View::paste()
 {
+    const QMimeData *data = QApplication::clipboard()->mimeData();
+    if (data->hasText())
+    {
+        QString text = data->text();
+        insertText(text, 1);
+    }
+}
+
+void View::pasteColor()
+{
+    const QMimeData *mime = QApplication::clipboard()->mimeData();
+    QByteArray bytes = mime->data("application/x-ansi-colored-text-data");
+
+    if (bytes.isEmpty())
+        return;
+
     QByteArray esc;
     switch (terminal()->connection()->site()->colorKey())
     {
@@ -1129,24 +1181,21 @@ QByteArray View::colorCopyData(int start, int length)
     cleared.f.underlined = 0;
     cleared.f.reversed = 0;
 
-    QByteArray data;
     int space = 0;
-    BBS::CellAttribute before= cleared;
-    for (int i = start; i < start + length; i++)
+    BBS::CellAttribute before = cleared;
+    QByteArray data;
+    for (int i = 0; i < bytes.size();)
     {
-        int x = i % _column;
-        int y = i / _column;
-        if ((x == 0) && (i != start)) // newline
-        {
-            data.append(esc);
-            data.append("[m");
-            data.append('\r');
-            before = cleared;
-            space = 0;
-        }
+        BBS::Cell cell;
+        cell.byte = bytes[i++];
+        cell.attr.f.bColorIndex = bytes[i++];
+        cell.attr.f.fColorIndex = bytes[i++];
+        cell.attr.f.blinking = bytes[i++];
+        cell.attr.f.bright = bytes[i++];
+        cell.attr.f.underlined = bytes[i++];
+        cell.attr.f.reversed = bytes[i++];
 
         // Identical to the previous one
-        BBS::Cell &cell = terminal()->cellsAtRow(y)[x];
         if ((cell.attr.f.bColorIndex == before.f.bColorIndex) &&
             (cell.attr.f.fColorIndex == before.f.fColorIndex) &&
             (cell.attr.f.blinking == before.f.blinking) &&
@@ -1208,30 +1257,10 @@ QByteArray View::colorCopyData(int start, int length)
 
     data.append(esc);
     data.append("[m");
-    return data;
-}
 
-void View::paste()
-{
-    const QMimeData *data = QApplication::clipboard()->mimeData();
-    if (data->hasText())
-    {
-        QString text = data->text();
-        insertText(text, 1);
-    }
-}
-
-void View::pasteColor()
-{
-    const QMimeData *data = QApplication::clipboard()->mimeData();
-    QByteArray bytes = data->data("application/x-ansi-colored-text");
-
-    if (!bytes.isEmpty())
-    {
-        for (int i = 0; i < bytes.size(); i++)
-            _insertBuffer.append(bytes[i]);
-        _insertTimer->start();
-    }
+    for (int i = 0; i < data.size(); i++)
+        _insertBuffer.enqueue(data[i]);
+    _insertTimer->start();
 }
 
 bool View::isConnected()
