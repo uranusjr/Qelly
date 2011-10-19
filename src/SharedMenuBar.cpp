@@ -39,8 +39,7 @@ SharedMenuBar::SharedMenuBar(QWidget *parent) : QMenuBar(parent)
     menu->addAction(tr("Paste Color"), this, SIGNAL(editPasteColor()),
                     QKeySequence(UJ::MOD | UJ::OPT | Qt::Key_V));
 #else
-    menu->addAction(tr("Paste Color"), this, SIGNAL(editPasteColor()),
-                    QKeySequence(Qt::Key_AltGr, Qt::Key_V));
+    menu->addAction(tr("Paste Color"), this, SIGNAL(editPasteColor()));
 #endif
     menu->addAction(tr("Select All"), this, SIGNAL(editSelectAll()),
                     QKeySequence(UJ::MOD | Qt::Key_A));
