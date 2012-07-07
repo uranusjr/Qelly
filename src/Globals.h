@@ -32,6 +32,18 @@ enum Keys
 #endif
 };
 
+namespace Connection
+{
+
+enum Type
+{
+    TypeTelnet,
+    TypeSsh,
+    TypeUnknown
+};
+
+}   // namespace Connection
+
 namespace BBS
 {
 
