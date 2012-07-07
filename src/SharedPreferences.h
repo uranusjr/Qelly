@@ -22,12 +22,13 @@
 #include <QObject>
 #include <QApplication>
 #include <QColor>
+#include <QFileInfo>
 #include <QFont>
 #include <QFontDatabase>
 #include <QPoint>
 #include <QSettings>
 #include "Globals.h"
-#include <QLabel>
+#include "Ssh.h"
 #include <QDebug>
 
 namespace UJ
@@ -388,6 +389,23 @@ public: // Setters & Getters
     inline void setBackgroundColor(QColor color)
     {
         _settings->setValue("background color", color);
+    }
+    inline QString sshClientPath() const
+    {
+        return _settings->value("ssh client path", QString()).toString();
+    }
+    inline void setSshClientPath(QString path)
+    {
+        QFileInfo info = QFileInfo(path);
+        if (info.exists() && info.isExecutable())
+        {
+            Connection::Ssh::setSshClientPath(path);
+            _settings->setValue("ssh client path", path);
+        }
+        else
+        {
+            throw QString("Invalid SSH Client Path");
+        }
     }
 };
 

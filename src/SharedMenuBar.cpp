@@ -11,7 +11,7 @@ namespace Qelly
 
 SharedMenuBar::SharedMenuBar(QWidget *parent) : QMenuBar(parent)
 {
-    QMenu *menu;
+    QMenu *menu = 0;
     connect(this, SIGNAL(editPreferences()), this, SIGNAL(preferences()));
     connect(this, SIGNAL(windowAbout()), this, SIGNAL(about()));
 
