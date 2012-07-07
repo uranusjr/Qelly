@@ -1,5 +1,6 @@
 #include "Ssh.h"
 #include <QProcess>
+#include "SharedPreferences.h"
 #include "Site.h"
 #include <QDebug>
 
@@ -67,7 +68,8 @@ bool Ssh::connectTo(QString &address, qint16 port)
         _socket->setProcessEnvironment(env);
     }
 
-    _socket->start("/usr/bin/ssh", args);
+    _socket->start(Qelly::SharedPreferences::sharedInstance()->sshClientPath(),
+                   args);
 
     return true;
 }

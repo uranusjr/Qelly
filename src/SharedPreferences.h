@@ -399,7 +399,6 @@ public: // Setters & Getters
         QFileInfo info = QFileInfo(path);
         if (info.exists() && info.isExecutable())
         {
-            Connection::Ssh::setSshClientPath(path);
             _settings->setValue("ssh client path", path);
         }
         else

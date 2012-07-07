@@ -38,14 +38,7 @@ private slots:
 
 private:
     QProcess *_socket;
-    //static QString _sshClientPath;
     bool _isBbs;
-
-public:     // Setters & Getters
-    inline static void setSshClientPath(QString path)
-    {
-    //    _sshClientPath = path;
-    }
 };
 
 }   // namespace Connection
