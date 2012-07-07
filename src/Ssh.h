@@ -2,7 +2,7 @@
 #define SSH_H
 
 #include "AbstractConnection.h"
-class QTcpSocket;
+class QProcess;
 
 namespace UJ
 {
@@ -31,14 +31,21 @@ public slots:
     virtual void sendBytes(QByteArray bytes);
 
 private slots:
-    void onSocketHostFound();
-    void onSocketConnected();
-    void onSocketReadyRead();
-    void onSocketError();
-    void onSocketDisconnected();
+    void onProcessStarted();
+    void onProcessReadyRead();
+    void onProcessError();
+    void onProcessFinished();
 
 private:
-    QTcpSocket *_socket;
+    QProcess *_socket;
+    //static QString _sshClientPath;
+    bool _isBbs;
+
+public:     // Setters & Getters
+    inline static void setSshClientPath(QString path)
+    {
+    //    _sshClientPath = path;
+    }
 };
 
 }   // namespace Connection
