@@ -17,7 +17,6 @@ class Ssh : public AbstractConnection
 public:
     explicit Ssh(QObject *parent = 0);
     virtual ~Ssh();
-    virtual bool connectTo(Site *s);
     virtual bool connectTo(QString &address, qint16 port);
     static const qint16 DefaultPort = 22;
 
@@ -30,7 +29,6 @@ public slots:
     virtual void reconnect();
     virtual void processBytes(QByteArray bytes);
     virtual void sendBytes(QByteArray bytes);
-    void sendCommand(uchar cmd, uchar option);
 
 private slots:
     void onSocketHostFound();

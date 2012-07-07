@@ -25,15 +25,8 @@ Ssh::~Ssh()
 {
 }
 
-bool Ssh::connectTo(Site *s)
-{
-}
-
 bool Ssh::connectTo(QString &address, qint16 port)
 {
-    if (port < 0)
-        return false;
-
     setProcessing(true);
     _socket->connectToHost(address, port);
 }
@@ -93,8 +86,7 @@ void Ssh::sendBytes(QByteArray bytes)
 {
 }
 
-void Ssh::sendCommand(uchar cmd, uchar option)
-{
+    _socket->write(bytes);
 }
 
 }   // namespace Connection
