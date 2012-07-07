@@ -49,6 +49,10 @@ public: // Setters & Getters
     {
         return _textWidth;
     }
+    inline int margin() const
+    {
+        return _borderWidth + _borderRadius;
+    }
 };
 
 }   // namespace Qelly

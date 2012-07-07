@@ -502,12 +502,12 @@ int View::characterFromKeyPress(int key, Qt::KeyboardModifiers mod, bool *ok)
 
 QVariant View::inputMethodQuery(Qt::InputMethodQuery q) const
 {
-    if (q == Qt::ImCursorPosition)
+    if (q == Qt::ImMicroFocus)
     {
         int x = terminal()->cursorColumn();
         int y = terminal()->cursorRow();
-        return mapToGlobal(QPoint(x * _cellWidth + _preeditHolder->textWidth(),
-                             y * _cellHeight));
+        return QRect(x * _cellWidth, y * _cellHeight,
+                     0, _preeditHolder->margin());
     }
 
     return QWidget::inputMethodQuery(q);
