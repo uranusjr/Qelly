@@ -29,6 +29,8 @@ Ssh::Ssh(QObject *parent) : AbstractConnection(parent)
 
 Ssh::~Ssh()
 {
+    if (_socket->isOpen())
+        _socket->close();
 }
 
 bool Ssh::connectTo(QString &address, qint16 port)
