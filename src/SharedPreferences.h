@@ -392,7 +392,7 @@ public: // Setters & Getters
     }
     inline QString sshClientPath() const
     {
-        return _settings->value("ssh client path", QString()).toString();
+        return _settings->value("ssh client path", "/usr/bin/ssh").toString();
     }
     inline void setSshClientPath(QString path)
     {

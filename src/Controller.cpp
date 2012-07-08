@@ -57,8 +57,6 @@ Controller::Controller(QObject *parent) : QObject(parent)
     _window->setContentHeight(prefs->cellHeight() * BBS::SizeRowCount);
     _window->show();
     addTab();
-
-    prefs->setSshClientPath("/usr/bin/ssh");
 }
 
 Controller::~Controller()
