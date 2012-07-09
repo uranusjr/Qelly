@@ -38,7 +38,6 @@ private slots:
 
 private:
     QProcess *_socket;
-    bool _isBbs;
 };
 
 }   // namespace Connection

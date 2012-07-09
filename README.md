@@ -25,10 +25,28 @@ feel free to contact the author(s) of the project. See AUTHORS for more
 contact information.
 
 
+## Special Notices on SSH Feature
+
+The SSH connection is driven by external executables. In Unix-like systems, the
+OpenSSH client, which is built-in in most cases, is used. In Windows, Plink
+(PuTTY Link command-line interface) is used.
+
+You can get Plink at the PuTTY project download page:
+http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html
+
+Or, if you don't know which one to download, you can use this direct link:
+http://the.earth.li/~sgtatham/putty/latest/x86/plink.exe
+
+The SSH client path can be put anywhere you wish to, as long as you specify its
+location correctly in Qelly's Preferences.
+
+
 ## Thrid Party Components
 
 Qelly uses Qt under the terms of GPL v3. Qt is a product of Nokia Corp.. Nokia,
 Qt, and their respective logos are trademarks of Nokia Corp.. See the Qt website
 for more information: http://qt.nokia.com/
 
+Plink (PuTTY Link) is distributed under the MIT license. For more, see:
+http://www.chiark.greenend.org.uk/~sgtatham/putty/licence.html
 
