@@ -6,6 +6,9 @@
 
 QT       += core gui network
 
+CONFIG += qxt
+QXT += core gui
+
 TARGET = Qelly
 TEMPLATE = app
 
