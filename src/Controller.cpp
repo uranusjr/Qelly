@@ -22,6 +22,7 @@
 #include <QMessageBox>
 #include "Globals.h"
 #include "MainWindow.h"
+#include "PreferencesWindow.h"
 #include "SharedMenuBar.h"
 #include "SharedPreferences.h"
 #include "TabWidget.h"
@@ -39,7 +40,9 @@ namespace Qelly
 Controller::Controller(QObject *parent) : QObject(parent)
 {
     _window = new MainWindow();
+    _preferencesWindow = new PreferencesWindow();
     SharedMenuBar *menu = SharedMenuBar::sharedInstance();
+    connect(menu, SIGNAL(preferences()), this, SLOT(showPreferencesWindow()));
     connect(menu, SIGNAL(fileNewTab()), this, SLOT(addTab()));
     connect(menu, SIGNAL(fileOpenLocation()), this, SLOT(focusAddressField()));
     connect(menu, SIGNAL(fileCloseTab()), this, SLOT(closeTab()));
@@ -62,6 +65,7 @@ Controller::Controller(QObject *parent) : QObject(parent)
 Controller::~Controller()
 {
     _window->deleteLater();
+    _preferencesWindow->deleteLater();
 }
 
 void Controller::connectWithAddress(QString address)
@@ -262,6 +266,11 @@ void Controller::onAddressReturnPressed()
 void Controller::changeAddressField(QString &address)
 {
     _window->address()->setText(address);
+}
+
+void Controller::showPreferencesWindow()
+{
+    _preferencesWindow->show();
 }
 
 View *Controller::currentView() const

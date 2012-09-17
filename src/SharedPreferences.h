@@ -82,7 +82,6 @@ public: // Setters & Getters
     {
         _settings->setValue("cell height", h);
     }
-
     inline bool showHiddenText() const
     {
         return _settings->value("show hidden text", false).toBool();
@@ -93,7 +92,7 @@ public: // Setters & Getters
     }
     inline bool manualDoubleByte() const
     {
-        return _settings->value("manuel double byte", false).toBool();
+        return _settings->value("manual double byte", false).toBool();
     }
     inline void setManualDoubleByte(bool enable)
     {
@@ -138,22 +137,29 @@ public: // Setters & Getters
 
     inline QFont defaultFont() const
     {
-        QFont defaultFont("Monospace", 21);
-        defaultFont.setStyleHint(QFont::TypeWriter);
-        return _settings->value("default font", defaultFont).value<QFont>();
+        QFont font;
+        QString name = _settings->value("default font", QString()).toString();
+        if (name.isNull() || !font.fromString(name))
+            font = QFont("Monospace", 21);
+        font.setStyleHint(QFont::TypeWriter);
+        return font;
     }
-    inline void setDefaultFont(QFont font)
+    inline void setDefaultFont(QFont &font)
     {
-        _settings->setValue("default font", font);
+        _settings->setValue("default font", font.toString());
     }
     inline QFont doubleByteFont() const
     {
-        QFont defaultFont("ar pl uming cn", 22);
-        return _settings->value("double byte font", defaultFont).value<QFont>();
+        QFont font;
+        QString name = _settings->value("double byte font", QString())
+                                 .toString();
+        if (name.isNull() || !font.fromString(name))
+            font = QFont("AR PL UMING CN", 22);
+        return font;
     }
-    inline void setDoubleByteFont(QFont font)
+    inline void setDoubleByteFont(QFont &font)
     {
-        _settings->setValue("double byte font", font);
+        _settings->setValue("double byte font", font.toString());
     }
     inline int defaultFontPaddingLeft() const
     {

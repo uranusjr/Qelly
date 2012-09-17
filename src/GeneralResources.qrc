@@ -2,4 +2,8 @@
     <qresource prefix="/translations">
         <file>UJ_Translate.qm</file>
     </qresource>
+    <qresource prefix="/images">
+        <file>General.png</file>
+        <file>Font.png</file>
+    </qresource>
 </RCC>

@@ -39,7 +39,10 @@ SOURCES += main.cpp \
     View.cpp \
     UJQxWidget.cpp \
     Controller.cpp \
-    SharedPreferences.cpp
+    SharedPreferences.cpp \
+    PreferencesGeneral.cpp \
+    PreferencesWindow.cpp \
+    PreferencesFont.cpp
 
 HEADERS  += \
     SharedMenuBar.h \
@@ -58,7 +61,14 @@ HEADERS  += \
     View.h \
     UJQxWidget.h \
     Controller.h \
-    SharedPreferences.h
+    SharedPreferences.h \
+    PreferencesGeneral.h \
+    PreferencesWindow.h \
+    PreferencesFont.h
 
 RESOURCES += \
     GeneralResources.qrc
+
+FORMS += \
+    PreferencesGeneral.ui \
+    PreferencesFont.ui

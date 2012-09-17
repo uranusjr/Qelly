@@ -28,6 +28,7 @@ namespace Qelly
 {
 
 class MainWindow;
+class PreferencesWindow;
 class View;
 
 class Controller : public QObject
@@ -50,11 +51,13 @@ public slots:
     void pasteColor();
     void onAddressReturnPressed();
     void changeAddressField(QString &address);
+    void showPreferencesWindow();
 
 private:
     View *currentView() const;
     View *viewInTab(int index) const;
     MainWindow *_window;
+    PreferencesWindow *_preferencesWindow;
 };
 
 }   // namespace Qelly
