@@ -5,5 +5,11 @@
     <qresource prefix="/images">
         <file>General.png</file>
         <file>Font.png</file>
+        <file>Advanced.png</file>
+        <file>Bookmarks.png</file>
+        <file>New.png</file>
+        <file>Reload.png</file>
+        <file>Flashlight.png</file>
+        <file>Anti-sleep.png</file>
     </qresource>
 </RCC>

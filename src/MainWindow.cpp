@@ -66,20 +66,15 @@ void MainWindow::buildToolBar()
 
     QStyle *style = qApp->style();
     _toolbar = addToolBar(tr("General"));
-    _toolbar->addAction(style->standardIcon(QStyle::SP_DriveNetIcon),
-                        tr("Sites"));
-    _toolbar->addAction(style->standardIcon(QStyle::SP_BrowserReload),
-                        tr("Reconnect"));
-    _toolbar->addAction(style->standardIcon(QStyle::SP_DialogSaveButton),
-                        tr("Add"));
+    _toolbar->addAction(QIcon(":/images/Bookmarks.png"), tr("Sites"));
+    _toolbar->addAction(QIcon(":/images/Reload.png"), tr("Reconnect"));
+    _toolbar->addAction(QIcon(":/images/New.png"), tr("Add"));
     _toolbar->addWidget(_inputFrame);
     _toolbar->addWidget(_stretch);
     _toolbar->addAction(style->standardIcon(QStyle::SP_DirIcon),
                         tr("Emicons"));
-    _toolbar->addAction(style->standardIcon(QStyle::SP_DirIcon),
-                        tr("Anti-Idle"));
-    _toolbar->addAction(style->standardIcon(QStyle::SP_DirIcon),
-                        tr("Peek"));
+    _toolbar->addAction(QIcon(":/images/Anti-sleep.png"), tr("Anti-Idle"));
+    _toolbar->addAction(QIcon(":/images/Flashlight.png"), tr("Peek"));
     _toolbar->addAction(style->standardIcon(QStyle::SP_DirIcon),
                         tr("Double Byte"));
     setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
