@@ -52,6 +52,7 @@ void PreferencesColor::initialize()
         normals.at(i)->setColor(prefs->fColor(i, false));
         bolds.at(i)->setColor(prefs->fColor(i, true));
     }
+    _visited = true;
 }
 
 void PreferencesColor::cleanup()
@@ -60,6 +61,9 @@ void PreferencesColor::cleanup()
 
 void PreferencesColor::accept()
 {
+    if (!_visited)
+        return;
+
     SharedPreferences *prefs = SharedPreferences::sharedInstance();
 
     QColor color = _ui->colorBackground->color();
@@ -76,11 +80,14 @@ void PreferencesColor::accept()
         if (color != prefs->fColor(i, true))
             prefs->setColor(color, i, true);
     }
+
+    _visited = false;
 }
 
 void PreferencesColor::reject()
 {
     initialize();
+    _visited = false;
 }
 
 }   // namespace Qelly

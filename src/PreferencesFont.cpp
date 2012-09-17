@@ -53,6 +53,7 @@ void PreferencesFont::initialize()
     setFontFieldRoman(font);
     font = prefs->doubleByteFont();
     setFontFieldDoubleByte(font);
+    _visited = true;
 }
 
 void PreferencesFont::cleanup()
@@ -61,6 +62,9 @@ void PreferencesFont::cleanup()
 
 void PreferencesFont::accept()
 {
+    if (!_visited)
+        return;
+
     SharedPreferences *prefs = SharedPreferences::sharedInstance();
     prefs->setCellWidth(_ui->cellWidth->value());
     prefs->setCellHeight(_ui->cellHeight->value());
@@ -76,11 +80,14 @@ void PreferencesFont::accept()
     prefs->setDoubleByteFontPaddingLeft(_ui->fontDoubleByteMarginLeft->value());
     prefs->setDoubleByteFontPaddingBottom(
                                     _ui->fontDoubleByteMarginBottom->value());
+
+    _visited = false;
 }
 
 void PreferencesFont::reject()
 {
     initialize();
+    _visited = false;
 }
 
 void PreferencesFont::browseFontRoman()

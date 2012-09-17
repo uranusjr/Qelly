@@ -39,6 +39,7 @@ PreferencesGeneral::~PreferencesGeneral()
 
 void PreferencesGeneral::initialize()
 {
+    _visited = true;
     SharedPreferences *prefs = SharedPreferences::sharedInstance();
     _ui->sshClientPath->setText(prefs->sshClientPath());
 }
@@ -49,13 +50,18 @@ void PreferencesGeneral::cleanup()
 
 void PreferencesGeneral::accept()
 {
+    if (!_visited)
+        return;
+
     SharedPreferences *prefs = SharedPreferences::sharedInstance();
     prefs->setSshClientPath(_ui->sshClientPath->text());
+    _visited = false;
 }
 
 void PreferencesGeneral::reject()
 {
     initialize();
+    _visited = false;
 }
 
 void PreferencesGeneral::browseSshClientPath()

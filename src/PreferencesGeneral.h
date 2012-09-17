@@ -48,6 +48,7 @@ private slots:
 
 private:
     Ui::PreferencesGeneral *_ui;
+    bool _visited;
 };
 
 }   // namespace Qelly

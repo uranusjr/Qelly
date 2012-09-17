@@ -50,6 +50,7 @@ private:
     Ui::PreferencesColor *_ui;
     QList<ColorWell *> normals;
     QList<ColorWell *> bolds;
+    bool _visited;
 };
 
 }   // namespace Qelly

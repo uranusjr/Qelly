@@ -51,6 +51,7 @@ private:
     void setFontFieldRoman(QFont &font);
     void setFontFieldDoubleByte(QFont &font);
     Ui::PreferencesFont *_ui;
+    bool _visited;
 };
 
 }   // namespace Qelly
