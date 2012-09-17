@@ -339,6 +339,38 @@ public: // Setters & Getters
         _settings->setValue("color white bright", color);
     }
 
+    inline void setColor(QColor c, int index, bool bright = false)
+    {
+        switch (index)
+        {
+        case 0:
+            return bright ? setColorBlackBright(c) : setColorBlack(c);
+            break;
+        case 1:
+            return bright ? setColorRedBright(c) : setColorRed(c);
+            break;
+        case 2:
+            return bright ? setColorGreenBright(c) : setColorGreen(c);
+            break;
+        case 3:
+            return bright ? setColorYellowBright(c) : setColorYellow(c);
+            break;
+        case 4:
+            return bright ? setColorBlueBright(c) : setColorBlue(c);
+            break;
+        case 5:
+            return bright ? setColorMagentaBright(c) : setColorMagenta(c);
+            break;
+        case 6:
+            return bright ? setColorCyanBright(c) : setColorCyan(c);
+            break;
+        case 7:
+            return bright ? setColorWhiteBright(c) : setColorWhite(c);
+            break;
+        default:
+            break;
+        }
+    }
     inline QColor fColor(int index, bool bright = false) const
     {
         switch (index)

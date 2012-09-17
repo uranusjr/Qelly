@@ -11,5 +11,6 @@
         <file>Reload.png</file>
         <file>Flashlight.png</file>
         <file>Anti-sleep.png</file>
+        <file>Color.png</file>
     </qresource>
 </RCC>

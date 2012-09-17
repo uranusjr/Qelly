@@ -17,8 +17,9 @@
 #include <QIcon>
 #include <QMetaObject>
 #include <QTableWidget>
-#include "PreferencesGeneral.h"
+#include "PreferencesColor.h"
 #include "PreferencesFont.h"
+#include "PreferencesGeneral.h"
 
 namespace UJ
 {
@@ -33,9 +34,11 @@ PreferencesWindow::PreferencesWindow(QWidget *parent) : QxtConfigDialog(parent)
 
     QIcon general = QIcon(":/images/General.png");
     QIcon font = QIcon(":/images/Font.png");
+    QIcon color = QIcon(":/images/Color.png");
 
     addPage(new PreferencesGeneral(this), general, tr("General"));
     addPage(new PreferencesFont(this), font, tr("Fonts"));
+    addPage(new PreferencesColor(this), color, tr("Color"));
 }
 
 void PreferencesWindow::addPage(QWidget *page, QIcon &icon, QString title)

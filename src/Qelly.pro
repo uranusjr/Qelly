@@ -42,7 +42,9 @@ SOURCES += main.cpp \
     SharedPreferences.cpp \
     PreferencesGeneral.cpp \
     PreferencesWindow.cpp \
-    PreferencesFont.cpp
+    PreferencesFont.cpp \
+    PreferencesColor.cpp \
+    ColorWell.cpp
 
 HEADERS  += \
     SharedMenuBar.h \
@@ -64,11 +66,14 @@ HEADERS  += \
     SharedPreferences.h \
     PreferencesGeneral.h \
     PreferencesWindow.h \
-    PreferencesFont.h
+    PreferencesFont.h \
+    PreferencesColor.h \
+    ColorWell.h
 
 RESOURCES += \
     GeneralResources.qrc
 
 FORMS += \
     PreferencesGeneral.ui \
-    PreferencesFont.ui
+    PreferencesFont.ui \
+    PreferencesColor.ui
