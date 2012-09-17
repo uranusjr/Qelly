@@ -16,6 +16,7 @@
 #include "PreferencesWindow.h"
 #include <QIcon>
 #include <QMetaObject>
+#include <QTableWidget>
 #include "PreferencesGeneral.h"
 #include "PreferencesFont.h"
 
@@ -27,6 +28,9 @@ namespace Qelly
 
 PreferencesWindow::PreferencesWindow(QWidget *parent) : QxtConfigDialog(parent)
 {
+    setWindowTitle(tr("Preferences"));
+    configWidget()->setIconSize(QSize(48, 48));
+
     QIcon general = QIcon(":/images/General.png");
     QIcon font = QIcon(":/images/Font.png");
 
