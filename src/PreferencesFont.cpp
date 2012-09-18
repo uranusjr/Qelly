@@ -32,6 +32,8 @@ PreferencesFont::PreferencesFont(QWidget *parent) : QWidget(parent)
             this, SLOT(browseFontRoman()));
     connect(_ui->fontDoubleByteNameChoose, SIGNAL(clicked()),
             this, SLOT(browseFontDoubleByte()));
+
+    initialize();
 }
 
 PreferencesFont::~PreferencesFont()

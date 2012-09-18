@@ -34,6 +34,8 @@ PreferencesColor::PreferencesColor(QWidget *parent) : QWidget(parent)
     bolds << _ui->colorBlackBold  << _ui->colorRedBold  << _ui->colorGreenBold
           << _ui->colorYellowBold << _ui->colorBlueBold << _ui->colorMagentaBold
           << _ui->colorCyanBold   << _ui->colorWhiteBold;
+
+    initialize();
 }
 
 PreferencesColor::~PreferencesColor()

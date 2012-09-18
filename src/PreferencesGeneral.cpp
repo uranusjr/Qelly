@@ -30,6 +30,8 @@ PreferencesGeneral::PreferencesGeneral(QWidget *parent) : QWidget(parent)
     _ui->setupUi(this);
     connect(_ui->sshClientPathBrowse, SIGNAL(clicked()),
             this, SLOT(browseSshClientPath()));
+
+    initialize();
 }
 
 PreferencesGeneral::~PreferencesGeneral()
