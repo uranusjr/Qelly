@@ -21,6 +21,7 @@
 #include <QByteArray>
 #include <QClipboard>
 #include <QDesktopServices>
+#include <QMimeData>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPaintEvent>

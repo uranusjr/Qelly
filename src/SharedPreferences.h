@@ -138,7 +138,7 @@ public: // Setters & Getters
 
     inline QFont defaultFont() const
     {
-        QFont defaultFont("Monospace", 21);
+        QFont defaultFont("Courier New", 18);
         defaultFont.setStyleHint(QFont::TypeWriter);
         return _settings->value("default font", defaultFont).value<QFont>();
     }
@@ -148,7 +148,7 @@ public: // Setters & Getters
     }
     inline QFont doubleByteFont() const
     {
-        QFont defaultFont("ar pl uming cn", 22);
+        QFont defaultFont("ar pl uming cn", 19);
         return _settings->value("double byte font", defaultFont).value<QFont>();
     }
     inline void setDoubleByteFont(QFont font)

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network
+QT       += core gui widgets network
 
 TARGET = Qelly
 TEMPLATE = app
