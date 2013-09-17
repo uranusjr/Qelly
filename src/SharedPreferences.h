@@ -139,7 +139,8 @@ public: // Setters & Getters
     {
         QFont font;
         QString name = _settings->value("default font", QString()).toString();
-        if (name.isNull() || !font.fromString(name))
+        bool ok = font.fromString(name);
+        if (!ok)
             font = QFont("Courier New", 16);
         font.setStyleHint(QFont::TypeWriter);
         return font;
@@ -153,7 +154,8 @@ public: // Setters & Getters
         QFont font;
         QString name = _settings->value("double byte font", QString())
                                  .toString();
-        if (name.isNull() || !font.fromString(name))
+        bool ok = font.fromString(name);
+        if (!ok)
             font = QFont("Microsoft JhengHei UI", 18);
         return font;
     }
