@@ -28,12 +28,13 @@ PreferencesColor::PreferencesColor(QWidget *parent) : QWidget(parent)
     _ui = new Ui::PreferencesColor;
     _ui->setupUi(this);
 
-    normals << _ui->colorBlack  << _ui->colorRed  << _ui->colorGreen
-            << _ui->colorYellow << _ui->colorBlue << _ui->colorMagenta
-            << _ui->colorCyan   << _ui->colorWhite;
-    bolds << _ui->colorBlackBold  << _ui->colorRedBold  << _ui->colorGreenBold
-          << _ui->colorYellowBold << _ui->colorBlueBold << _ui->colorMagentaBold
-          << _ui->colorCyanBold   << _ui->colorWhiteBold;
+    _normals << _ui->colorBlack  << _ui->colorRed  << _ui->colorGreen
+             << _ui->colorYellow << _ui->colorBlue << _ui->colorMagenta
+             << _ui->colorCyan   << _ui->colorWhite;
+    _bolds << _ui->colorBlackBold << _ui->colorRedBold
+           << _ui->colorGreenBold << _ui->colorYellowBold
+           << _ui->colorBlueBold  << _ui->colorMagentaBold
+           << _ui->colorCyanBold  << _ui->colorWhiteBold;
 
     initialize();
 }
@@ -51,8 +52,8 @@ void PreferencesColor::initialize()
 
     for (int i = 0; i < 8; i++)
     {
-        normals.at(i)->setColor(prefs->fColor(i, false));
-        bolds.at(i)->setColor(prefs->fColor(i, true));
+        _normals.at(i)->setColor(prefs->fColor(i, false));
+        _bolds.at(i)->setColor(prefs->fColor(i, true));
     }
     _visited = true;
 }
@@ -74,11 +75,11 @@ void PreferencesColor::accept()
 
     for (int i = 0; i < 8; i++)
     {
-        color = normals.at(i)->color();
+        color = _normals.at(i)->color();
         if (color != prefs->fColor(i, false))
             prefs->setColor(color, i, false);
 
-        color = bolds.at(i)->color();
+        color = _bolds.at(i)->color();
         if (color != prefs->fColor(i, true))
             prefs->setColor(color, i, true);
     }

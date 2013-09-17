@@ -48,8 +48,8 @@ public slots:
 
 private:
     Ui::PreferencesColor *_ui;
-    QList<ColorWell *> normals;
-    QList<ColorWell *> bolds;
+    QList<ColorWell *> _normals;
+    QList<ColorWell *> _bolds;
     bool _visited;
 };
 

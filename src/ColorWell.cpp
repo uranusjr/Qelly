@@ -46,6 +46,8 @@ void ColorWell::mousePressEvent(QMouseEvent *)
 
     if (c.isValid() && c != color())    // c is invalid if getColor is cancelled
         setColor(c);
+
+    setStyleSheet("QFrame{color:gray; background-color:light gray;}");
 }
 
 void ColorWell::mouseReleaseEvent(QMouseEvent *)
