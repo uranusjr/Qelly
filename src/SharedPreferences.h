@@ -430,7 +430,12 @@ public: // Setters & Getters
     }
     inline QString sshClientPath() const
     {
-        return _settings->value("ssh client path", "/usr/bin/ssh").toString();
+#ifdef Q_OS_UNIX
+        QString defaultPath = "/usr/bin/ssh";
+#else
+        QString defaultPath = "Plink.exe";
+#endif
+        return _settings->value("ssh client path", defaultPath).toString();
     }
     inline void setSshClientPath(QString path)
     {

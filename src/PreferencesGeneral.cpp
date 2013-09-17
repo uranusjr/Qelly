@@ -16,6 +16,7 @@
 #include "PreferencesGeneral.h"
 #include "ui_PreferencesGeneral.h"
 #include <QFileDialog>
+#include <QMessageBox>
 #include "SharedPreferences.h"
 
 namespace UJ
@@ -56,7 +57,15 @@ void PreferencesGeneral::accept()
         return;
 
     SharedPreferences *prefs = SharedPreferences::sharedInstance();
-    prefs->setSshClientPath(_ui->sshClientPath->text());
+    try
+    {
+        prefs->setSshClientPath(_ui->sshClientPath->text());
+    }
+    catch (QString errorMessage)
+    {
+        QString msg = tr("SSH will not be available until it is corrected.");
+        QMessageBox(QMessageBox::Warning, errorMessage, msg).exec();
+    }
     _visited = false;
 }
 
