@@ -40,7 +40,6 @@ namespace Qelly
 Controller::Controller(QObject *parent) : QObject(parent)
 {
     _window = new MainWindow();
-    _preferencesWindow = new PreferencesWindow();
     SharedMenuBar *menu = SharedMenuBar::sharedInstance();
     connect(menu, SIGNAL(preferences()), this, SLOT(showPreferencesWindow()));
     connect(menu, SIGNAL(fileNewTab()), this, SLOT(addTab()));
@@ -270,9 +269,13 @@ void Controller::changeAddressField(QString &address)
 
 void Controller::showPreferencesWindow()
 {
+    if (!_preferencesWindow)
+    {
+        _preferencesWindow = new PreferencesWindow();
+        _preferencesWindow->setAttribute(Qt::WA_DeleteOnClose);
+    }
     _preferencesWindow->show();
 }
-
 View *Controller::currentView() const
 {
     return static_cast<View *>(_window->tabs()->currentWidget());

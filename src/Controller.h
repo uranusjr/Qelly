@@ -20,6 +20,7 @@
 #define CONTROLLER_H
 
 #include <QObject>
+#include <QPointer>
 
 namespace UJ
 {
@@ -57,7 +58,7 @@ private:
     View *currentView() const;
     View *viewInTab(int index) const;
     MainWindow *_window;
-    PreferencesWindow *_preferencesWindow;
+    QPointer<PreferencesWindow> _preferencesWindow;
 };
 
 }   // namespace Qelly

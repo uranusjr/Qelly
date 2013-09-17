@@ -24,8 +24,6 @@ namespace UJ
 namespace Qelly
 {
 
-class PreferencesWindow;
-
 class PreferencesWindow : public QxtConfigDialog
 {
     Q_OBJECT
