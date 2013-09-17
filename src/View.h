@@ -81,7 +81,7 @@ signals:
     void shouldChangeAddress(QString &address);
 
 private slots:
-    inline void displayCellAt(int row, int column)
+    inline void displayCellAt(int column, int row)
     {
         update(column * _cellWidth, row * _cellHeight, _cellWidth, _cellHeight);
     }
