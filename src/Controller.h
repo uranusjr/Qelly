@@ -54,6 +54,9 @@ public slots:
     void changeAddressField(QString &address);
     void showPreferencesWindow();
 
+private slots:
+    void updateAll();
+
 private:
     View *currentView() const;
     View *viewInTab(int index) const;

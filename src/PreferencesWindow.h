@@ -31,6 +31,9 @@ class PreferencesWindow : public QxtConfigDialog
 public:
     explicit PreferencesWindow(QWidget *parent = 0);
     void addPage(QWidget *page, QIcon &icon, QString title);
+
+signals:
+    void displayPreferenceChanged();
 };
 
 }   // namespace Qelly

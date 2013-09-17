@@ -17,6 +17,7 @@
 #include <QIcon>
 #include <QMetaObject>
 #include <QTableWidget>
+#include <QxtSignalGroup>
 #include "PreferencesColor.h"
 #include "PreferencesFont.h"
 #include "PreferencesGeneral.h"
@@ -31,14 +32,23 @@ PreferencesWindow::PreferencesWindow(QWidget *parent) : QxtConfigDialog(parent)
 {
     setWindowTitle(tr("Preferences"));
     configWidget()->setIconSize(QSize(20, 20));
+    QxtSignalGroup *displayPreferenceGroup = new QxtSignalGroup(this);
 
-    QIcon general = QIcon(":/images/General.png");
-    QIcon font = QIcon(":/images/Font.png");
-    QIcon color = QIcon(":/images/Color.png");
+    PreferencesGeneral *general = new PreferencesGeneral(this);
+    PreferencesFont *font = new PreferencesFont(this);
+    PreferencesColor *color = new PreferencesColor(this);
 
-    addPage(new PreferencesGeneral(this), general, tr("General"));
-    addPage(new PreferencesFont(this), font, tr("Fonts"));
-    addPage(new PreferencesColor(this), color, tr("Color"));
+    addPage(general, QIcon(":/images/General.png"), tr("General"));
+    addPage(font, QIcon(":/images/Font.png"), tr("Fonts"));
+    addPage(color, QIcon(":/images/Color.png"), tr("Color"));
+
+    // If anyone of the pages has been updated, trigger redraw
+    displayPreferenceGroup->addSignal(font, SIGNAL(preferencesUpdated()));
+    displayPreferenceGroup->addSignal(color, SIGNAL(preferencesUpdated()));
+    connect(displayPreferenceGroup, SIGNAL(firstSignalReceived()),
+            SIGNAL(displayPreferenceChanged()));
+    connect(displayPreferenceGroup, SIGNAL(firstSignalReceived()),
+            displayPreferenceGroup, SLOT(reset()));
 
     setFixedWidth(550);
 }

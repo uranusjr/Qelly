@@ -134,27 +134,26 @@ void Controller::closeTab(int index)
     {
         if (view->isConnected())
         {
-            QMessageBox *sure = new QMessageBox(_window);
-            sure->setIcon(QMessageBox::Warning);
-            sure->setText(tr("Are you sure you want to close this tab?"));
-            sure->setInformativeText(
+            QMessageBox sure(_window);
+            sure.setIcon(QMessageBox::Warning);
+            sure.setText(tr("Are you sure you want to close this tab?"));
+            sure.setInformativeText(
                 tr("The connection is still alive. If you close this tab, the "
                    "connection will be lost. Do you want to close this tab "
                    "anyway?"));
-            sure->setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
-            sure->setWindowModality(Qt::WindowModal);
-            sure->setFocus(Qt::PopupFocusReason);
-            switch (sure->exec())
+            sure.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+            sure.setWindowModality(Qt::WindowModal);
+            sure.setFocus(Qt::PopupFocusReason);
+            switch (sure.exec())
             {
             case QMessageBox::Ok:
-                tabs->closeTab(tabs->currentIndex());
+                tabs->closeTab(index);
                 break;
             case QMessageBox::Cancel:
                 break;
             default:
                 break;
             }
-            sure->deleteLater();
         }
         else
         {
@@ -186,7 +185,7 @@ void Controller::closeWindow()
     int count = 0;
     for (int i = 0; i < _window->tabs()->count(); i++)
     {
-        if (static_cast<View *>(_window->tabs()->widget(i))->isConnected())
+        if (viewInTab(i)->isConnected())
             count++;
     }
 
@@ -253,8 +252,7 @@ void Controller::onAddressReturnPressed()
     if (!address.size())
         return;
 
-    if (!_window->tabs()->count() ||
-            static_cast<View *>(_window->tabs()->currentWidget())->terminal())
+    if (!_window->tabs()->count() || currentView()->terminal())
     {
         int newTab = _window->tabs()->addTab(new View(), "");
         _window->tabs()->setCurrentIndex(newTab);
@@ -273,9 +271,21 @@ void Controller::showPreferencesWindow()
     {
         _preferencesWindow = new PreferencesWindow();
         _preferencesWindow->setAttribute(Qt::WA_DeleteOnClose);
+        connect(_preferencesWindow, SIGNAL(displayPreferenceChanged()),
+                SLOT(updateAll()));
     }
     _preferencesWindow->show();
 }
+
+void Controller::updateAll()
+{
+    for (int i = 0; i < _window->tabs()->count(); i++)
+    {
+        View *view = viewInTab(i);
+        view->updateScreen();
+    }
+}
+
 View *Controller::currentView() const
 {
     return static_cast<View *>(_window->tabs()->currentWidget());

@@ -83,6 +83,7 @@ void PreferencesFont::accept()
     prefs->setDoubleByteFontPaddingBottom(
                                     _ui->fontDoubleByteMarginBottom->value());
 
+
     _visited = false;
 }
 

@@ -448,7 +448,7 @@ public: // Setters & Getters
         }
         else
         {
-            throw QString("Invalid SSH Client Path");
+            throw "Invalid SSH Client Path";
         }
     }
 };

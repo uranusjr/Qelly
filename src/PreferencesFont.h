@@ -43,6 +43,9 @@ public slots:
     void accept();
     void reject();
 
+signals:
+    void preferencesUpdated();
+
 private slots:
     void browseFontRoman();
     void browseFontDoubleByte();

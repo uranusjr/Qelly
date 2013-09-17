@@ -46,6 +46,9 @@ public slots:
     void accept();
     void reject();
 
+signals:
+    void preferencesUpdated();
+
 private:
     Ui::PreferencesColor *_ui;
     QList<ColorWell *> _normals;
