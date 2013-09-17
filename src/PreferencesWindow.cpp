@@ -30,7 +30,7 @@ namespace Qelly
 PreferencesWindow::PreferencesWindow(QWidget *parent) : QxtConfigDialog(parent)
 {
     setWindowTitle(tr("Preferences"));
-    configWidget()->setIconSize(QSize(48, 48));
+    configWidget()->setIconSize(QSize(20, 20));
 
     QIcon general = QIcon(":/images/General.png");
     QIcon font = QIcon(":/images/Font.png");
@@ -39,6 +39,8 @@ PreferencesWindow::PreferencesWindow(QWidget *parent) : QxtConfigDialog(parent)
     addPage(new PreferencesGeneral(this), general, tr("General"));
     addPage(new PreferencesFont(this), font, tr("Fonts"));
     addPage(new PreferencesColor(this), color, tr("Color"));
+
+    setFixedWidth(550);
 }
 
 void PreferencesWindow::addPage(QWidget *page, QIcon &icon, QString title)
