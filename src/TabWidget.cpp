@@ -1,6 +1,6 @@
 #include "TabWidget.h"
-#include <QApplication>
 #include <QTabBar>
+#include <QTextStream>
 #include "View.h"
 
 namespace UJ
@@ -11,18 +11,20 @@ namespace Qelly
 
 TabWidget::TabWidget(QWidget *parent) : QTabWidget(parent)
 {
-    int size = QApplication::font().pointSize();
-    _tabBarHeight = QApplication::fontMetrics().height() * 1.5;
+    int size = font().pointSize();
+    _tabBarHeight = fontMetrics().height() * 1.5;
     QString s;
-    s.sprintf("QTabBar::tab { width: 150px; font: %dpt; }",
-              static_cast<int>(size * 0.9));
+    QTextStream stream(&s);
+    stream << "QTabBar::tab {"
+           << "width: 150px;"
+           << "font-size:" << size * 0.9 << "pt;"
+           << "}";
     setStyleSheet(s);
+    tabBar()->setAutoFillBackground(true);
     QPalette p;
     p.setBrush(QPalette::Window, QBrush(Qt::black));
     setPalette(p);
     setAutoFillBackground(true);
-    tabBar()->setPalette(QApplication::palette());
-    tabBar()->setAutoFillBackground(true);
     setDocumentMode(true);
     setTabsClosable(true);
     setMovable(true);

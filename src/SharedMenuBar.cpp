@@ -1,4 +1,4 @@
-#include "SharedMenuBar.h"
+﻿#include "SharedMenuBar.h"
 #include <QKeySequence>
 #include <QMenu>
 #include "Globals.h"
@@ -11,14 +11,14 @@ namespace Qelly
 
 SharedMenuBar::SharedMenuBar(QWidget *parent) : QMenuBar(parent)
 {
-    QMenu *menu;
+    QMenu *menu = 0;
     connect(this, SIGNAL(editPreferences()), this, SIGNAL(preferences()));
     connect(this, SIGNAL(windowAbout()), this, SIGNAL(about()));
 
     menu = addMenu(tr("File"));
     menu->addAction(tr("New Tab"), this, SIGNAL(fileNewTab()),
                     QKeySequence(UJ::MOD | Qt::Key_T));
-    menu->addAction(tr("Open Location…"), this, SIGNAL(fileOpenLocation()),
+    menu->addAction(tr("Open Location..."), this, SIGNAL(fileOpenLocation()),
                     QKeySequence(UJ::MOD | Qt::Key_L));
     _reconnectAction = menu->addAction(tr("Reconnect"),
                                        this, SIGNAL(fileReconnect()));
@@ -44,14 +44,14 @@ SharedMenuBar::SharedMenuBar(QWidget *parent) : QMenuBar(parent)
     menu->addAction(tr("Select All"), this, SIGNAL(editSelectAll()),
                     QKeySequence(UJ::MOD | Qt::Key_A));
     menu->addSeparator();
-    menu->addAction(tr("Emicons…"), this, SIGNAL(editEmicons()),
+    menu->addAction(tr("Emicons..."), this, SIGNAL(editEmicons()),
                     QKeySequence(UJ::MOD | Qt::Key_E));
     menu->addSeparator();
 #ifdef Q_WS_MAC
-    menu->addAction(tr("Customize Toolbar…"),
+    menu->addAction(tr("Customize Toolbar..."),
                     this, SIGNAL(editCustomizeToolbar()));
 #endif
-    menu->addAction(tr("Preferences…"), this, SIGNAL(editPreferences()),
+    menu->addAction(tr("Preferences..."), this, SIGNAL(editPreferences()),
                     QKeySequence(UJ::MOD | Qt::Key_Comma));
 
     menu = addMenu(tr("View"));
@@ -65,7 +65,7 @@ SharedMenuBar::SharedMenuBar(QWidget *parent) : QMenuBar(parent)
     encoding->addAction(tr("GBK"), this, SIGNAL(viewEncodingGbk()));
 
     menu = addMenu(tr("Sites"));
-    menu->addAction(tr("Edit Sites…"), this, SIGNAL(sitesEditSites()),
+    menu->addAction(tr("Edit Sites..."), this, SIGNAL(sitesEditSites()),
                     QKeySequence(UJ::MOD | Qt::Key_B));
     menu->addAction(tr("Add This Site"), this, SIGNAL(siteAddThisSite()),
                     QKeySequence(UJ::MOD | Qt::Key_D));
@@ -88,7 +88,7 @@ SharedMenuBar::SharedMenuBar(QWidget *parent) : QMenuBar(parent)
                     QKeySequence(UJ::MOD | UJ::OPT | Qt::Key_Up));
 #endif
     menu = addMenu(tr("Help"));
-    menu->addAction(tr("Visit Project Home…"),
+    menu->addAction(tr("Visit Project Home..."),
                     this, SIGNAL(helpVisitProjectHome()));
 }
 

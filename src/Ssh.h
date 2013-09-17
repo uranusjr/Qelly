@@ -2,7 +2,7 @@
 #define SSH_H
 
 #include "AbstractConnection.h"
-class QTcpSocket;
+class QProcess;
 
 namespace UJ
 {
@@ -17,7 +17,6 @@ class Ssh : public AbstractConnection
 public:
     explicit Ssh(QObject *parent = 0);
     virtual ~Ssh();
-    virtual bool connectTo(Site *s);
     virtual bool connectTo(QString &address, qint16 port);
     static const qint16 DefaultPort = 22;
 
@@ -30,17 +29,16 @@ public slots:
     virtual void reconnect();
     virtual void processBytes(QByteArray bytes);
     virtual void sendBytes(QByteArray bytes);
-    void sendCommand(uchar cmd, uchar option);
 
 private slots:
-    void onSocketHostFound();
-    void onSocketConnected();
-    void onSocketReadyRead();
-    void onSocketError();
-    void onSocketDisconnected();
+    void onProcessStarted();
+    void onProcessReadyRead();
+    void onProcessError();
+    void onProcessFinished();
 
 private:
-    QTcpSocket *_socket;
+    QProcess *_socket;
+    bool _isBbs;
 };
 
 }   // namespace Connection

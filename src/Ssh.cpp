@@ -1,5 +1,7 @@
 #include "Ssh.h"
-#include <QTcpSocket>
+#include <QProcess>
+#include "SharedPreferences.h"
+#include "Site.h"
 #include <QDebug>
 
 namespace UJ
@@ -11,31 +13,67 @@ namespace Connection
 Ssh::Ssh(QObject *parent) : AbstractConnection(parent)
 {
     _site = 0;
-    _socket = new QTcpSocket(this);
-    connect(_socket, SIGNAL(hostFound()), this, SLOT(onSocketHostFound()));
-    connect(_socket, SIGNAL(connected()), this, SLOT(onSocketConnected()));
-    connect(_socket, SIGNAL(readyRead()), this, SLOT(onSocketReadyRead()));
-    connect(_socket, SIGNAL(error(QAbstractSocket::SocketError)),
-            this, SLOT(onSocketError()));
-    connect(_socket, SIGNAL(disconnected()),
-            this, SLOT(onSocketDisconnected()));
+    _isBbs = false;
+    _socket = new QProcess(this);
+
+    connect(this, SIGNAL(receivedBytes(QByteArray)),
+            this, SLOT(processBytes(QByteArray)));
+    connect(_socket, SIGNAL(started()), this, SLOT(onProcessStarted()));
+    connect(_socket, SIGNAL(readyReadStandardOutput()),
+            this, SLOT(onProcessReadyRead()));
+    connect(_socket, SIGNAL(error(QProcess::ProcessError)),
+            this, SLOT(onProcessError()));
+    connect(_socket, SIGNAL(finished(int, QProcess::ExitStatus)),
+            this, SLOT(onProcessFinished()));
 }
 
 Ssh::~Ssh()
 {
-}
-
-bool Ssh::connectTo(Site *s)
-{
+    if (_socket->isOpen())
+        _socket->close();
 }
 
 bool Ssh::connectTo(QString &address, qint16 port)
 {
-    if (port < 0)
-        return false;
-
     setProcessing(true);
-    _socket->connectToHost(address, port);
+
+    if (!_site)
+        setSite(new Site(address, address, this));
+
+    _socket->setReadChannel(QProcess::StandardOutput);
+    _socket->setReadChannelMode(QProcess::MergedChannels);
+
+    QStringList args;
+    _isBbs = address.split('@').first().contains("bbs");
+
+    port = port < 0 ? DefaultPort : port;
+
+    if (_isBbs)
+    {
+        args << "-tt"
+             << "-e" << "none"  // Do not use EscapeChar
+             << "-x"
+             << "-p" << QString::number(port)
+             << address;
+    }
+    else
+    {
+        // TODO: Customizable parameters and environment
+        args << "-tt"
+             << "-e" << "none"  // Do not use EscapeChar
+             << "-x"
+             << "-p" << QString::number(port)
+             << address;
+
+        QProcessEnvironment env;
+        env.insert("TERM", "vt102");
+        _socket->setProcessEnvironment(env);
+    }
+
+    _socket->start(Qelly::SharedPreferences::sharedInstance()->sshClientPath(),
+                   args);
+
+    return true;
 }
 
 void Ssh::close()
@@ -46,22 +84,15 @@ void Ssh::reconnect()
 {
 }
 
-void Ssh::onSocketHostFound()
-{
-    qDebug() << "Found";
-}
-
-void Ssh::onSocketConnected()
+void Ssh::onProcessStarted()
 {
     setConnected(true);
     setProcessing(false);
     emit connected();
-    qDebug() << "Connected";
 }
 
-void Ssh::onSocketReadyRead()
+void Ssh::onProcessReadyRead()
 {
-    qDebug() << "ReadyRead";
     while (_socket->bytesAvailable())
     {
         QByteArray data = _socket->read(512);
@@ -70,31 +101,29 @@ void Ssh::onSocketReadyRead()
     }
 }
 
-void Ssh::onSocketError()
+void Ssh::onProcessError()
 {
-    qDebug() << "Error";
     setProcessing(false);
 }
 
-void Ssh::onSocketDisconnected()
+void Ssh::onProcessFinished()
 {
-    qDebug() << "Disconnected";
     setProcessing(false);
     setConnected(false);
     emit disconnected();
 }
 
-
 void Ssh::processBytes(QByteArray bytes)
 {
+    emit processedBytes(bytes);
 }
 
 void Ssh::sendBytes(QByteArray bytes)
 {
-}
+    if (bytes.isEmpty())
+        return;
 
-void Ssh::sendCommand(uchar cmd, uchar option)
-{
+    _socket->write(bytes);
 }
 
 }   // namespace Connection

@@ -22,12 +22,13 @@
 #include <QObject>
 #include <QApplication>
 #include <QColor>
+#include <QFileInfo>
 #include <QFont>
 #include <QFontDatabase>
 #include <QPoint>
 #include <QSettings>
 #include "Globals.h"
-#include <QLabel>
+#include "Ssh.h"
 #include <QDebug>
 
 namespace UJ
@@ -137,7 +138,7 @@ public: // Setters & Getters
 
     inline QFont defaultFont() const
     {
-        QFont defaultFont("Monospace", 21);
+        QFont defaultFont("Courier New", 16);
         defaultFont.setStyleHint(QFont::TypeWriter);
         return _settings->value("default font", defaultFont).value<QFont>();
     }
@@ -147,7 +148,7 @@ public: // Setters & Getters
     }
     inline QFont doubleByteFont() const
     {
-        QFont defaultFont("ar pl uming cn", 22);
+        QFont defaultFont("Microsoft JhengHei UI", 18);
         return _settings->value("double byte font", defaultFont).value<QFont>();
     }
     inline void setDoubleByteFont(QFont font)
@@ -388,6 +389,22 @@ public: // Setters & Getters
     inline void setBackgroundColor(QColor color)
     {
         _settings->setValue("background color", color);
+    }
+    inline QString sshClientPath() const
+    {
+        return _settings->value("ssh client path", "/usr/bin/ssh").toString();
+    }
+    inline void setSshClientPath(QString path)
+    {
+        QFileInfo info = QFileInfo(path);
+        if (info.exists() && info.isExecutable())
+        {
+            _settings->setValue("ssh client path", path);
+        }
+        else
+        {
+            throw QString("Invalid SSH Client Path");
+        }
     }
 };
 

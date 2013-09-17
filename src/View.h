@@ -1,4 +1,4 @@
-/*****************************************************************************
+﻿/*****************************************************************************
  * View.h
  *
  * Created: 06/10 2011 by uranusjr
@@ -20,6 +20,7 @@
 #define VIEW_H
 
 #include "UJQxWidget.h"
+#include <cctype>
 #include <QQueue>
 #include <QVector>
 #include "Globals.h"

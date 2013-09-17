@@ -55,7 +55,6 @@ private:
     View *currentView() const;
     View *viewInTab(int index) const;
     MainWindow *_window;
-
 };
 
 }   // namespace Qelly

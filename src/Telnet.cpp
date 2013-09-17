@@ -36,19 +36,11 @@ Telnet::~Telnet()
     delete _sbBuffer;
 }
 
-bool Telnet::connectTo(Site *s)
-{
-    QString address = s->address();
-    return connectTo(address, DefaultPort);
-}
-
 bool Telnet::connectTo(QString &address, qint16 port)
 {
-    if (port < 0)
-        return false;
-
     setProcessing(true);
-    _port = port;
+
+    _port = port < 0 ? DefaultPort : port;
 
     if (!_site)
         setSite(new Site(address, address, this));

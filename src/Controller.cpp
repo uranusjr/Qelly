@@ -70,27 +70,40 @@ void Controller::connectWithAddress(QString address)
     QString name = address;
     _window->tabs()->setTabText(_window->tabs()->currentIndex(), name);
     View *view = currentView();
-    Connection::Terminal *t = new Connection::Terminal(view);
+    Connection::Terminal *terminal = new Connection::Terminal(view);
     Connection::AbstractConnection *connection;
+    qint16 defaultPort = Connection::AbstractConnection::DefaultPort;
     if (address.startsWith("ssh://"))
-        return; // NOTE: Handle ssh
+    {
+        address = address.section("://", 1);
+        connection = new Connection::Ssh(terminal);
+        terminal->setConnection(connection);
+        defaultPort = Connection::Ssh::DefaultPort;
+    }
     else if (address.startsWith("telnet://"))
     {
         address = address.section("://", 1);
-        connection = new Connection::Telnet(t);
-        t->setConnection(connection);
+        connection = new Connection::Telnet(terminal);
+        terminal->setConnection(connection);
+        defaultPort = Connection::Telnet::DefaultPort;
     }
     else
     {
-        connection = new Connection::Telnet(t);
-        t->setConnection(connection);
+        connection = new Connection::Telnet(terminal);
+        terminal->setConnection(connection);
+        defaultPort = Connection::Telnet::DefaultPort;
     }
-    view->setTerminal(t);
+    view->setTerminal(terminal);
     view->setAddress(_window->address()->text());
     view->setFocus(Qt::OtherFocusReason);
     connect(view, SIGNAL(shouldChangeAddress(QString &)),
             this, SLOT(changeAddressField(QString &)));
-    connection->connectTo(address, 23);
+
+    QStringList comps = address.split(':');
+    if (comps.size() == 1)
+        connection->connectTo(address, defaultPort);
+    else
+        connection->connectTo(comps.first(), comps.last().toLong());
 }
 
 void Controller::focusAddressField()

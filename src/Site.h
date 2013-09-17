@@ -15,13 +15,15 @@ class Site : public QObject
     Q_OBJECT
 
 public:
-    explicit Site(QString address = QString("protocol://site.address"),
+    explicit Site(QString form = QString("protocol://site.address"),
                   QString name = QString("Name"),
                   QObject *parent = 0);
 
 private:
+    Type _type;
     QString _name;
     QString _address;
+    qint16 _port;
     BBS::Encoding _encoding;
     BBS::AnsiColorKey _colorKey;
     bool _manualDoubleByte;
@@ -42,6 +44,14 @@ public:     // Setters & Getters
     inline void setAddress(QString &address)
     {
         _address = address;
+    }
+    inline Type type() const
+    {
+        return _type;
+    }
+    inline qint16 port() const
+    {
+        return _port;
     }
     inline BBS::Encoding encoding() const
     {
