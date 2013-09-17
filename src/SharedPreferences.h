@@ -140,7 +140,7 @@ public: // Setters & Getters
         QFont font;
         QString name = _settings->value("default font", QString()).toString();
         if (name.isNull() || !font.fromString(name))
-            font = QFont("Monospace", 21);
+            font = QFont("Courier New", 16);
         font.setStyleHint(QFont::TypeWriter);
         return font;
     }
@@ -154,7 +154,7 @@ public: // Setters & Getters
         QString name = _settings->value("double byte font", QString())
                                  .toString();
         if (name.isNull() || !font.fromString(name))
-            font = QFont("AR PL UMING CN", 22);
+            font = QFont("Microsoft JhengHei UI", 18);
         return font;
     }
     inline void setDoubleByteFont(QFont &font)

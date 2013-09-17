@@ -1,5 +1,4 @@
 #include <QApplication>
-#include <QTextCodec>
 #include <QTranslator>
 #include "Encodings.h"
 #include "Controller.h"
@@ -12,11 +11,6 @@ int main(int argc, char *argv[])
     // DO NOT use Qt::META, Qt::ALT, Qt::Key_Control and Qt::Key_Meta, but use
     // UJ::MOD, UJ::ALT, UJ::Key_Control and UJ::Key_Meta in Globals.h instead.
     a.setAttribute(Qt::AA_MacDontSwapCtrlAndMeta);
-
-    QTextCodec *codec = QTextCodec::codecForName("System");
-    QTextCodec::setCodecForTr(codec);
-    QTextCodec::setCodecForLocale(codec);
-    QTextCodec::setCodecForCStrings(codec);
 
     YL::init_table();
 

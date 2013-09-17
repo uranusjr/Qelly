@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui network
+QT       += core gui widgets network
 
 CONFIG += qxt
 QXT += core gui
@@ -44,7 +44,8 @@ SOURCES += main.cpp \
     PreferencesWindow.cpp \
     PreferencesFont.cpp \
     PreferencesColor.cpp \
-    ColorWell.cpp
+    ColorWell.cpp \
+    PreeditTextHolder.cpp
 
 HEADERS  += \
     SharedMenuBar.h \
@@ -68,7 +69,8 @@ HEADERS  += \
     PreferencesWindow.h \
     PreferencesFont.h \
     PreferencesColor.h \
-    ColorWell.h
+    ColorWell.h \
+    PreeditTextHolder.h
 
 RESOURCES += \
     GeneralResources.qrc

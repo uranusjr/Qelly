@@ -1044,7 +1044,7 @@ void Terminal::handleControlDecstbm()
 QString Terminal::stringFromIndex(int begin, int length)
 {
     QString string;
-    uint temp;
+    uint temp = 0;
     int space = 0;
     for (int i = begin; i < begin + length; i++)
     {

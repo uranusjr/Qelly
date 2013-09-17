@@ -21,6 +21,7 @@
 #include <QByteArray>
 #include <QClipboard>
 #include <QDesktopServices>
+#include <QMimeData>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPaintEvent>
@@ -31,9 +32,10 @@
 #include "AbstractConnection.h"
 #include "Encodings.h"
 #include "Globals.h"
-#include "Terminal.h"
+#include "PreeditTextHolder.h"
 #include "SharedPreferences.h"
 #include "Site.h"
+#include "Terminal.h"
 #include "UJCommonDefs.h"
 #include <QDebug>
 
@@ -51,6 +53,7 @@ View::View(QWidget *parent) : Widget(parent)
     _blinkTicker = false;
     _prefs = SharedPreferences::sharedInstance();
     _painter = new QPainter();
+    _preeditHolder = new PreeditTextHolder(this);
     buildInfo();
     setFocusPolicy(Qt::StrongFocus);
     setAttribute(Qt::WA_InputMethodEnabled);
@@ -112,6 +115,21 @@ int View::indexFromPoint(QPoint p)
     int y = p.ry() / _cellHeight;
 
     return y * _column + x;
+}
+
+QPoint View::pointFromIndex(int x, int y)
+{
+    if (x < 0)
+        x = 0;
+    else if (x > _column)
+        x = _column;
+
+    if (y < 0)
+        y = 0;
+    else if (y > _row)
+        y = _row;
+
+    return QPoint(x * _cellWidth, y * _cellHeight);
 }
 
 void View::timerEvent(QTimerEvent *)
@@ -305,6 +323,7 @@ void View::keyPressEvent(QKeyEvent *e)
 {
     if (isConnected())
     {
+        _preeditHolder->hide();
         int key = e->key();
         if (key != UJ::Key_Mod)
             clearSelection();
@@ -487,19 +506,23 @@ void View::inputMethodEvent(QInputMethodEvent *e)
     if (isConnected())
     {
         QString commit = e->commitString();
-        if (commit.isEmpty())
-        {
-            if (e->preeditString() != _preeditString)
-            {
-                _preeditString = e->preeditString();
-                // NOTE: draw the preedit string on screen
-            }
-        }
-        else
-        {
-            _preeditString = QString();
-            // Un-draw the preedit string on screen
+        if (!commit.isEmpty())
             insertText(commit);
+
+        if (e->preeditString() != _preeditHolder->text())
+        {
+            _preeditHolder->updateText(e->preeditString());
+            if (_preeditHolder->text().isEmpty())
+            {
+                _preeditHolder->hide();
+            }
+            else
+            {
+                int x = terminal()->cursorColumn();
+                int y = terminal()->cursorRow() - 1;
+                _preeditHolder->move(pointFromIndex(x, y));
+                _preeditHolder->show();
+            }
         }
     }
 
