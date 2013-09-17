@@ -501,19 +501,6 @@ int View::characterFromKeyPress(int key, Qt::KeyboardModifiers mod, bool *ok)
     return (key - Qt::Key_At);
 }
 
-QVariant View::inputMethodQuery(Qt::InputMethodQuery q) const
-{
-    if (q == Qt::ImMicroFocus)
-    {
-        int x = terminal()->cursorColumn();
-        int y = terminal()->cursorRow();
-        return QRect(x * _cellWidth, y * _cellHeight,
-                     0, _preeditHolder->margin());
-    }
-
-    return QWidget::inputMethodQuery(q);
-}
-
 void View::inputMethodEvent(QInputMethodEvent *e)
 {
     if (isConnected())

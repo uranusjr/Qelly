@@ -75,7 +75,6 @@ protected:
     void paintEvent(QPaintEvent *e);
     void focusInEvent(QFocusEvent *);
     void timerEvent(QTimerEvent *);
-    QVariant inputMethodQuery(Qt::InputMethodQuery q) const;
 
 signals:
     void hasBytesToSend(QByteArray bytes);

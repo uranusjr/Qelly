@@ -31,17 +31,19 @@ PreeditTextHolder::PreeditTextHolder(QWidget *parent) : QLineEdit(parent)
     _borderWidth = 2;
     _borderRadius = 8;
     _padding = 8;
-    int height = _prefs->cellHeight() + _borderRadius;
+    const QFont &font = _prefs->doubleByteFont();
+
     QString style;
     QTextStream stream(&style);
-    stream << "UJ--Qelly--PreeditTextHolder {"
-           << "color: white;"
-           << "font:" << _prefs->doubleByteFont().pointSize() * 0.9 << "pt;"
-           << "min-height:" << height << "px;"
-           << "background-color: black;"
-           << "border:" << _borderWidth << "px solid white;"
-           << "border-radius:" << _borderRadius << "px;"
-           << "}";
+    stream << "UJ--Qelly--PreeditTextHolder {" <<
+              "color: #f0f0f0;" <<
+              "font-family:" << font.family() << ";" <<
+              "font-weight: 500;" <<    // Slightly bolder than normal (400)
+              "font-size:" << font.pointSize() * 0.9 << "pt;" <<
+              "background-color: black;" <<
+              "border:" << _borderWidth << "px solid #f0f0f0;" <<
+              "border-radius:" << _borderRadius << "px;" <<
+              "}";
     setStyleSheet(style);
     setReadOnly(true);
     hide();
