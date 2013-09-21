@@ -144,13 +144,12 @@ void View::mousePressEvent(QMouseEvent *e)
     if (isConnected())
     {
         terminal()->setHasMessage(false);
-
-        // META + click = move the cursor
-        if (e->modifiers() & UJ::MOD)
-            moveCursorTo(_selectedStart / _column, _selectedStart % _column);
-
         clearSelection();
         _selectedStart = indexFromPoint(e->pos());
+
+        // META + click = move the cursor
+        if (e->modifiers() & UJ::ModModifier)
+            moveCursorTo(_selectedStart / _column, _selectedStart % _column);
     }
 
     return Qx::Widget::mousePressEvent(e);
@@ -171,7 +170,7 @@ void View::moveCursorTo(int destRow, int destCol)
     {
         needsVertical = true;
         cmd.append('\x01');
-        for (int i = terminal()->cursorRow(); i < destRow; i++)
+        for (int i = terminal()->cursorRow(); i > destRow; i--)
             cmd.append("\x1b\x4f\x41");
     }
 
@@ -195,7 +194,7 @@ void View::moveCursorTo(int destRow, int destCol)
     }
     else if (destCol < terminal()->cursorColumn())
     {
-        for (int i = terminal()->cursorColumn(); i < destCol; i++)
+        for (int i = terminal()->cursorColumn(); i > destCol; i--)
         {
             if (row[i].attr.f.doubleByte != 2 || siteDblByte)
                 cmd.append("\x1b\x4f\x44");

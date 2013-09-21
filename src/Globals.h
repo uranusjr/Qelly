@@ -6,7 +6,7 @@
 namespace UJ
 {
 
-enum Modifiers
+enum Modifier
 {
 #ifdef Q_OS_MAC
     MOD = Qt::META,
@@ -17,9 +17,19 @@ enum Modifiers
 #endif
 };
 
+enum KeyboardModifier
+{
+// On Macs,
+#ifdef Q_OS_MAC
+    ModModifier = Qt::ControlModifier
+#else
+    ModModifier = Qt::AltModifier
+#endif
+};
+
 // Due to a bug in Qt, cmd and control keys are swapped on Macs even when we
 // explicitly disable the swap. We need to swap it back.
-enum Keys
+enum Key
 {
 #ifdef Q_OS_MAC
     Key_Mod = Qt::Key_Control,
