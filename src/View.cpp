@@ -336,7 +336,7 @@ void View::keyPressEvent(QKeyEvent *e)
             switch (key)
             {
             case Qt::Key_Tab:
-                emit hasBytesToSend(QByteArray("\x09"));
+                emit hasBytesToSend(QByteArray(1, ASC_HT));
                 break;
             case Qt::Key_Up:
             case Qt::Key_Down:
@@ -366,9 +366,7 @@ void View::keyPressEvent(QKeyEvent *e)
         }
         else    // Normal input
         {
-            QByteArray bytes;
-            bytes.append(text);
-            emit hasBytesToSend(bytes);
+            emit hasBytesToSend(text.toAscii());
         }
     }
 
