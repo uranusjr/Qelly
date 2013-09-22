@@ -61,16 +61,17 @@ public slots:
     void pasteColor();
 
 protected:
-    void mousePressEvent(QMouseEvent *e);
-    void mouseDoubleClickEvent(QMouseEvent *e);
-    void mouseTripleClickEvent(QMouseEvent *e);
-    void mouseReleaseEvent(QMouseEvent *);
-    void mouseMoveEvent(QMouseEvent *e);
-    void keyPressEvent(QKeyEvent *e);
-    void inputMethodEvent(QInputMethodEvent *e);
-    void paintEvent(QPaintEvent *e);
-    void focusInEvent(QFocusEvent *);
-    void timerEvent(QTimerEvent *);
+    virtual void contextMenuEvent(QContextMenuEvent *e);
+    virtual void mousePressEvent(QMouseEvent *e);
+    virtual void mouseDoubleClickEvent(QMouseEvent *e);
+    virtual void mouseTripleClickEvent(QMouseEvent *e);
+    virtual void mouseReleaseEvent(QMouseEvent *);
+    virtual void mouseMoveEvent(QMouseEvent *e);
+    virtual void keyPressEvent(QKeyEvent *e);
+    virtual void inputMethodEvent(QInputMethodEvent *e);
+    virtual void paintEvent(QPaintEvent *e);
+    virtual void focusInEvent(QFocusEvent *);
+    virtual void timerEvent(QTimerEvent *);
 
 signals:
     void hasBytesToSend(QByteArray bytes);
@@ -78,6 +79,8 @@ signals:
 
 private slots:
     void popInsertBuffer();
+    void openUrl();
+    void google();
 
 private:
     ViewPrivate *d_ptr;

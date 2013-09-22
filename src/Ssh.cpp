@@ -2,7 +2,6 @@
 #include <QProcess>
 #include "SharedPreferences.h"
 #include "Site.h"
-#include <QDebug>
 
 namespace UJ
 {

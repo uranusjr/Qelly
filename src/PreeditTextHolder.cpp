@@ -17,6 +17,7 @@
  *****************************************************************************/
 
 #include "PreeditTextHolder.h"
+#include <QTextStream>
 #include "SharedPreferences.h"
 
 namespace UJ

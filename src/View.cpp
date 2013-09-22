@@ -18,13 +18,18 @@
 
 #include "View.h"
 #include "View_p.h"
+#include <QAction>
 #include <QClipboard>
 #include <QDesktopServices>
+#include <QMenu>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QTextCodec>
 #include <QTimer>
 #include <QUrl>
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+    #include <QUrlQuery>
+#endif
 #include "AbstractConnection.h"
 #include "Encodings.h"
 #include "PreeditTextHolder.h"
@@ -70,14 +75,18 @@ void View::mousePressEvent(QMouseEvent *e)
     if (isConnected())
     {
         d->terminal->setHasMessage(false);
-        d->clearSelection();
-        d->selectedStart = d->indexFromPoint(e->pos());
 
-        // META + click = move the cursor
-        if (e->modifiers() & UJ::ModModifier)
+        if (e->button() == Qt::LeftButton)
         {
-            d->moveCursorTo(d->selectedStart / d->column,
-                            d->selectedStart % d->column);
+            d->clearSelection();
+            d->selectedStart = d->indexFromPoint(e->pos());
+
+            // META + click = move the cursor
+            if (e->modifiers() & UJ::ModModifier)
+            {
+                d->moveCursorTo(d->selectedStart / d->column,
+                                d->selectedStart % d->column);
+            }
         }
     }
 
@@ -174,7 +183,8 @@ void View::mouseReleaseEvent(QMouseEvent *e)
         bool hasUrl = false;
         QString url = d->terminal->urlStringAt(
                     index / d->column, index % d->column, &hasUrl);
-        if (hasUrl && !(e->modifiers() & UJ::MOD))
+        if (hasUrl && e->button() == Qt::LeftButton
+                && !(e->modifiers() & UJ::MOD))
         {
             // NOTE: Should we implement image previewer at all?
             QDesktopServices::openUrl(QUrl(url, QUrl::TolerantMode));
@@ -330,6 +340,40 @@ void View::popInsertBuffer()
     emit hasBytesToSend(QByteArray(1, d->insertBuffer.dequeue()));
     if (d->insertBuffer.isEmpty())
         d->insertTimer->stop();
+}
+
+void View::openUrl()
+{
+    QStringList urls;
+    QAction *action = qobject_cast<QAction *>(sender());
+    if (action)
+    {
+        // The user data can be a QStringList or QString. Both can be converted
+        // to QStringList, so we don't need anything else
+        urls = action->data().toStringList();
+    }
+    foreach (const QString &url, urls)
+        QDesktopServices::openUrl(d_ptr->realize(url));
+}
+
+void View::google()
+{
+    QString queryString;
+    QAction *action = qobject_cast<QAction *>(sender());
+    if (action)
+        queryString = action->data().toString();
+    if (!queryString.isEmpty())
+    {
+        QUrl url("http://www.google.com/search");
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+        url.addEncodedQueryItem("q", QUrl::toPercentEncoding(queryString));
+#else
+        QUrlQuery query;
+        query.addEncodedQueryItem("q", QUrl::toPercentEncoding(queryString));
+        url.setQuery(query);
+#endif
+        QDesktopServices::openUrl(url);
+    }
 }
 
 Connection::Terminal *View::terminal() const
@@ -739,6 +783,15 @@ void View::pasteColor()
     for (int i = 0; i < data.size(); i++)
         d->insertBuffer.enqueue(data[i]);
     d->insertTimer->start();
+}
+
+void View::contextMenuEvent(QContextMenuEvent *e)
+{
+    QMenu menu(this);
+    d_ptr->addActionsToContextMenu(&menu);
+    if (!menu.actions().isEmpty())
+        menu.exec(e->globalPos());      // Execute BLOCKING menu
+    return Qx::Widget::contextMenuEvent(e);
 }
 
 bool View::isConnected()

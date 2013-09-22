@@ -6,7 +6,6 @@
 #include "Globals.h"
 #include "Site.h"
 #include "View.h"
-#include <QDebug>
 
 namespace UJ
 {

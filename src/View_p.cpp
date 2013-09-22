@@ -17,7 +17,10 @@
  *****************************************************************************/
 
 #include "View_p.h"
+#include <QAction>
+#include <QMenu>
 #include <QPainter>
+#include <QRegExp>
 #include <QTimer>
 #include "UJCommonDefs.h"
 #include "Encodings.h"
@@ -218,6 +221,115 @@ int ViewPrivate::characterFromKeyPress(
 
     *ok = true;
     return (key - Qt::Key_At);
+}
+
+void ViewPrivate::addActionsToContextMenu(QMenu *menu)
+{
+    Q_Q(View);
+
+    QString s = selection();
+    QString shortUrl = shortUrlFromString(s);
+    QString longUrl = longUrlFromString(s);
+
+    // A. Treat long URL
+    if (isUrlLike(longUrl))
+    {
+        // Split the selected text into blocks seperated by one of the
+        // characters in seps
+        QStringList blocks = longUrl.split(QRegExp("\\s+"));
+
+        // Parse the blocks into two types:
+        // 1. Only the first component has a protocol prefix
+        // 2. Either the first one does not have a protocol prefix, or there
+        //    are multiple entries in the list that has a prefix.
+        bool firstOnlyProtocol = false;
+        if (blocks.size() > 1 && hasProtocolPrefix(blocks.at(0)))
+        {
+            firstOnlyProtocol = true;
+            foreach (const QString &c, blocks.mid(1))
+            {
+                if (hasProtocolPrefix(c))
+                {
+                    firstOnlyProtocol = false;
+                    break;
+                }
+            }
+        }
+
+        // Type 1 (firstOnlyProtocol = true)
+        // Concatenate all components into one single URL
+        if (firstOnlyProtocol)
+        {
+            addUrlToMenu(blocks.join(""), menu);
+        }
+        // Type 2 (firstOnlyProtocol = false)
+        // Treat each component as an individual URL
+        else
+        {
+            QStringList urls;
+            foreach (const QString &c, blocks)
+            {
+                if (isUrlLike(c))
+                    urls << c;
+            }
+            if (!urls.isEmpty())
+            {
+                QString title = (urls.size() == 1) ?
+                            urls.first() :
+                            q->tr("Open as multiple URLs");
+                QAction *action = menu->addAction(title, q, SLOT(openUrl()));
+                action->setData(urls);
+            }
+        }
+    }
+
+    // B. Treat short URL
+    // -> Niconico (starts with "sm" and follows with 1-8 digits)
+    if (QRegExp("sm\\d{1,8}").exactMatch(shortUrl))
+    {
+        addUrlToMenu(QString("http://www.nicovideo.jp/watch/%1").arg(shortUrl),
+                     menu);
+    }
+    // -> Pixiv illust (starts with "id=" and follows with 1-9 digits)
+    else if (QRegExp("id=\\d{1,9}").exactMatch(shortUrl))
+    {
+        QString url = QString("http://www.pixiv.net/member_illust.php?"
+                              "mode=medium&illust_%1").arg(shortUrl);
+        addUrlToMenu(url, menu);
+    }
+    // -> Pixiv member (starts with "mid=" and follows with 1-8 digits)
+    else if (QRegExp("mid=\\d{1,8}").exactMatch(shortUrl))
+    {
+        QString url = QString("http://www.pixiv.net/member.php?"
+                              "id=_%1").arg(shortUrl.mid(4));
+        addUrlToMenu(url, menu);
+    }
+    // -> ppt.cc (4 characters)
+    else if (shortUrl.size() == 4)
+    {
+        addUrlToMenu(QString("http://ppt.cc/%1").arg(shortUrl), menu);
+    }
+    // -> 0rz.tw (5 characters)
+    else if (shortUrl.size() == 5)
+    {
+        addUrlToMenu(QString("http://0rz.tw/%1").arg(shortUrl), menu);
+    }
+    // -> TinyURL (7 characters)
+    else if (shortUrl.size() == 7)
+    {
+        addUrlToMenu(QString("http://tinyurl.com/%1").arg(shortUrl), menu);
+    }
+
+    // C. Other menu entries
+    if (!s.isEmpty())
+    {
+        QAction *action = menu->addAction("Google", q, SLOT(google()));
+        action->setData(s);
+
+        // copy() calculates the selection by itself, so we don't need to
+        // provide user data here
+        menu->addAction(q->tr("Copy"), q, SLOT(copy()));
+    }
 }
 
 void ViewPrivate::handleArrowKey(int key)
@@ -647,6 +759,26 @@ void ViewPrivate::updateText(int row, int column)
 void ViewPrivate::displayCellAt(int column, int row)
 {
     q_ptr->update(column * cellWidth, row * cellHeight, cellWidth, cellHeight);
+}
+
+QString ViewPrivate::selection() const
+{
+    if (!selectedLength || selectedStart == PositionNotFound)
+        return "";
+    int start = selectedStart;
+    int length = selectedLength;
+    if (length < 0)
+    {
+        start += length;
+        length = 0 - length;
+    }
+    return terminal->stringFromIndex(start, length);
+}
+
+void UJ::Qelly::ViewPrivate::addUrlToMenu(const QString &url, QMenu *menu) const
+{
+    QAction *action = menu->addAction(url, q_ptr, SLOT(openUrl()));
+    action->setData(url);
 }
 
 }   // namespace Qelly

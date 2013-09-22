@@ -29,7 +29,6 @@
 #include <QSettings>
 #include "Globals.h"
 #include "Ssh.h"
-#include <QDebug>
 
 namespace UJ
 {
@@ -54,7 +53,6 @@ public:
 
 private:
     QSettings *_settings;
-    bool _tickingVisibie;
 
 public: // Setters & Getters
     inline QPoint windowPosition() const

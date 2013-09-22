@@ -28,7 +28,6 @@
 #include "Telnet.h"
 #include "Terminal.h"
 #include "View.h"
-#include <QDebug>
 
 namespace UJ
 {

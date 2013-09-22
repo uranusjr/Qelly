@@ -50,7 +50,7 @@ public:
     explicit Widget(QWidget *parent = 0);
 
 protected:
-    void mousePressEvent(QMouseEvent *e);
+    virtual void mousePressEvent(QMouseEvent *e);
     virtual void mouseTripleClickEvent(QMouseEvent *);
 
 signals:
