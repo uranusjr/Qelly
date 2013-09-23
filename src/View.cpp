@@ -146,6 +146,9 @@ void View::mouseTripleClickEvent(QMouseEvent *e)
         // Select the whole line on triple click
         d->selectedStart = d->selectedStart - (d->selectedStart % d->column);
         d->selectedLength = d->column;
+
+        update(QRect(d->pointFromIndex(0, d->selectedStart / d->column),
+                     QSize(d->column * d->cellWidth, d->cellHeight)));
     }
 
     return Qx::Widget::mouseTripleClickEvent(e);
