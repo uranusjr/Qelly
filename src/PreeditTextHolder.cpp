@@ -53,7 +53,7 @@ PreeditTextHolder::PreeditTextHolder(QWidget *parent) : QLineEdit(parent)
 void PreeditTextHolder::updateText(const QString &text)
 {
     setText(text);
-    _textWidth =  QFontMetrics(font()).boundingRect(text).size().width();
+    _textWidth = QFontMetrics(font()).boundingRect(text).size().width();
     resize(_textWidth + _borderRadius * 2,  height());
 }
 
