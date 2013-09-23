@@ -3,7 +3,6 @@
 
 #include <QObject>
 #include <QQueue>
-#include "UJCommonDefs.h"
 #include "Globals.h"
 #include "YLTerminal.h"
 

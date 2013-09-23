@@ -8,6 +8,7 @@ QT       += core gui widgets network
 
 TARGET = Qelly
 TEMPLATE = app
+CONFIG += precompile_header
 
 DESTDIR = ../build
 OBJECTS_DIR = ../build
@@ -22,6 +23,7 @@ CONFIG(static) {
 }
 
 TRANSLATIONS += UJ_Translate.ts
+PRECOMPILED_HEADER = UJCommonDefs.h
 
 SOURCES += main.cpp \
     MainWindow.cpp \

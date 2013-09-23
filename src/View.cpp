@@ -120,6 +120,13 @@ void View::mouseDoubleClickEvent(QMouseEvent *e)
             else
                 d->selectedLength = 1;
         }
+
+        // Order redraw for selection region
+        int ox = d->selectedStart % d->column;
+        int oy = d->selectedStart / d->column;
+        int dx = d->cellWidth * d->selectedLength;
+        int dy = d->cellHeight;
+        update(QRect(d->pointFromIndex(ox, oy), QSize(dx, dy)));
     }
 
     return Qx::Widget::mouseDoubleClickEvent(e);

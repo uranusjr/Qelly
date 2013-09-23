@@ -22,7 +22,6 @@
 #include <QPainter>
 #include <QRegExp>
 #include <QTimer>
-#include "UJCommonDefs.h"
 #include "Encodings.h"
 #include "PreeditTextHolder.h"
 #include "SharedPreferences.h"

@@ -1,6 +1,10 @@
 #ifndef COMMONDEFS_H
 #define COMMONDEFS_H
 
+#ifndef NDEBUG
+    #include <QDebug>
+#endif
+
 namespace UJ
 {
 
