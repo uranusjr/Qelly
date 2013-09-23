@@ -22,6 +22,7 @@
 #include <QClipboard>
 #include <QDesktopServices>
 #include <QMenu>
+#include <QMimeData>
 #include <QMouseEvent>
 #include <QPainter>
 #include <QTextCodec>
@@ -243,7 +244,7 @@ void View::keyPressEvent(QKeyEvent *e)
         }
         else    // Normal input
         {
-            emit hasBytesToSend(text.toAscii());
+            emit hasBytesToSend(text.toLatin1());
         }
     }
 
@@ -369,7 +370,7 @@ void View::google()
         url.addEncodedQueryItem("q", QUrl::toPercentEncoding(queryString));
 #else
         QUrlQuery query;
-        query.addEncodedQueryItem("q", QUrl::toPercentEncoding(queryString));
+        query.addQueryItem("q", QUrl::toPercentEncoding(queryString));
         url.setQuery(query);
 #endif
         QDesktopServices::openUrl(url);
