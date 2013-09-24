@@ -5,7 +5,7 @@ compiler:
   - gcc
 
 before_install:
-  - sudo apt-get install libqt4-dev libqxt-dev
+  - sudo apt-get install libqxt-dev
 
 script:
   - cd src
