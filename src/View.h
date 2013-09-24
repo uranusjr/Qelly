@@ -55,7 +55,7 @@ public slots:
     void updateText(int row, int x);
     void extendBottom(int start, int end);
     void extendTop(int start, int end);
-    void insertText(QString &string, uint delayMs = 0);
+    void insertText(const QString &string, uint delayMs = 0);
     void copy();
     void paste();
     void pasteColor();

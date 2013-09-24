@@ -291,18 +291,16 @@ void View::inputMethodEvent(QInputMethodEvent *e)
     Qx::Widget::inputMethodEvent(e);
 }
 
-void View::insertText(QString &string, uint delayMs)
+void View::insertText(const QString &string, uint delayMs)
 {
     Q_D(View);
 
     QByteArray bytes;
-    QString &s = string.replace('\n', '\r');
-    for (int i = 0; i < s.size(); i++)
+    foreach (const QChar &rc, string)
     {
-        QChar c = s[i];
-        if (c < QChar('\x7f'))
+        if (rc < '\x7f')
         {
-            uchar b = c.unicode() % 0x100;
+            uchar b = rc.unicode() % 0x100;
             if (!delayMs)
                 bytes.append(b);
             else
@@ -310,6 +308,7 @@ void View::insertText(QString &string, uint delayMs)
         }
         else
         {
+            QChar c = (c == '\n') ? '\r' : rc;
             ushort code;
             switch (d->terminal->connection()->site()->encoding())
             {
