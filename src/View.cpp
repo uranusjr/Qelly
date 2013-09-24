@@ -415,11 +415,11 @@ void View::updateScreen()
     int y = d->terminal->cursorRow();
     if (d->x != x || d->y != y)
     {
-        d->displayCellAt(d->x, d->y);  // Un-draw the old cursor
+        d->displayCellAt(d->x, d->y);   // Un-draw the old cursor
         d->x = x;
         d->y = y;
     }
-    d->displayCellAt(d->x, d->y);    // Draw current cursor
+    d->displayCellAt(d->x, d->y);       // Draw current cursor
 }
 
 void View::updateBackImage()
