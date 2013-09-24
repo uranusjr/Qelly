@@ -29,6 +29,8 @@ TabWidget::TabWidget(QWidget *parent) : QTabWidget(parent)
     setTabsClosable(true);
     setMovable(true);
     setUsesScrollButtons(true);
+
+    connect(tabBar(), SIGNAL(tabMoved(int,int)), SLOT(onTabMoved(int,int)));
 }
 
 int TabWidget::addTab(QWidget *widget, const QIcon &icon, const QString &label)
@@ -57,9 +59,29 @@ void TabWidget::closeTab(int index)
 {
     QWidget *w = widget(index);
     removeTab(index);
-    for (int i = index; i < count(); i++)
-        setTabText(i, tabText(i));
+    refreshTabText(index);
     w->deleteLater();
+}
+
+void TabWidget::onTabMoved(int from, int to)
+{
+    int start = from;
+    int end = to;
+    if (start > end)
+    {
+        int t = end;
+        end = start;
+        start = t;
+    }
+    refreshTabText(start, end + 1);
+}
+
+void TabWidget::refreshTabText(int start, int end)
+{
+    if (end < start)
+        end = count();
+    for (int i = start; i < end; i++)
+        setTabText(i, tabText(i));
 }
 
 }   // namespace Qelly

@@ -22,6 +22,10 @@ public:
 public slots:
     void closeTab(int index);
 
+private slots:
+    void onTabMoved(int from, int to);
+    void refreshTabText(int start = 0, int end = -1);
+
 private:
     int _tabBarHeight;
 
