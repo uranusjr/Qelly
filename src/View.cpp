@@ -837,7 +837,6 @@ void View::setTerminal(Connection::Terminal *terminal)
     connect(d->terminal, SIGNAL(dataProcessed()), SLOT(updateScreen()));
     d->terminal->connection()->connect(this, SIGNAL(hasBytesToSend(QByteArray)),
                                        SLOT(sendBytes(QByteArray)));
-    connect(d->terminal, SIGNAL(screenUpdated()), SLOT(updateBackImage()));
     connect(d->terminal, SIGNAL(shouldExtendTop(int,int)),
             SLOT(extendTop(int,int)));
     connect(d->terminal, SIGNAL(shouldExtendBottom(int,int)),
