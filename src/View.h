@@ -78,6 +78,8 @@ signals:
     void shouldChangeAddress(QString &address);
 
 private slots:
+    void commitFromPreeditHolder(QInputMethodEvent *e);
+    void clearPreeditHolder();
     void popInsertBuffer();
     void openUrl();
     void google();

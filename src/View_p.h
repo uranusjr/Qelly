@@ -98,6 +98,9 @@ public:
     void addUrlToMenu(const QString &url, QMenu *menu) const;
     QString selection() const;
 
+    void showPreeditHolder();
+    void hidePreeditHolder();
+
     SharedPreferences *prefs;
     double cellWidth;
     double cellHeight;

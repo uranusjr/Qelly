@@ -68,6 +68,22 @@ void View::timerEvent(QTimerEvent *)
     update();
 }
 
+void View::commitFromPreeditHolder(QInputMethodEvent *e)
+{
+    Q_D(View);
+    if (e->preeditString().isEmpty())
+        d->hidePreeditHolder();
+    QString newText = d->preeditHolder->text().replace(e->commitString(), "");
+    d->preeditHolder->setText(newText);
+
+    insertText(e->commitString());
+}
+
+void View::clearPreeditHolder()
+{
+    d_ptr->hidePreeditHolder();
+}
+
 void View::mousePressEvent(QMouseEvent *e)
 {
     Q_D(View);
@@ -209,9 +225,8 @@ void View::keyPressEvent(QKeyEvent *e)
 {
     Q_D(View);
 
-    if (isConnected())
+    if (isConnected() && d->preeditHolder->isHidden())
     {
-        d->preeditHolder->hide();
         int key = e->key();
         if (key != UJ::Key_Mod)
             d->clearSelection();
@@ -267,25 +282,22 @@ void View::inputMethodEvent(QInputMethodEvent *e)
 
     if (isConnected())
     {
-        QString commit = e->commitString();
-        if (!commit.isEmpty())
-            insertText(commit);
+        // Put the holder near the cursor. Usually we put it one row above it
+        // (with some extra cusion, so it's 1.2 instead of 1), but if the cursor
+        // is at row 0 or 1, put it one row UNDER it instead.
+        QPoint p = d->pointFromIndex(d->terminal->cursorColumn(),
+                                     d->terminal->cursorRow());
+        if (p.y() <= d->cellHeight * 2)
+            p.ry() += d->cellHeight * 1.2;
+        else
+            p.ry() -= d->cellHeight * 1.2;
+        d->preeditHolder->move(p);
 
-        if (e->preeditString() != d->preeditHolder->text())
-        {
-            d->preeditHolder->updateText(e->preeditString());
-            if (d->preeditHolder->text().isEmpty())
-            {
-                d->preeditHolder->hide();
-            }
-            else
-            {
-                int x = d->terminal->cursorColumn();
-                int y = d->terminal->cursorRow() - 1;
-                d->preeditHolder->move(d->pointFromIndex(x, y));
-                d->preeditHolder->show();
-            }
-        }
+        if (e->preeditString().isEmpty())
+            d->hidePreeditHolder();
+        else
+            d->showPreeditHolder();
+        d->preeditHolder->inputMethodEvent(e);
     }
 
     Qx::Widget::inputMethodEvent(e);

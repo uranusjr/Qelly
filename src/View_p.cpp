@@ -43,6 +43,10 @@ ViewPrivate::ViewPrivate(View *q)
     prefs = SharedPreferences::sharedInstance();
     painter = new QPainter();
     preeditHolder = new PreeditTextHolder(q_ptr);
+    q->connect(preeditHolder, SIGNAL(hasCommitString(QInputMethodEvent*)),
+               SLOT(commitFromPreeditHolder(QInputMethodEvent*)));
+    q->connect(preeditHolder, SIGNAL(preeditStringCleared(QInputMethodEvent*)),
+               SLOT(clearPreeditHolder()));
 
     buildInfo();
 }
@@ -772,6 +776,18 @@ QString ViewPrivate::selection() const
         length = 0 - length;
     }
     return terminal->stringFromIndex(start, length);
+}
+
+void ViewPrivate::showPreeditHolder()
+{
+    preeditHolder->show();
+    preeditHolder->setFocus(Qt::PopupFocusReason);
+}
+
+void ViewPrivate::hidePreeditHolder()
+{
+    q_ptr->setFocus(Qt::PopupFocusReason);
+    preeditHolder->hide();
 }
 
 void UJ::Qelly::ViewPrivate::addUrlToMenu(const QString &url, QMenu *menu) const

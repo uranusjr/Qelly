@@ -17,6 +17,7 @@
  *****************************************************************************/
 
 #include "PreeditTextHolder.h"
+#include <QInputMethodEvent>
 #include <QTextStream>
 #include "SharedPreferences.h"
 
@@ -46,15 +47,23 @@ PreeditTextHolder::PreeditTextHolder(QWidget *parent) : QLineEdit(parent)
               "border-radius:" << _borderRadius << "px;" <<
               "}";
     setStyleSheet(style);
-    setReadOnly(true);
     hide();
 }
 
-void PreeditTextHolder::updateText(const QString &text)
+int PreeditTextHolder::widthForText(const QString &text)
 {
-    setText(text);
-    _textWidth = QFontMetrics(font()).boundingRect(text).size().width();
-    resize(_textWidth + _borderRadius * 2,  height());
+    int textWidth = QFontMetrics(font()).boundingRect(text).size().width();
+    return textWidth + _borderRadius * 2;
+}
+
+void PreeditTextHolder::inputMethodEvent(QInputMethodEvent *e)
+{
+    QLineEdit::inputMethodEvent(e);
+    if (!e->commitString().isEmpty())
+        emit hasCommitString(e);
+    if (e->preeditString().isEmpty())
+        emit preeditStringCleared(e);
+    resize(widthForText(e->preeditString()), height());
 }
 
 }   // namespace Qelly
