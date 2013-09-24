@@ -61,7 +61,7 @@ void PreferencesGeneral::accept()
     {
         prefs->setSshClientPath(_ui->sshClientPath->text());
     }
-    catch (QString errorMessage)
+    catch (const char *errorMessage)
     {
         QString msg = tr("SSH will not be available until it is corrected.");
         QMessageBox(QMessageBox::Warning, errorMessage, msg).exec();

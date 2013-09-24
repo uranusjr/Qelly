@@ -53,7 +53,7 @@ PreferencesWindow::PreferencesWindow(QWidget *parent) : QxtConfigDialog(parent)
     setFixedWidth(550);
 }
 
-void PreferencesWindow::addPage(QWidget *page, QIcon &icon, QString title)
+void PreferencesWindow::addPage(QWidget *page, const QIcon &icon, QString title)
 {
     configWidget()->addPage(page, icon, title);
 }
