@@ -11,6 +11,7 @@ QXT += core widgets
 
 TARGET = Qelly
 TEMPLATE = app
+CONFIG += precompile_header
 
 DESTDIR = ../build
 OBJECTS_DIR = ../build
@@ -25,6 +26,7 @@ CONFIG(static) {
 }
 
 TRANSLATIONS += UJ_Translate.ts
+PRECOMPILED_HEADER = UJCommonDefs.h
 
 SOURCES += main.cpp \
     MainWindow.cpp \
@@ -45,7 +47,8 @@ SOURCES += main.cpp \
     PreferencesFont.cpp \
     PreferencesColor.cpp \
     ColorWell.cpp \
-    PreeditTextHolder.cpp
+    PreeditTextHolder.cpp \
+    View_p.cpp
 
 HEADERS  += \
     SharedMenuBar.h \
@@ -70,7 +73,8 @@ HEADERS  += \
     PreferencesFont.h \
     PreferencesColor.h \
     ColorWell.h \
-    PreeditTextHolder.h
+    PreeditTextHolder.h \
+    View_p.h
 
 RESOURCES += \
     GeneralResources.qrc

@@ -35,7 +35,13 @@ class PreeditTextHolder : public QLineEdit
 
 public:
     explicit PreeditTextHolder(QWidget *parent = 0);
-    void updateText(const QString &text);
+    int widthForText(const QString &text);
+
+    virtual void inputMethodEvent(QInputMethodEvent *e);
+
+signals:
+    void hasCommitString(QInputMethodEvent *);
+    void preeditStringCleared(QInputMethodEvent *);
 
 private:
     SharedPreferences *_prefs;
