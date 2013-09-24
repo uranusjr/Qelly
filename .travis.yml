@@ -1,0 +1,14 @@
+language: cpp
+
+compiler:
+  - clang
+  - gcc
+
+before_install:
+  - sudo apt-get install libqt4-dev libqxt-dev
+
+script:
+  - cd src
+  - qmake Qelly.pro
+  - make
+
