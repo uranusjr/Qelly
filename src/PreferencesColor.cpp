@@ -83,7 +83,7 @@ void PreferencesColor::accept()
         if (color != prefs->fColor(i, true))
             prefs->setColor(color, i, true);
     }
-
+    emit preferencesUpdated();
     _visited = false;
 }
 
