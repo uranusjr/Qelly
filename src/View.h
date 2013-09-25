@@ -72,6 +72,7 @@ protected:
     virtual void paintEvent(QPaintEvent *e);
     virtual void focusInEvent(QFocusEvent *);
     virtual void timerEvent(QTimerEvent *);
+    virtual bool focusNextPrevChild(bool);
 
 signals:
     void hasBytesToSend(QByteArray bytes);

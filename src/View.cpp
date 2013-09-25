@@ -68,6 +68,14 @@ void View::timerEvent(QTimerEvent *)
     update();
 }
 
+bool View::focusNextPrevChild(bool)
+{
+    // Always return false to indicate that this widget does not accept tab or
+    // backtab away from it. This makes it possible to stop the default Tab
+    // and Ctrl+Tab behavior in QWidget::event()
+    return false;
+}
+
 void View::commitFromPreeditHolder(QInputMethodEvent *e)
 {
     Q_D(View);
@@ -271,9 +279,12 @@ void View::keyPressEvent(QKeyEvent *e)
         {
             emit hasBytesToSend(text.toLatin1());
         }
+        e->accept();
     }
-
-    return Qx::Widget::keyPressEvent(e);
+    else
+    {
+        Qx::Widget::keyPressEvent(e);
+    }
 }
 
 void View::inputMethodEvent(QInputMethodEvent *e)
