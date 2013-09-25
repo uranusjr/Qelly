@@ -75,7 +75,7 @@ protected:
 
 signals:
     void hasBytesToSend(QByteArray bytes);
-    void shouldChangeAddress(QString &address);
+    void shouldChangeAddress(const QString &address);
 
 private slots:
     void commitFromPreeditHolder(QInputMethodEvent *e);

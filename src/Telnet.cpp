@@ -36,7 +36,7 @@ Telnet::~Telnet()
     delete _sbBuffer;
 }
 
-bool Telnet::connectTo(QString &address, qint16 port)
+bool Telnet::connectTo(const QString &address, qint16 port)
 {
     setProcessing(true);
 

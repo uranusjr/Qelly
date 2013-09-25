@@ -98,8 +98,8 @@ void Controller::connectWithAddress(QString address)
     view->setTerminal(terminal);
     view->setAddress(_window->address()->text());
     view->setFocus(Qt::OtherFocusReason);
-    connect(view, SIGNAL(shouldChangeAddress(QString &)),
-            this, SLOT(changeAddressField(QString &)));
+    connect(view, SIGNAL(shouldChangeAddress(const QString &)),
+            this, SLOT(changeAddressField(const QString &)));
 
     QStringList comps = address.split(':');
     if (comps.size() == 1)
@@ -259,7 +259,7 @@ void Controller::onAddressReturnPressed()
     connectWithAddress(address);
 }
 
-void Controller::changeAddressField(QString &address)
+void Controller::changeAddressField(const QString &address)
 {
     _window->address()->setText(address);
 }

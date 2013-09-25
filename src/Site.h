@@ -33,7 +33,7 @@ public:     // Setters & Getters
     {
         return _name;
     }
-    inline void setName(QString &name)
+    inline void setName(const QString &name)
     {
         _name = name;
     }
@@ -41,7 +41,7 @@ public:     // Setters & Getters
     {
         return _address;
     }
-    inline void setAddress(QString &address)
+    inline void setAddress(const QString &address)
     {
         _address = address;
     }

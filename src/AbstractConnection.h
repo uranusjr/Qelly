@@ -20,7 +20,7 @@ class AbstractConnection : public QObject
 public:
     explicit AbstractConnection(QObject *parent = 0);
     virtual bool connectTo(Site *s);
-    virtual bool connectTo(QString &address, qint16 port) = 0;
+    virtual bool connectTo(const QString &address, qint16 port) = 0;
     static const qint16 DefaultPort = -1;
 
 public slots:
@@ -56,7 +56,7 @@ public: // Getters & Setters
     {
         return _name;
     }
-    virtual inline void setName(QString &name)
+    virtual inline void setName(const QString &name)
     {
         _name = name;
     }
@@ -64,7 +64,7 @@ public: // Getters & Setters
     {
         return _address;
     }
-    virtual inline void setAddress(QString &address)
+    virtual inline void setAddress(const QString &address)
     {
         _address = address;
     }

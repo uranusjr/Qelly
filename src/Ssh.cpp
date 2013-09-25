@@ -31,7 +31,7 @@ Ssh::~Ssh()
         _socket->close();
 }
 
-bool Ssh::connectTo(QString &address, qint16 port)
+bool Ssh::connectTo(const QString &address, qint16 port)
 {
     setProcessing(true);
 
