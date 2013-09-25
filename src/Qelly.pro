@@ -6,6 +6,9 @@
 
 QT       += core gui widgets network
 
+CONFIG += qxt
+QXT += core widgets
+
 TARGET = Qelly
 TEMPLATE = app
 CONFIG += precompile_header
@@ -39,6 +42,11 @@ SOURCES += main.cpp \
     UJQxWidget.cpp \
     Controller.cpp \
     SharedPreferences.cpp \
+    PreferencesGeneral.cpp \
+    PreferencesWindow.cpp \
+    PreferencesFont.cpp \
+    PreferencesColor.cpp \
+    ColorWell.cpp \
     PreeditTextHolder.cpp \
     View_p.cpp
 
@@ -60,10 +68,18 @@ HEADERS  += \
     UJQxWidget.h \
     Controller.h \
     SharedPreferences.h \
+    PreferencesGeneral.h \
+    PreferencesWindow.h \
+    PreferencesFont.h \
+    PreferencesColor.h \
+    ColorWell.h \
     PreeditTextHolder.h \
     View_p.h
 
 RESOURCES += \
     GeneralResources.qrc
 
-
+FORMS += \
+    PreferencesGeneral.ui \
+    PreferencesFont.ui \
+    PreferencesColor.ui

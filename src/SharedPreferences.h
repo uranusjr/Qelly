@@ -80,7 +80,6 @@ public: // Setters & Getters
     {
         _settings->setValue("cell height", h);
     }
-
     inline bool showHiddenText() const
     {
         return _settings->value("show hidden text", false).toBool();
@@ -91,7 +90,7 @@ public: // Setters & Getters
     }
     inline bool manualDoubleByte() const
     {
-        return _settings->value("manuel double byte", false).toBool();
+        return _settings->value("manual double byte", false).toBool();
     }
     inline void setManualDoubleByte(bool enable)
     {
@@ -136,22 +135,31 @@ public: // Setters & Getters
 
     inline QFont defaultFont() const
     {
-        QFont defaultFont("Courier New", 16);
-        defaultFont.setStyleHint(QFont::TypeWriter);
-        return _settings->value("default font", defaultFont).value<QFont>();
+        QFont font;
+        QString name = _settings->value("default font", QString()).toString();
+        bool ok = font.fromString(name);
+        if (!ok)
+            font = QFont("Courier New", 16);
+        font.setStyleHint(QFont::TypeWriter);
+        return font;
     }
-    inline void setDefaultFont(QFont font)
+    inline void setDefaultFont(QFont &font)
     {
-        _settings->setValue("default font", font);
+        _settings->setValue("default font", font.toString());
     }
     inline QFont doubleByteFont() const
     {
-        QFont defaultFont("Microsoft JhengHei UI", 18);
-        return _settings->value("double byte font", defaultFont).value<QFont>();
+        QFont font;
+        QString name = _settings->value("double byte font", QString())
+                                 .toString();
+        bool ok = font.fromString(name);
+        if (!ok)
+            font = QFont("Microsoft JhengHei UI", 18);
+        return font;
     }
-    inline void setDoubleByteFont(QFont font)
+    inline void setDoubleByteFont(QFont &font)
     {
-        _settings->setValue("double byte font", font);
+        _settings->setValue("double byte font", font.toString());
     }
     inline int defaultFontPaddingLeft() const
     {
@@ -331,6 +339,38 @@ public: // Setters & Getters
         _settings->setValue("color white bright", color);
     }
 
+    inline void setColor(QColor c, int index, bool bright = false)
+    {
+        switch (index)
+        {
+        case 0:
+            return bright ? setColorBlackBright(c) : setColorBlack(c);
+            break;
+        case 1:
+            return bright ? setColorRedBright(c) : setColorRed(c);
+            break;
+        case 2:
+            return bright ? setColorGreenBright(c) : setColorGreen(c);
+            break;
+        case 3:
+            return bright ? setColorYellowBright(c) : setColorYellow(c);
+            break;
+        case 4:
+            return bright ? setColorBlueBright(c) : setColorBlue(c);
+            break;
+        case 5:
+            return bright ? setColorMagentaBright(c) : setColorMagenta(c);
+            break;
+        case 6:
+            return bright ? setColorCyanBright(c) : setColorCyan(c);
+            break;
+        case 7:
+            return bright ? setColorWhiteBright(c) : setColorWhite(c);
+            break;
+        default:
+            break;
+        }
+    }
     inline QColor fColor(int index, bool bright = false) const
     {
         switch (index)
@@ -390,7 +430,12 @@ public: // Setters & Getters
     }
     inline QString sshClientPath() const
     {
-        return _settings->value("ssh client path", "/usr/bin/ssh").toString();
+#ifdef Q_OS_UNIX
+        QString defaultPath = "/usr/bin/ssh";
+#else
+        QString defaultPath = "Plink.exe";
+#endif
+        return _settings->value("ssh client path", defaultPath).toString();
     }
     inline void setSshClientPath(QString path)
     {
@@ -401,7 +446,7 @@ public: // Setters & Getters
         }
         else
         {
-            throw QString("Invalid SSH Client Path");
+            throw "Invalid SSH Client Path";
         }
     }
 };

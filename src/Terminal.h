@@ -43,7 +43,6 @@ public:
 
 signals:
     void dataProcessed();
-    void screenUpdated();
     void shouldExtendTop(int start, int end);
     void shouldExtendBottom(int start, int end);
 

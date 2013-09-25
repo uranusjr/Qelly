@@ -12,7 +12,6 @@ namespace Connection
 Ssh::Ssh(QObject *parent) : AbstractConnection(parent)
 {
     _site = 0;
-    _isBbs = false;
     _socket = new QProcess(this);
 
     connect(this, SIGNAL(receivedBytes(QByteArray)),
@@ -42,32 +41,30 @@ bool Ssh::connectTo(QString &address, qint16 port)
     _socket->setReadChannel(QProcess::StandardOutput);
     _socket->setReadChannelMode(QProcess::MergedChannels);
 
-    QStringList args;
-    _isBbs = address.split('@').first().contains("bbs");
-
     port = port < 0 ? DefaultPort : port;
+    QStringList args;
 
-    if (_isBbs)
-    {
-        args << "-tt"
+#if defined Q_OS_WIN32
+    // Plink args
+    args << "-t"
+         << "-x"
+         << "-P" << QString::number(port)
+         << address;
+#elif defined Q_OS_UNIX
+    // OpenSSH args
+    args << "-tt"
              << "-e" << "none"  // Do not use EscapeChar
              << "-x"
              << "-p" << QString::number(port)
              << address;
-    }
-    else
-    {
-        // TODO: Customizable parameters and environment
-        args << "-tt"
+#elif defined Q_OS_LINUX
+    // Use OpenSSH (same as Q_OS_UNIX)
+    args << "-tt"
              << "-e" << "none"  // Do not use EscapeChar
              << "-x"
              << "-p" << QString::number(port)
              << address;
-
-        QProcessEnvironment env;
-        env.insert("TERM", "vt102");
-        _socket->setProcessEnvironment(env);
-    }
+#endif
 
     _socket->start(Qelly::SharedPreferences::sharedInstance()->sshClientPath(),
                    args);

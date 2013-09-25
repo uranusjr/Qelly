@@ -20,6 +20,7 @@
 #define CONTROLLER_H
 
 #include <QObject>
+#include <QPointer>
 
 namespace UJ
 {
@@ -28,6 +29,7 @@ namespace Qelly
 {
 
 class MainWindow;
+class PreferencesWindow;
 class View;
 
 class Controller : public QObject
@@ -50,11 +52,16 @@ public slots:
     void pasteColor();
     void onAddressReturnPressed();
     void changeAddressField(QString &address);
+    void showPreferencesWindow();
+
+private slots:
+    void updateAll();
 
 private:
     View *currentView() const;
     View *viewInTab(int index) const;
     MainWindow *_window;
+    QPointer<PreferencesWindow> _preferencesWindow;
 };
 
 }   // namespace Qelly

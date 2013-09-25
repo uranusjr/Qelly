@@ -22,6 +22,7 @@
 #include <QMessageBox>
 #include "Globals.h"
 #include "MainWindow.h"
+#include "PreferencesWindow.h"
 #include "SharedMenuBar.h"
 #include "SharedPreferences.h"
 #include "TabWidget.h"
@@ -39,6 +40,7 @@ Controller::Controller(QObject *parent) : QObject(parent)
 {
     _window = new MainWindow();
     SharedMenuBar *menu = SharedMenuBar::sharedInstance();
+    connect(menu, SIGNAL(preferences()), this, SLOT(showPreferencesWindow()));
     connect(menu, SIGNAL(fileNewTab()), this, SLOT(addTab()));
     connect(menu, SIGNAL(fileOpenLocation()), this, SLOT(focusAddressField()));
     connect(menu, SIGNAL(fileCloseTab()), this, SLOT(closeTab()));
@@ -61,6 +63,7 @@ Controller::Controller(QObject *parent) : QObject(parent)
 Controller::~Controller()
 {
     _window->deleteLater();
+    _preferencesWindow->deleteLater();
 }
 
 void Controller::connectWithAddress(QString address)
@@ -130,27 +133,26 @@ void Controller::closeTab(int index)
     {
         if (view->isConnected())
         {
-            QMessageBox *sure = new QMessageBox(_window);
-            sure->setIcon(QMessageBox::Warning);
-            sure->setText(tr("Are you sure you want to close this tab?"));
-            sure->setInformativeText(
+            QMessageBox sure(_window);
+            sure.setIcon(QMessageBox::Warning);
+            sure.setText(tr("Are you sure you want to close this tab?"));
+            sure.setInformativeText(
                 tr("The connection is still alive. If you close this tab, the "
                    "connection will be lost. Do you want to close this tab "
                    "anyway?"));
-            sure->setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
-            sure->setWindowModality(Qt::WindowModal);
-            sure->setFocus(Qt::PopupFocusReason);
-            switch (sure->exec())
+            sure.setStandardButtons(QMessageBox::Ok | QMessageBox::Cancel);
+            sure.setWindowModality(Qt::WindowModal);
+            sure.setFocus(Qt::PopupFocusReason);
+            switch (sure.exec())
             {
             case QMessageBox::Ok:
-                tabs->closeTab(tabs->currentIndex());
+                tabs->closeTab(index);
                 break;
             case QMessageBox::Cancel:
                 break;
             default:
                 break;
             }
-            sure->deleteLater();
         }
         else
         {
@@ -182,7 +184,7 @@ void Controller::closeWindow()
     int count = 0;
     for (int i = 0; i < _window->tabs()->count(); i++)
     {
-        if (static_cast<View *>(_window->tabs()->widget(i))->isConnected())
+        if (viewInTab(i)->isConnected())
             count++;
     }
 
@@ -249,8 +251,7 @@ void Controller::onAddressReturnPressed()
     if (!address.size())
         return;
 
-    if (!_window->tabs()->count() ||
-            static_cast<View *>(_window->tabs()->currentWidget())->terminal())
+    if (!_window->tabs()->count() || currentView()->terminal())
     {
         int newTab = _window->tabs()->addTab(new View(), "");
         _window->tabs()->setCurrentIndex(newTab);
@@ -261,6 +262,23 @@ void Controller::onAddressReturnPressed()
 void Controller::changeAddressField(QString &address)
 {
     _window->address()->setText(address);
+}
+
+void Controller::showPreferencesWindow()
+{
+    if (!_preferencesWindow)
+    {
+        _preferencesWindow = new PreferencesWindow();
+        _preferencesWindow->setAttribute(Qt::WA_DeleteOnClose);
+        connect(_preferencesWindow, SIGNAL(displayPreferenceChanged()),
+                SLOT(updateAll()));
+    }
+    _preferencesWindow->show();
+}
+
+void Controller::updateAll()
+{
+    // TODO: Implement me #13
 }
 
 View *Controller::currentView() const
