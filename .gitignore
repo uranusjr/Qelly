@@ -1,6 +1,7 @@
+bin/
 build/
 test/build/
 *.pro.user*
 *.DS_Store
-src/Makefile*
-src/object_script.*
+Makefile*
+object_script.*

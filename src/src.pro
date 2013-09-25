@@ -13,11 +13,18 @@ TARGET = Qelly
 TEMPLATE = app
 CONFIG += precompile_header
 
-DESTDIR = ../build
-OBJECTS_DIR = ../build
-MOC_DIR = ../build
-RCC_DIR = ../build
-UI_DIR = ../build
+defineReplace(mode) {
+    Debug:return(debug)
+    Release:return(release)
+}
+
+BUILD_DIR = ../bin/$$mode()
+DESTDIR = $$BUILD_DIR
+OBJECTS_DIR = $$BUILD_DIR
+MOC_DIR = $$BUILD_DIR
+RCC_DIR = $$BUILD_DIR
+UI_DIR = $$BUILD_DIR
+PRECOMPILED_DIR = $$BUILD_DIR
 
 CONFIG(static) {
     win32-g++ {
