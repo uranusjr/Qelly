@@ -19,3 +19,7 @@ TEMPLATE = subdirs
 CONFIG += ordered
 
 SUBDIRS = src
+
+OTHER_FILES += \
+    AUTHORS \
+    README.md
