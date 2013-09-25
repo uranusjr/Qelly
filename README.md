@@ -53,18 +53,18 @@ project pages:
 * Qt 5.1: http://qt-project.org/doc/qt-5.1/qtdoc/qtinstaller.html
 * LibQxt: http://dev.libqxt.org/libqxt/wiki/user_guide
 
-## APT-based Installation
+### APT-based Installation
 
 If you use an APT-based package manager, the content of `.travis.yml` provides
 a minimalistic build environment setup. It is currently based on Qt 4.8.1 and
 LibQxt 0.6.1.
 
-## Other Package Managers
+### Other Package Managers
 
 Alternativelyf your package manager of choice (such as YUM, Homebrew, etc.)
 provides Qt and LibQxt, you can install both them manually.
 
-## LibQxt Setup Without Package Managers
+### LibQxt Setup Without Package Managers
 
 If you wish to build LibQxt manually, you will need to choose an appropriate
 version based on the version of Qt tha you use. At the time of writing
