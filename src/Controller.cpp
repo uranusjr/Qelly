@@ -278,11 +278,7 @@ void Controller::showPreferencesWindow()
 
 void Controller::updateAll()
 {
-    for (int i = 0; i < _window->tabs()->count(); i++)
-    {
-        View *view = viewInTab(i);
-        view->updateScreen();
-    }
+    // TODO: Implement me #13
 }
 
 View *Controller::currentView() const
