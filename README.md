@@ -43,12 +43,45 @@ The SSH client path can be put anywhere you wish to, as long as you specify its
 location correctly in Qelly's Preferences.
 
 
+## Building
+
+Qelly depends on Qt and LibQxt. Currently both Qt 4.8 and 5+ are supported. You
+can find more information regarding installation on Qt and libqxt's respective
+project pages:
+
+* Qt 4.8: http://qt-project.org/doc/qt-4.8/installation.html
+* Qt 5.1: http://qt-project.org/doc/qt-5.1/qtdoc/qtinstaller.html
+* LibQxt: http://dev.libqxt.org/libqxt/wiki/user_guide
+
+## APT-based Installation
+
+If you use an APT-based package manager, the content of `.travis.yml` provides
+a minimalistic build environment setup. It is currently based on Qt 4.8.1 and
+LibQxt 0.6.1.
+
+## Other Package Managers
+
+Alternativelyf your package manager of choice (such as YUM, Homebrew, etc.)
+provides Qt and LibQxt, you can install both them manually.
+
+## LibQxt Setup Without Package Managers
+
+If you wish to build LibQxt manually, you will need to choose an appropriate
+version based on the version of Qt tha you use. At the time of writing
+(2013-09-25), the newest LibQxt release (0.6.2) supports only Qt 4. Therefore,
+if you wish to build Qelly against Qt 5, you will need to use Git or Mercurial
+to clone the tip version, and build LibQxt from that.
+
+
 ## Thrid Party Components
 
 Qelly uses Qt under the terms of GPL v3. The Qt GUI Toolkit (Qt) is a product of
 Digia Plc and/or its subsidiary(-ies). Digia Plc, Qt, and their respective logos
 are trademarks of Digia Plc. Visit Qt's project website for more information:
 http://qt-project.org/
+
+LibQxt is used under the terms of LGPL v2.1. LibQxt is owned by the Qxt
+Foundation. http://libqxt.org/
 
 Plink (PuTTY Link) is distributed under the MIT license. For more, see:
 http://www.chiark.greenend.org.uk/~sgtatham/putty/licence.html
