@@ -1,5 +1,5 @@
 /*****************************************************************************
- * TripleClickableWidget.h
+ * UJQxWidget.h
  *
  * Created: 07/10 2011 by uranusjr
  *

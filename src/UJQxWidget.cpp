@@ -1,5 +1,5 @@
 /*****************************************************************************
- * TripleClickableWidget.cpp
+ * UJQxWidget.cpp
  *
  * Created: 07/10 2011 by uranusjr
  *
