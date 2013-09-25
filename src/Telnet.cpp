@@ -93,9 +93,8 @@ void Telnet::onSocketDisconnected()
 void Telnet::processBytes(QByteArray bytes)
 {
     QQueue<uchar> buffer;
-    for (int i = 0; i < bytes.size(); i++)
+    foreach (uchar c, bytes)
     {
-        uchar c = static_cast<uchar>(bytes[i]);
         switch (_state)
         {
         case TOP_LEVEL:

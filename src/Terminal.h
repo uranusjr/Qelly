@@ -49,7 +49,7 @@ signals:
 public slots:
     void startConnection();
     void closeConnection();
-    void processIncomingData(QByteArray data);
+    void processIncomingData(QByteArray bytes);
     void clearAll();
     void clearRow(int row,
                   int columnStart = 0, int columnEnd = PositionNotFound);
@@ -89,10 +89,10 @@ private:
     void goOneRowUp(bool updateView = true);
     void goOneRowDown(bool updateView = true);
     void handleNormalDataInput(uchar c);
-    void handleEscapeDataInput(uchar c, int *p_i, QByteArray &data);
+    void handleEscapeDataInput(uchar c, int *p_i, const QByteArray &data);
     void handleControlDataInput(uchar c);
     void handleNormalBs();
-    void handleEscapeHash(int *p_i, QByteArray &data);
+    void handleEscapeHash(int *p_i, const QByteArray &data);
     void handleControlNonSimpleShiftingInputs(uchar c);
     void handleControlCup();
     void handleControlEd();

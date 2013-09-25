@@ -802,8 +802,8 @@ void View::pasteColor()
     data.append(esc);
     data.append("[m");
 
-    for (int i = 0; i < data.size(); i++)
-        d->insertBuffer.enqueue(data[i]);
+    foreach (uchar c, data)
+        d->insertBuffer.enqueue(c);
     d->insertTimer->start();
 }
 

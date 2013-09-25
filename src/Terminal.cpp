@@ -277,18 +277,19 @@ void Terminal::goOneRowUp(bool updateView)
     }
 }
 
-void Terminal::processIncomingData(QByteArray data)
+void Terminal::processIncomingData(QByteArray bytes)
 {
-    for (int i = 0; i < data.size(); i++)
+    const char *data = bytes.constData();
+    for (int i = 0; i < bytes.size(); i++)
     {
-        uchar c = static_cast<uchar>(data[i]);
+        uchar c = data[i];
         switch (_state)
         {
         case StateNormal:
             handleNormalDataInput(c);
             break;
         case StateEscape:
-            handleEscapeDataInput(c, &i, data);
+            handleEscapeDataInput(c, &i, bytes);
             break;
         case StateControl:
             handleControlDataInput(c);
@@ -394,7 +395,7 @@ void Terminal::handleNormalBs()
     }
 }
 
-void Terminal::handleEscapeDataInput(uchar c, int *p_i, QByteArray &data)
+void Terminal::handleEscapeDataInput(uchar c, int *p_i, const QByteArray &data)
 {
     switch (c)
     {
@@ -457,7 +458,7 @@ void Terminal::handleEscapeDataInput(uchar c, int *p_i, QByteArray &data)
     }
 }
 
-void Terminal::handleEscapeHash(int *p_i, QByteArray &data)
+void Terminal::handleEscapeHash(int *p_i, const QByteArray &data)
 {
     int i = *(p_i);
     if (i < data.size() - 1 && data[i + 1] == '8')  // DECALN (fill with E)
