@@ -18,8 +18,8 @@ defineReplace(mode) {
     Release:return(release)
 }
 
-BUILD_DIR = ../bin/$$mode()
-DESTDIR = $$BUILD_DIR
+BUILD_DIR = ../build/$$mode()
+DESTDIR = ../bin/$$mode()
 OBJECTS_DIR = $$BUILD_DIR
 MOC_DIR = $$BUILD_DIR
 RCC_DIR = $$BUILD_DIR

@@ -9,6 +9,6 @@ before_install:
   - sudo apt-get -qq install libqxt-dev
 
 script:
-  - qmake
+  - qmake Qelly.pro
   - make
 
