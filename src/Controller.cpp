@@ -36,7 +36,8 @@ namespace UJ
 namespace Qelly
 {
 
-Controller::Controller(QObject *parent) : QObject(parent)
+Controller::Controller(QObject *parent) :
+    QObject(parent), _preferencesWindow(0)
 {
     _window = new MainWindow();
     SharedMenuBar *menu = SharedMenuBar::sharedInstance();
@@ -63,7 +64,6 @@ Controller::Controller(QObject *parent) : QObject(parent)
 Controller::~Controller()
 {
     _window->deleteLater();
-    _preferencesWindow->deleteLater();
 }
 
 void Controller::connectWithAddress(QString address)
