@@ -38,16 +38,16 @@ Widget::Widget(QWidget *parent) : QWidget(parent)
 
 void Widget::mousePressEvent(QMouseEvent *e)
 {
-    if (_pendingTripleClick)
+    if (_pendingTripleClick && e->button() == Qt::LeftButton)
     {
         _tripleClickTimer->stop();
-        _pendingTripleClick = false;
         QMouseEvent event(static_cast<QEvent::Type>(
                               static_cast<int>(Event::MouseButtonTplClick)),
                           e->pos(), e->globalPos(), e->button(), e->buttons(),
                           e->modifiers());
         mouseTripleClickEvent(&event);
     }
+    _pendingTripleClick = false;
     QWidget::mousePressEvent(e);
 }
 
