@@ -43,6 +43,7 @@ public slots:
 private slots:
     void onTabMoved(int from, int to);
     void refreshTabText(int start = 0, int end = -1);
+    void goToTabForKey(int key);
 
 private:
     int _tabBarHeight;

@@ -17,6 +17,8 @@
  *****************************************************************************/
 
 #include "TabWidget.h"
+#include <QShortcut>
+#include <QSignalMapper>
 #include <QTabBar>
 #include <QTextStream>
 #include "View.h"
@@ -49,6 +51,16 @@ TabWidget::TabWidget(QWidget *parent) : QTabWidget(parent)
     setUsesScrollButtons(true);
 
     connect(tabBar(), SIGNAL(tabMoved(int,int)), SLOT(onTabMoved(int,int)));
+
+    QSignalMapper *shortcutMapper = new QSignalMapper(this);
+    connect(shortcutMapper, SIGNAL(mapped(int)), SLOT(goToTabForKey(int)));
+    for (int key = Qt::Key_0; key <= Qt::Key_9; key++)
+    {
+        QShortcut *shortcut = new QShortcut(QKeySequence(UJ::MOD | key), this);
+        shortcut->setContext(Qt::ApplicationShortcut);
+        shortcutMapper->setMapping(shortcut, key);
+        shortcutMapper->connect(shortcut, SIGNAL(activated()), SLOT(map()));
+    }
 }
 
 int TabWidget::addTab(QWidget *widget, const QIcon &icon, const QString &label)
@@ -100,6 +112,14 @@ void TabWidget::refreshTabText(int start, int end)
         end = count();
     for (int i = start; i < end; i++)
         setTabText(i, tabText(i));
+}
+
+void TabWidget::goToTabForKey(int key)
+{
+    int i = key - Qt::Key_0;
+    if (i == 0)
+        i = 10;
+    setCurrentIndex(i - 1);
 }
 
 }   // namespace Qelly
