@@ -40,6 +40,9 @@ public:
 public slots:
     void closeTab(int index);
 
+protected:
+    virtual bool eventFilter(QObject *obj, QEvent *e);
+
 private slots:
     void onTabMoved(int from, int to);
     void refreshTabText(int start = 0, int end = -1);

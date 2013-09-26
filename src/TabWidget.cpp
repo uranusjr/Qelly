@@ -17,6 +17,7 @@
  *****************************************************************************/
 
 #include "TabWidget.h"
+#include <QMouseEvent>
 #include <QShortcut>
 #include <QSignalMapper>
 #include <QTabBar>
@@ -50,6 +51,7 @@ TabWidget::TabWidget(QWidget *parent) : QTabWidget(parent)
     setMovable(true);
     setUsesScrollButtons(true);
 
+    tabBar()->installEventFilter(this);
     connect(tabBar(), SIGNAL(tabMoved(int,int)), SLOT(onTabMoved(int,int)));
 
     QSignalMapper *shortcutMapper = new QSignalMapper(this);
@@ -91,6 +93,39 @@ void TabWidget::closeTab(int index)
     removeTab(index);
     refreshTabText(index);
     w->deleteLater();
+}
+
+bool TabWidget::eventFilter(QObject *obj, QEvent *e)
+{
+    static int middlePressedTab = -1;
+    if (obj == tabBar())
+    {
+        switch (e->type())
+        {
+        case QEvent::MouseButtonPress:
+        {
+            QMouseEvent *me = static_cast<QMouseEvent *>(e);
+            if (me->button() == Qt::MiddleButton)
+                middlePressedTab = tabBar()->tabAt(me->pos());
+            break;
+        }
+        case QEvent::MouseButtonRelease:
+        {
+            QMouseEvent *me = static_cast<QMouseEvent *>(e);
+            if (me->button() == Qt::MiddleButton)
+            {
+                int index = tabBar()->tabAt(me->pos());
+                if (index == middlePressedTab)
+                    emit tabCloseRequested(index);
+                middlePressedTab = -1;
+            }
+            break;
+        }
+        default:
+            break;
+        }
+    }
+    return false;
 }
 
 void TabWidget::onTabMoved(int from, int to)
