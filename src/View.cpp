@@ -324,6 +324,8 @@ void View::insertText(const QString &string, uint delayMs)
         if (rc < '\x7f')
         {
             uchar b = rc.unicode() % 0x100;
+            if (b == '\n')
+                b = '\r';
             if (!delayMs)
                 bytes.append(b);
             else
@@ -331,15 +333,14 @@ void View::insertText(const QString &string, uint delayMs)
         }
         else
         {
-            QChar c = (c == '\n') ? '\r' : rc;
             ushort code;
             switch (d->terminal->connection()->site()->encoding())
             {
             case BBS::EncodingBig5:
-                code = YL::U2B[c.unicode()];
+                code = YL::U2B[rc.unicode()];
                 break;
             case BBS::EncodingGBK:
-                code = YL::U2G[c.unicode()];
+                code = YL::U2G[rc.unicode()];
                 break;
             default:
                 code = 0;
@@ -672,7 +673,7 @@ void View::copy()
         BBS::Cell &cell = d->terminal->cellsAtRow(y)[x];
         if ((x == 0) && (i != start))   // newline
         {
-            data.append('\r');
+            data.append('\n');
             data.append(cleared.f.bColorIndex);
             data.append(cleared.f.fColorIndex);
             data.append(cleared.f.blinking);
@@ -697,10 +698,7 @@ void View::paste()
 {
     const QMimeData *data = QApplication::clipboard()->mimeData();
     if (data->hasText())
-    {
-        QString text = data->text();
-        insertText(text, 1);
-    }
+        insertText(data->text(), 1);
 }
 
 void View::pasteColor()
