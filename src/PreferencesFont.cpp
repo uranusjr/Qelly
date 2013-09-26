@@ -51,10 +51,8 @@ void PreferencesFont::initialize()
     _ui->fontDoubleByteMarginLeft->setValue(prefs->doubleByteFontPaddingLeft());
     _ui->fontDoubleByteMarginBottom->setValue(
                                         prefs->doubleByteFontPaddingBottom());
-    QFont font = prefs->defaultFont();
-    setFontFieldRoman(font);
-    font = prefs->doubleByteFont();
-    setFontFieldDoubleByte(font);
+    setFontFieldRoman(prefs->defaultFont());
+    setFontFieldDoubleByte(prefs->doubleByteFont());
     _visited = true;
 }
 
@@ -113,18 +111,14 @@ void PreferencesFont::browseFontDoubleByte()
         setFontFieldDoubleByte(font);
 }
 
-void PreferencesFont::setFontFieldRoman(QFont &font)
+void PreferencesFont::setFontFieldRoman(const QFont &font)
 {
-    QStringList attributes;
-    attributes << font.family() << QString::number(font.pointSize());
-    _ui->fontRomanName->setText(attributes.join(", "));
+    _ui->fontRomanName->setText(font.toString().replace(",", ", "));
 }
 
-void PreferencesFont::setFontFieldDoubleByte(QFont &font)
+void PreferencesFont::setFontFieldDoubleByte(const QFont &font)
 {
-    QStringList attributes;
-    attributes << font.family() << QString::number(font.pointSize());
-    _ui->fontDoubleByteName->setText(attributes.join(", "));
+    _ui->fontDoubleByteName->setText(font.toString().replace(",", ", "));
 }
 
 }   // namespace Qelly

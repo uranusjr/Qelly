@@ -51,8 +51,8 @@ private slots:
     void browseFontDoubleByte();
 
 private:
-    void setFontFieldRoman(QFont &font);
-    void setFontFieldDoubleByte(QFont &font);
+    void setFontFieldRoman(const QFont &font);
+    void setFontFieldDoubleByte(const QFont &font);
     Ui::PreferencesFont *_ui;
     bool _visited;
 };
