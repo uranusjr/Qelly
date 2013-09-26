@@ -61,16 +61,16 @@ LibQxt 0.6.1.
 
 ### Other Package Managers
 
-Alternativelyf your package manager of choice (such as YUM, Homebrew, etc.)
+Alternatively, if your package manager of choice (such as YUM, Homebrew, etc.)
 provides Qt and LibQxt, you can install both them manually.
 
 ### LibQxt Setup Without Package Managers
 
 If you wish to build LibQxt manually, you will need to choose an appropriate
 version based on the version of Qt tha you use. At the time of writing
-(2013-09-25), the newest LibQxt release (0.6.2) supports only Qt 4. Therefore,
-if you wish to build Qelly against Qt 5, you will need to use Git or Mercurial
-to clone the tip version, and build LibQxt from that.
+(2013-09-25), the latest stable LibQxt release (0.6.2) supports only Qt 4.
+Therefore, if you wish to build Qelly against Qt 5, you will need to use Git or
+Mercurial to clone the tip version, and build LibQxt from that.
 
 
 ## Thrid Party Components
