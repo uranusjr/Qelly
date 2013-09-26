@@ -1121,9 +1121,14 @@ QString Terminal::stringFromIndex(int begin, int length)
     return string;
 }
 
+bool Terminal::hasUrlAt(int row, int column)
+{
+    return _cells[row][column].attr.f.isUrl;
+}
+
 QString Terminal::urlStringAt(int row, int column, bool *hasUrl)
 {
-    *hasUrl = _cells[row][column].attr.f.isUrl;
+    *hasUrl = hasUrlAt(row, column);
     if (!*hasUrl)
         return QString();
 

@@ -49,6 +49,7 @@ View::View(QWidget *parent) : Widget(parent)
     d_ptr = new ViewPrivate(this);
     Q_D(View);
 
+    setMouseTracking(true);
     setFocusPolicy(Qt::StrongFocus);
     setAttribute(Qt::WA_InputMethodEnabled);
     setAttribute(Qt::WA_KeyCompression, false);     // One key per key event
@@ -185,24 +186,37 @@ void View::mouseMoveEvent(QMouseEvent *e)
     if (isConnected())
     {
         int index = d->indexFromPoint(e->pos());
-        int old = d->selectedLength;
-        d->selectedLength = index - d->selectedStart + 1;
-        if (d->selectedLength <= 0)
-            d->selectedLength--;
-        if (old != d->selectedLength)
+
+        // If not dragging, display "hand" cursor over hyperlinks
+        if (d->terminal->hasUrlAt(index / d->column, index % d->column)
+                && !e->buttons())
+            setCursor(Qt::PointingHandCursor);
+        else
+            unsetCursor();
+
+        // Update selection if dragging
+        if (e->buttons() & Qt::LeftButton)
         {
-            int head = d->selectedStart + old;
-            if (old > 0)
-                head = d->selectedStart < index ? d->selectedStart : index;
-            else
-                head = head < index ? head : index;
-            int tail = d->selectedStart + old;
-            if (old > 0)
-                tail = d->selectedStart > index ? d->selectedStart : index;
-            else
-                tail = tail > index ? tail : index;
-            update(0, head / d->column * d->cellHeight,
-                   d->column * d->cellWidth, (tail - head + 1) * d->cellHeight);
+            int old = d->selectedLength;
+            d->selectedLength = index - d->selectedStart + 1;
+            if (d->selectedLength <= 0)
+                d->selectedLength--;
+            if (old != d->selectedLength)
+            {
+                int head = d->selectedStart + old;
+                if (old > 0)
+                    head = d->selectedStart < index ? d->selectedStart : index;
+                else
+                    head = head < index ? head : index;
+                int tail = d->selectedStart + old;
+                if (old > 0)
+                    tail = d->selectedStart > index ? d->selectedStart : index;
+                else
+                    tail = tail > index ? tail : index;
+                update(0, head / d->column * d->cellHeight,
+                       d->column * d->cellWidth,
+                       (tail - head + 1) * d->cellHeight);
+            }
         }
     }
     return Qx::Widget::mouseMoveEvent(e);
