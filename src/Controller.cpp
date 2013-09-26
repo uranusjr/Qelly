@@ -49,11 +49,12 @@ Controller::Controller(QObject *parent) :
     connect(menu, SIGNAL(editCopy()), this, SLOT(copy()));
     connect(menu, SIGNAL(editPaste()), this, SLOT(paste()));
     connect(menu, SIGNAL(editPasteColor()), this, SLOT(pasteColor()));
-    connect(_window, SIGNAL(windowShouldClose()), this, SLOT(closeWindow()));
+    connect(_window, SIGNAL(windowShouldClose()), SLOT(closeWindow()));
+    connect(_window, SIGNAL(newTabRequested()), SLOT(addTab()));
     connect(_window->address(), SIGNAL(returnPressed()),
-            this, SLOT(onAddressReturnPressed()));
+            SLOT(onAddressReturnPressed()));
     connect(_window->tabs(), SIGNAL(tabCloseRequested(int)),
-            this, SLOT(closeTab(int)));
+            SLOT(closeTab(int)));
 
     SharedPreferences *prefs = SharedPreferences::sharedInstance();
     _window->setContentHeight(prefs->cellHeight() * BBS::SizeRowCount);
