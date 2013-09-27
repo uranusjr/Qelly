@@ -254,7 +254,16 @@ void Controller::pasteColor()
 
 void Controller::reconnect()
 {
-    currentView()->terminal()->connection()->reconnect();
+    View *view = currentView();
+    if (!view)
+        return;
+    Connection::Terminal *terminal = view->terminal();
+    if (!terminal)
+        return;
+    Connection::AbstractConnection *connection = terminal->connection();
+    if (!connection || !connection->isConnected())
+        return;
+    connection->reconnect();
 }
 
 void Controller::onAddressReturnPressed()

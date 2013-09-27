@@ -40,7 +40,7 @@ void AbstractConnection::setSite(Site *site)
     _site->setParent(this);
 }
 
-bool AbstractConnection::connectTo(Site *site)
+bool AbstractConnection::connectToSite(Site *site)
 {
     QString address = site->address();
     return connectTo(address, site->port());

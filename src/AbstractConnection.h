@@ -37,7 +37,7 @@ class AbstractConnection : public QObject
 
 public:
     explicit AbstractConnection(QObject *parent = 0);
-    virtual bool connectTo(Site *s);
+    virtual bool connectToSite(Site *s);
     virtual bool connectTo(const QString &address, qint16 port) = 0;
     static const qint16 DefaultPort = -1;
 

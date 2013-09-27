@@ -95,6 +95,8 @@ void Ssh::close()
 
 void Ssh::reconnect()
 {
+    close();
+    connectToSite(site());
 }
 
 void Ssh::onProcessStarted()

@@ -72,6 +72,8 @@ void Telnet::close()
 
 void Telnet::reconnect()
 {
+    close();
+    connectToSite(site());
 }
 
 void Telnet::onSocketHostFound()
