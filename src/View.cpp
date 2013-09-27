@@ -686,7 +686,7 @@ void View::copy()
         BBS::Cell &cell = d->terminal->cellsAtRow(y)[x];
         if ((x == 0) && (i != start))   // newline
         {
-            data.append('\n');
+            data.append('\r');
             data.append(cleared.f.bColorIndex);
             data.append(cleared.f.fColorIndex);
             data.append(cleared.f.blinking);
@@ -821,6 +821,8 @@ void View::pasteColor()
         }
     }
 
+    for (int j = 0; j < space; j++)
+        data.append(' ');
     data.append(esc);
     data.append("[m");
 
