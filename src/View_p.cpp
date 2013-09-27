@@ -791,6 +791,19 @@ void ViewPrivate::hidePreeditHolder()
     preeditHolder->hide();
 }
 
+void ViewPrivate::updateCursor(
+        const QPoint &pos, Qt::KeyboardModifiers modifiers,
+        Qt::MouseButtons buttons)
+{
+    Q_Q(View);
+    if (modifiers & UJ::ModModifier)
+        q->setCursor(Qt::IBeamCursor);
+    else if (terminal->hasUrlAt(indexFromPoint(pos)) && !buttons)
+        q->setCursor(Qt::PointingHandCursor);
+    else
+        q->unsetCursor();
+}
+
 void UJ::Qelly::ViewPrivate::addUrlToMenu(const QString &url, QMenu *menu) const
 {
     QAction *action = menu->addAction(url, q_ptr, SLOT(openUrl()));

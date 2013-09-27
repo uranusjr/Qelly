@@ -100,6 +100,8 @@ public:
 
     void showPreeditHolder();
     void hidePreeditHolder();
+    void updateCursor(const QPoint &pos, Qt::KeyboardModifiers modifiers,
+                      Qt::MouseButtons buttons);
 
     SharedPreferences *prefs;
     double cellWidth;

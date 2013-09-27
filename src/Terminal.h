@@ -58,6 +58,7 @@ public:
         return _cells[row];
     }
     QString stringFromIndex(int begin, int length);
+    bool hasUrlAt(int index);
     bool hasUrlAt(int row, int column);
     QString urlStringAt(int row, int column, bool *hasUrl);
 

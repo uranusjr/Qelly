@@ -187,12 +187,7 @@ void View::mouseMoveEvent(QMouseEvent *e)
     {
         int index = d->indexFromPoint(e->pos());
 
-        // If not dragging, display "hand" cursor over hyperlinks
-        if (d->terminal->hasUrlAt(index / d->column, index % d->column)
-                && !e->buttons())
-            setCursor(Qt::PointingHandCursor);
-        else
-            unsetCursor();
+        d->updateCursor(e->pos(), e->modifiers(), e->buttons());
 
         // Update selection if dragging
         if (e->buttons() & Qt::LeftButton)
@@ -257,6 +252,9 @@ void View::keyPressEvent(QKeyEvent *e)
         bool ok = false;
         Qt::KeyboardModifiers modifiers = e->modifiers();
         const QString &text = e->text();
+
+        d->updateCursor(mapFromGlobal(QCursor::pos()), modifiers, 0);
+
         if (modifiers & Qt::ControlModifier)
         {
             int c = d->characterFromKeyPress(key, modifiers, &ok);
@@ -296,6 +294,12 @@ void View::keyPressEvent(QKeyEvent *e)
     {
         Qx::Widget::keyPressEvent(e);
     }
+}
+
+void View::keyReleaseEvent(QKeyEvent *e)
+{
+    d_ptr->updateCursor(mapFromGlobal(QCursor::pos()), e->modifiers(), 0);
+    Qx::Widget::keyReleaseEvent(e);
 }
 
 void View::inputMethodEvent(QInputMethodEvent *e)
