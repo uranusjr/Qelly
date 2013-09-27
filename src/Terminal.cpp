@@ -18,7 +18,6 @@
 
 #include "Terminal.h"
 #include <QApplication>
-#include <QSet>
 #include "AbstractConnection.h"
 #include "Encodings.h"
 #include "Globals.h"
@@ -202,10 +201,6 @@ void Terminal::updateDoubleByteStateForRow(int row)
 
 void Terminal::updateUrlStateForRow(int row)
 {
-    QSet<const char *> protocols;
-    protocols << "http://" << "https://" << "ftp://" << "telnet://"
-              << "bbs://"  << "ssh://"   << "mailto:";
-
     bool isUrl = false;
     if (row > 0)
         isUrl = _cells[row - 1][_column - 1].attr.f.isUrl;
@@ -221,12 +216,12 @@ void Terminal::updateUrlStateForRow(int row)
         }
         else
         {
-            foreach(const char *p, protocols)
+            foreach(const QString &p, protocols())
             {
                 bool matched = true;
-                for (uint s = 0; s < ::strlen(p); s++)
+                for (int s = 0; s < p.size(); s++)
                 {
-                    if (cells[i + s].byte != p[s])
+                    if (p.at(s) != cells[i + s].byte)
                     {
                         matched = false;
                         break;

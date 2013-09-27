@@ -27,6 +27,7 @@
 #include <QTextStream>
 #include <QVector>
 #include "Globals.h"
+#include "Terminal.h"
 class QMenu;
 class QPainter;
 class QTimer;
@@ -93,7 +94,6 @@ public:
     inline QString longUrlFromString(const QString &source) const;
     inline bool isUrlLike(const QString &s) const;
     inline bool hasProtocolPrefix(const QString &s) const;
-    inline const QStringList protocols() const;
     inline QString realize(const QString &url);
     void addUrlToMenu(const QString &url, QMenu *menu) const;
     QString selection() const;
@@ -227,7 +227,7 @@ bool ViewPrivate::isUrlLike(const QString &s) const
 
 bool ViewPrivate::hasProtocolPrefix(const QString &s) const
 {
-    foreach (const QString &p, protocols())
+    foreach (const QString &p, Connection::Terminal::protocols())
     {
         if (s.startsWith(p))
             return true;
@@ -235,17 +235,9 @@ bool ViewPrivate::hasProtocolPrefix(const QString &s) const
     return false;
 }
 
-const QStringList ViewPrivate::protocols() const
-{
-    static QStringList p = (
-                QStringList() << "http://" << "https://" << "ftp://" <<
-                "telnet://" << "bbs://" << "ssh://" << "mailto:");
-    return p;
-}
-
 QString ViewPrivate::realize(const QString &url)
 {
-    foreach (const QString &p, protocols())
+    foreach (const QString &p, Connection::Terminal::protocols())
     {
         if (url.startsWith(p))
             return url;

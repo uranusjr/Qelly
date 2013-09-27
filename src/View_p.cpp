@@ -26,7 +26,6 @@
 #include "PreeditTextHolder.h"
 #include "SharedPreferences.h"
 #include "Site.h"
-#include "Terminal.h"
 #include "View.h"
 
 namespace UJ

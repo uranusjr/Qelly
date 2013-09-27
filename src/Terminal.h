@@ -21,6 +21,7 @@
 
 #include <QObject>
 #include <QQueue>
+#include <QStringList>
 #include "Globals.h"
 #include "YLTerminal.h"
 
@@ -59,6 +60,8 @@ public:
     QString stringFromIndex(int begin, int length);
     bool hasUrlAt(int row, int column);
     QString urlStringAt(int row, int column, bool *hasUrl);
+
+    static inline const QStringList &protocols();
 
 signals:
     void dataProcessed();
@@ -212,6 +215,14 @@ public: // Setters & Getters
     }
     void setConnection(AbstractConnection *connection);
 };
+
+const QStringList &Terminal::protocols()
+{
+    static QStringList p = (
+                QStringList() << "http://" << "https://" << "ftp://" <<
+                "telnet://" << "bbs://" << "ssh://" << "mailto:");
+    return p;
+}
 
 }   // namespace Connection
 
