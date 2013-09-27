@@ -253,16 +253,20 @@ void View::keyPressEvent(QKeyEvent *e)
         if (key != UJ::Key_Mod)
             d->clearSelection();
         d->terminal->setHasMessage(false);
-        QString text = e->text();
-        if (text.isEmpty())   // Special key (up, down, etc.) or modified
+
+        bool ok = false;
+        Qt::KeyboardModifiers modifiers = e->modifiers();
+        const QString &text = e->text();
+        if (modifiers & Qt::ControlModifier)
         {
-            Qt::KeyboardModifiers modifiers = e->modifiers();
-            bool ok = false;
+            int c = d->characterFromKeyPress(key, modifiers, &ok);
+            if (ok)
+                emit hasBytesToSend(QByteArray(1, c));
+        }
+        else    // No modifier
+        {
             switch (key)
             {
-            case Qt::Key_Tab:
-                emit hasBytesToSend(QByteArray(1, ASC_HT));
-                break;
             case Qt::Key_Up:
             case Qt::Key_Down:
             case Qt::Key_Right:
@@ -277,21 +281,14 @@ void View::keyPressEvent(QKeyEvent *e)
                 break;
             case Qt::Key_Delete:
                 d->handleForwardDeleteKey();
+                break;
             case 0x7f:
-                //d->handleAsciiDelete();
+                d->handleAsciiDelete();
                 break;
             default:
-                if (modifiers & Qt::ControlModifier)
-                {
-                    char c = d->characterFromKeyPress(key, modifiers, &ok);
-                    if (ok)
-                        emit hasBytesToSend(QByteArray(1, c));
-                }
+                emit hasBytesToSend(text.toLatin1());   // Normal text input
+                break;
             }
-        }
-        else    // Normal input
-        {
-            emit hasBytesToSend(text.toLatin1());
         }
         e->accept();
     }
