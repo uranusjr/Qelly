@@ -25,9 +25,9 @@ namespace UJ
 namespace Connection
 {
 
-AbstractConnection::AbstractConnection(QObject *parent) : QObject(parent)
+AbstractConnection::AbstractConnection(QObject *parent) :
+    QObject(parent), _site(0)
 {
-    _site = 0;
     setProcessing(false);
     setConnected(false);
 }

@@ -68,7 +68,7 @@ private:
     void handleStateSeenDo(uchar c);
     void handleStateSubNegIac(uchar c);
 
-    QByteArray *_sbBuffer;
+    QByteArray _sbBuffer;
     uchar _sbOption;
     QTcpSocket *_socket;
     qint16 _port;

@@ -29,12 +29,10 @@ namespace UJ
 namespace Connection
 {
 
-Telnet::Telnet(QObject *parent) : AbstractConnection(parent)
+Telnet::Telnet(QObject *parent) :
+    AbstractConnection(parent), _sbOption(TELOPT_BINARY), _socket(0),
+    _port(DefaultPort), _synced(false), _state(TOP_LEVEL)
 {
-    _site = 0;
-    _state = TOP_LEVEL;
-    _synced = false;
-    _sbBuffer = new QByteArray();
     _socket = new QTcpSocket(this);
     connect(this, SIGNAL(receivedBytes(QByteArray)),
             this, SLOT(processBytes(QByteArray)));
@@ -52,7 +50,6 @@ Telnet::Telnet(QObject *parent) : AbstractConnection(parent)
 Telnet::~Telnet()
 {
     close();
-    delete _sbBuffer;
 }
 
 bool Telnet::connectTo(const QString &address, qint16 port)
@@ -142,14 +139,14 @@ void Telnet::processBytes(QByteArray bytes)
             break;
         case SEENSB:
             _sbOption = c;
-            _sbBuffer->clear();
+            _sbBuffer.clear();
             _state = SUBNEGOT;
             break;
         case SUBNEGOT:
             if (c == IAC)
                 _state = SUBNEG_IAC;
             else
-                _sbBuffer->append(c);
+                _sbBuffer.append(c);
             break;
         case SUBNEG_IAC:
             handleStateSubNegIac(c);
@@ -292,7 +289,7 @@ void Telnet::handleStateSubNegIac(uchar c)
     if (c == SE)
     {
         if (_sbOption == TELOPT_TTYPE &&
-                _sbBuffer->size() == 1 && _sbBuffer->at(0) == TELQUAL_SEND)
+                _sbBuffer.size() == 1 && _sbBuffer.at(0) == TELQUAL_SEND)
         {
             QByteArray bs;
             bs.append(IAC);
@@ -305,11 +302,11 @@ void Telnet::handleStateSubNegIac(uchar c)
             emit hasBytesToSend(bs);
         }
         _state = TOP_LEVEL;
-        _sbBuffer->clear();
+        _sbBuffer.clear();
     }
     else
     {
-        _sbBuffer->append(c);
+        _sbBuffer.append(c);
         _state = SUBNEGOT;
     }
 }

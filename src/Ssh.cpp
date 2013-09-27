@@ -29,7 +29,6 @@ namespace Connection
 
 Ssh::Ssh(QObject *parent) : AbstractConnection(parent)
 {
-    _site = 0;
     _socket = new QProcess(this);
 
     connect(this, SIGNAL(receivedBytes(QByteArray)),
