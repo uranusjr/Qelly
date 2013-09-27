@@ -50,6 +50,7 @@ public slots:
     void copy();
     void paste();
     void pasteColor();
+    void reconnect();
     void onAddressReturnPressed();
     void changeAddressField(const QString &address);
     void showPreferencesWindow();

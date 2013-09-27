@@ -45,8 +45,7 @@ Ssh::Ssh(QObject *parent) : AbstractConnection(parent)
 
 Ssh::~Ssh()
 {
-    if (_socket->isOpen())
-        _socket->close();
+    close();
 }
 
 bool Ssh::connectTo(const QString &address, qint16 port)
@@ -92,6 +91,7 @@ bool Ssh::connectTo(const QString &address, qint16 port)
 
 void Ssh::close()
 {
+    _socket->close();
 }
 
 void Ssh::reconnect()

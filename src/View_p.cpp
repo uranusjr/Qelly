@@ -56,6 +56,8 @@ ViewPrivate::~ViewPrivate()
         delete painter;
     if (backImage)
         delete backImage;
+    if (terminal)
+        terminal->deleteLater();
 }
 
 void ViewPrivate::buildInfo()

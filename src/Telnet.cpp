@@ -51,6 +51,7 @@ Telnet::Telnet(QObject *parent) : AbstractConnection(parent)
 
 Telnet::~Telnet()
 {
+    close();
     delete _sbBuffer;
 }
 
@@ -69,6 +70,7 @@ bool Telnet::connectTo(const QString &address, qint16 port)
 
 void Telnet::close()
 {
+    _socket->close();
 }
 
 void Telnet::reconnect()

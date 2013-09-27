@@ -54,6 +54,7 @@ protected:
 signals:
     void windowShouldClose();
     void newTabRequested();
+    void reconnect();
 
 private:
     void buildToolBar();

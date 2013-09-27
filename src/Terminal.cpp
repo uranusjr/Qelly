@@ -48,6 +48,7 @@ Terminal::~Terminal()
     for (int i = 0; i < _row; i++)
         delete [] _cells[i];
     delete [] _cells;
+    _connection->deleteLater();
 }
 
 void Terminal::initSettings()

@@ -85,7 +85,8 @@ void MainWindow::buildToolBar()
     QStyle *style = qApp->style();
     _toolbar = addToolBar(tr("General"));
     _toolbar->addAction(QIcon(":/images/Bookmarks.png"), tr("Sites"));
-    _toolbar->addAction(QIcon(":/images/Reload.png"), tr("Reconnect"));
+    _toolbar->addAction(QIcon(":/images/Reload.png"), tr("Reconnect"),
+                        this, SIGNAL(reconnect()));
     _toolbar->addAction(QIcon(":/images/New.png"), tr("Add"),
                         this, SIGNAL(newTabRequested()));
     _toolbar->addWidget(_inputFrame);

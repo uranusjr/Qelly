@@ -46,6 +46,7 @@ Controller::Controller(QObject *parent) :
     connect(menu, SIGNAL(preferences()), SLOT(showPreferencesWindow()));
     connect(menu, SIGNAL(fileNewTab()), SLOT(addTab()));
     connect(menu, SIGNAL(fileOpenLocation()), SLOT(focusAddressField()));
+    connect(menu, SIGNAL(fileReconnect()), SLOT(reconnect()));
     connect(menu, SIGNAL(fileCloseTab()), SLOT(closeTab()));
     connect(menu, SIGNAL(fileCloseWindow()), SLOT(closeWindow()));
     connect(menu, SIGNAL(editCopy()), SLOT(copy()));
@@ -53,6 +54,7 @@ Controller::Controller(QObject *parent) :
     connect(menu, SIGNAL(editPasteColor()), SLOT(pasteColor()));
     connect(menu, SIGNAL(about()), SLOT(showAbout()));
     connect(menu, SIGNAL(helpVisitProjectHome()), SLOT(visitProject()));
+    connect(_window, SIGNAL(reconnect()), SLOT(reconnect()));
     connect(_window, SIGNAL(windowShouldClose()), SLOT(closeWindow()));
     connect(_window, SIGNAL(newTabRequested()), SLOT(addTab()));
     connect(_window->address(), SIGNAL(returnPressed()),
@@ -248,6 +250,11 @@ void Controller::pasteColor()
         return;
 
     view->pasteColor();
+}
+
+void Controller::reconnect()
+{
+    currentView()->terminal()->connection()->reconnect();
 }
 
 void Controller::onAddressReturnPressed()
