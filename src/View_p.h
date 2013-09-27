@@ -237,11 +237,8 @@ bool ViewPrivate::hasProtocolPrefix(const QString &s) const
 
 QString ViewPrivate::realize(const QString &url)
 {
-    foreach (const QString &p, Connection::Terminal::protocols())
-    {
-        if (url.startsWith(p))
-            return url;
-    }
+    if (hasProtocolPrefix(url))
+        return url;
     return QString("http://%1").arg(url);
 }
 
