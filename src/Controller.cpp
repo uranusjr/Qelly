@@ -18,8 +18,10 @@
 
 #include "Controller.h"
 #include <QApplication>
+#include <QDesktopServices>
 #include <QLineEdit>
 #include <QMessageBox>
+#include <QUrl>
 #include "Globals.h"
 #include "MainWindow.h"
 #include "PreferencesWindow.h"
@@ -41,14 +43,16 @@ Controller::Controller(QObject *parent) :
 {
     _window = new MainWindow();
     SharedMenuBar *menu = SharedMenuBar::sharedInstance();
-    connect(menu, SIGNAL(preferences()), this, SLOT(showPreferencesWindow()));
-    connect(menu, SIGNAL(fileNewTab()), this, SLOT(addTab()));
-    connect(menu, SIGNAL(fileOpenLocation()), this, SLOT(focusAddressField()));
-    connect(menu, SIGNAL(fileCloseTab()), this, SLOT(closeTab()));
-    connect(menu, SIGNAL(fileCloseWindow()), this, SLOT(closeWindow()));
-    connect(menu, SIGNAL(editCopy()), this, SLOT(copy()));
-    connect(menu, SIGNAL(editPaste()), this, SLOT(paste()));
-    connect(menu, SIGNAL(editPasteColor()), this, SLOT(pasteColor()));
+    connect(menu, SIGNAL(preferences()), SLOT(showPreferencesWindow()));
+    connect(menu, SIGNAL(fileNewTab()), SLOT(addTab()));
+    connect(menu, SIGNAL(fileOpenLocation()), SLOT(focusAddressField()));
+    connect(menu, SIGNAL(fileCloseTab()), SLOT(closeTab()));
+    connect(menu, SIGNAL(fileCloseWindow()), SLOT(closeWindow()));
+    connect(menu, SIGNAL(editCopy()), SLOT(copy()));
+    connect(menu, SIGNAL(editPaste()), SLOT(paste()));
+    connect(menu, SIGNAL(editPasteColor()), SLOT(pasteColor()));
+    connect(menu, SIGNAL(about()), SLOT(showAbout()));
+    connect(menu, SIGNAL(helpVisitProjectHome()), SLOT(visitProject()));
     connect(_window, SIGNAL(windowShouldClose()), SLOT(closeWindow()));
     connect(_window, SIGNAL(newTabRequested()), SLOT(addTab()));
     connect(_window->address(), SIGNAL(returnPressed()),
@@ -275,6 +279,16 @@ void Controller::showPreferencesWindow()
                 SLOT(updateAll()));
     }
     _preferencesWindow->show();
+}
+
+void Controller::showAbout()
+{
+    // TODO: Implement me
+}
+
+void Controller::visitProject()
+{
+    QDesktopServices::openUrl(QUrl("https://github.com/uranusjr/Qelly"));
 }
 
 void Controller::updateAll()

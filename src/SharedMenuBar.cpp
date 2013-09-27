@@ -89,10 +89,6 @@ SharedMenuBar::SharedMenuBar(QWidget *parent) : QMenuBar(parent)
                     QKeySequence(UJ::MOD | Qt::Key_D));
 
     menu = addMenu(tr("Window"));
-    menu->addAction(new QAction(tr("About"), this));
-#ifndef Q_WS_MAC
-    menu->addSeparator();
-#endif
     menu->addAction(tr("Minimize"), this, SIGNAL(windowMinimize()),
                     QKeySequence(UJ::MOD | Qt::Key_M));
     menu->addAction(tr("Zoom"), this, SIGNAL(windowZoom()));
@@ -106,6 +102,7 @@ SharedMenuBar::SharedMenuBar(QWidget *parent) : QMenuBar(parent)
                     QKeySequence(UJ::MOD | UJ::OPT | Qt::Key_Up));
 #endif
     menu = addMenu(tr("Help"));
+    menu->addAction(tr("About"), this, SIGNAL(about()));
     menu->addAction(tr("Visit Project Home..."),
                     this, SIGNAL(helpVisitProjectHome()));
 }

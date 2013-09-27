@@ -53,6 +53,8 @@ public slots:
     void onAddressReturnPressed();
     void changeAddressField(const QString &address);
     void showPreferencesWindow();
+    void showAbout();
+    void visitProject();
 
 private slots:
     void updateAll();
