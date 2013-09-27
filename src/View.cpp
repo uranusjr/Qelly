@@ -372,6 +372,8 @@ void View::insertText(const QString &string, uint delayMs)
         }
     }
 
+    if (bytes.isEmpty())
+        return;
     if (!delayMs)
         emit hasBytesToSend(bytes);
     else
