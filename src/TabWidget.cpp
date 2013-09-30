@@ -58,8 +58,9 @@ TabWidget::TabWidget(QWidget *parent) : QTabWidget(parent)
     connect(shortcutMapper, SIGNAL(mapped(int)), SLOT(goToTabForKey(int)));
     for (int key = Qt::Key_0; key <= Qt::Key_9; key++)
     {
-        QShortcut *shortcut = new QShortcut(QKeySequence(UJ::ModModifier | key), this);
-        shortcut->setContext(Qt::ApplicationShortcut);
+        QShortcut *shortcut =
+                new QShortcut(QKeySequence(UJ::ModModifier | key), this);
+        shortcut->setContext(Qt::WindowShortcut);
         shortcutMapper->setMapping(shortcut, key);
         shortcutMapper->connect(shortcut, SIGNAL(activated()), SLOT(map()));
     }
