@@ -26,8 +26,11 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
 
     // Shortcuts are Cmd-based on Macs and Alt-based on others for us!!
-    // DO NOT use Qt::META, Qt::ALT, Qt::Key_Control and Qt::Key_Meta, but use
-    // UJ::MOD, UJ::ALT, UJ::Key_Control and UJ::Key_Meta in Globals.h instead.
+    // DO NOT use Qt::MetaModifier, Qt::AltModifier, Qt::Key_Control and
+    // Qt::Key_Meta, but use UJ::ModModifier, UJ::OptModifier, UJ::Key_Control
+    // and UJ::Key_Meta in Globals.h instead.
+    // As stated in Qt's documentation, Qt::META, Qt::CTRL, Qt::ALT and other
+    // all-CAPS enums should be avoided, too.
     a.setAttribute(Qt::AA_MacDontSwapCtrlAndMeta);
 
     YL::init_table();

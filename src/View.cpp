@@ -123,7 +123,7 @@ void View::mouseDoubleClickEvent(QMouseEvent *e)
 {
     Q_D(View);
 
-    if (isConnected() && !(e->modifiers() & UJ::MOD))
+    if (isConnected() && !(e->modifiers() & UJ::ModModifier))
     {
         int r = d->selectedStart / d->column;
         int c = d->selectedStart % d->column;
@@ -166,7 +166,7 @@ void View::mouseTripleClickEvent(QMouseEvent *e)
 {
     Q_D(View);
 
-    if (isConnected() && !(e->modifiers() & UJ::MOD))
+    if (isConnected() && !(e->modifiers() & UJ::ModModifier))
     {
         // Select the whole line on triple click
         d->selectedStart = d->selectedStart - (d->selectedStart % d->column);
@@ -228,7 +228,7 @@ void View::mouseReleaseEvent(QMouseEvent *e)
         QString url = d->terminal->urlStringAt(
                     index / d->column, index % d->column, &hasUrl);
         if (hasUrl && e->button() == Qt::LeftButton
-                && !(e->modifiers() & UJ::MOD))
+                && !(e->modifiers() & UJ::ModModifier))
         {
             // NOTE: Should we implement image previewer at all?
             QDesktopServices::openUrl(QUrl(url, QUrl::TolerantMode));

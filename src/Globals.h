@@ -24,24 +24,15 @@
 namespace UJ
 {
 
-enum Modifier
-{
-#ifdef Q_OS_MAC
-    MOD = Qt::META,
-    OPT = Qt::ALT
-#else
-    MOD = Qt::ALT,
-    OPT = Qt::META
-#endif
-};
-
 enum KeyboardModifier
 {
 // On Macs,
 #ifdef Q_OS_MAC
-    ModModifier = Qt::ControlModifier
+    ModModifier = Qt::MetaModifier,
+    OptModifier = Qt::AltModifier
 #else
-    ModModifier = Qt::AltModifier
+    ModModifier = Qt::AltModifier,
+    OptModifier = Qt::MetaModifier
 #endif
 };
 
