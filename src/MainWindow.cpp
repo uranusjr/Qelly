@@ -39,19 +39,20 @@ namespace UJ
 namespace Qelly
 {
 
-MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
+MainWindow::MainWindow(QWidget *parent) :
+    QMainWindow(parent), _contentHeight(0), _firstRun(false)
 {
-    buildToolBar();
-    setUnifiedTitleAndToolBarOnMac(true);
-    setMenuBar(SharedMenuBar::sharedInstance());
     _tabs = new TabWidget(this);
     _tabs->setTabPosition(QTabWidget::North);
     _prefs = SharedPreferences::sharedInstance();
-    _firstRun = false;
-    _contentHeight = 0;
-    move(_prefs->windowPosition());
+
+    buildToolBar();
+    setUnifiedTitleAndToolBarOnMac(true);
+    setMenuBar(SharedMenuBar::sharedInstance());
     setCentralWidget(_tabs);
     setWindowTitle("Qelly");
+
+    move(_prefs->windowPosition());
 }
 
 MainWindow::~MainWindow()
@@ -114,7 +115,7 @@ void MainWindow::moveEvent(QMoveEvent *e)
 
 void MainWindow::resizeEvent(QResizeEvent *e)
 {
-    QSize size = e->size();
+    const QSize &size = e->size();
     int height = size.height();
     if (!_firstRun && height > _contentHeight)
     {
