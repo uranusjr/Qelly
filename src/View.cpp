@@ -376,12 +376,16 @@ void View::insertText(const QString &string, uint delayMs)
         }
     }
 
-    if (bytes.isEmpty())
-        return;
     if (!delayMs)
-        emit hasBytesToSend(bytes);
+    {
+        if (!bytes.isEmpty())
+            emit hasBytesToSend(bytes);
+    }
     else
-        d->insertTimer->start(delayMs);
+    {
+        if (!d->insertBuffer.isEmpty())
+            d->insertTimer->start(delayMs);
+    }
 }
 
 void View::popInsertBuffer()
