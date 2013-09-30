@@ -143,7 +143,7 @@ public: // Setters & Getters
         font.setStyleHint(QFont::TypeWriter);
         return font;
     }
-    inline void setDefaultFont(QFont &font)
+    inline void setDefaultFont(const QFont &font)
     {
         _settings->setValue("default font", font.toString());
     }
@@ -157,7 +157,7 @@ public: // Setters & Getters
             font = QFont("Microsoft JhengHei UI", 18);
         return font;
     }
-    inline void setDoubleByteFont(QFont &font)
+    inline void setDoubleByteFont(const QFont &font)
     {
         _settings->setValue("double byte font", font.toString());
     }

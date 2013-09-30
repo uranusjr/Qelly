@@ -46,7 +46,7 @@ PreferencesWindow::PreferencesWindow(QWidget *parent) : QxtConfigDialog(parent)
     displayPreferenceGroup->addSignal(font, SIGNAL(preferencesUpdated()));
     displayPreferenceGroup->addSignal(color, SIGNAL(preferencesUpdated()));
     connect(displayPreferenceGroup, SIGNAL(firstSignalReceived()),
-            SIGNAL(displayPreferenceChanged()));
+            SIGNAL(displayPreferenceChanged()), Qt::QueuedConnection);
     connect(displayPreferenceGroup, SIGNAL(firstSignalReceived()),
             displayPreferenceGroup, SLOT(reset()));
 

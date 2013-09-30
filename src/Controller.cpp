@@ -309,7 +309,12 @@ void Controller::visitProject()
 
 void Controller::updateAll()
 {
-    // TODO: Implement me #13
+    View *view = currentView();
+    if (!view || !view->terminal())
+        return;
+    view->terminal()->setDirtyAll();
+    view->updateBackImage();
+    view->update();
 }
 
 View *Controller::currentView() const
