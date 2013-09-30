@@ -45,7 +45,7 @@ signals:
     void fileNewTab();
     void fileOpenLocation();
     void fileReconnect();
-    void fileCloseWindow();
+    void fileQuit();
     void fileCloseTab();
     void editCopy();
     void editPaste();

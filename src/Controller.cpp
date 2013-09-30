@@ -48,7 +48,7 @@ Controller::Controller(QObject *parent) :
     connect(menu, SIGNAL(fileOpenLocation()), SLOT(focusAddressField()));
     connect(menu, SIGNAL(fileReconnect()), SLOT(reconnect()));
     connect(menu, SIGNAL(fileCloseTab()), SLOT(closeTab()));
-    connect(menu, SIGNAL(fileCloseWindow()), SLOT(closeWindow()));
+    connect(menu, SIGNAL(fileQuit()), SLOT(closeWindow()));
     connect(menu, SIGNAL(editCopy()), SLOT(copy()));
     connect(menu, SIGNAL(editPaste()), SLOT(paste()));
     connect(menu, SIGNAL(editPasteColor()), SLOT(pasteColor()));
