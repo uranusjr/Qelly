@@ -570,12 +570,16 @@ void View::paintEvent(QPaintEvent *e)
         // NOTE: Preference for URL color and width
         d->painter->setPen(QPen(QColor("orange"), 1.0));
         for (int y = r.top() / d->cellHeight;
-             y <= r.bottom() / d->cellHeight; y++)
+             y < r.bottom() / d->cellHeight + 1; y++)
         {
+            if (y < 0 || y >= d->row)
+                continue;
             BBS::Cell *cells = d->terminal->cellsAtRow(y);
             int xEnd = r.right() / d->cellWidth + 1;
             for (int x = r.left() / d->cellWidth; x < xEnd; x++)
             {
+                if (x < 0 || x >= d->column)
+                    continue;
                 int start = x;
                 while (start < xEnd && cells[x].attr.f.isUrl)
                     x++;

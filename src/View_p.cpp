@@ -641,12 +641,16 @@ void ViewPrivate::paintBlink(QRect &r)
     if (!q_ptr->isConnected() || !blinkTicker)
         return;
 
-    for (int y = r.top() / cellHeight; y <= r.bottom() / cellHeight; y++)
+    for (int y = r.top() / cellHeight; y < r.bottom() / cellHeight + 1; y++)
     {
+        if (y < 0 || y >= row)
+            continue;
         BBS::Cell *cells = terminal->cellsAtRow(y);
         for (int x = r.left() / cellWidth; x < r.right() / cellWidth + 1; x++)
         {
-            BBS::CellAttribute &a = cells[x].attr;
+            if (x < 0 || x >= column)
+                continue;
+            const BBS::CellAttribute &a = cells[x].attr;
             if (!a.f.blinking)
                 continue;
             int colorIndex = a.f.reversed ? a.f.fColorIndex : a.f.bColorIndex;
