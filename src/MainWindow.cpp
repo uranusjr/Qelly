@@ -39,8 +39,7 @@ namespace UJ
 namespace Qelly
 {
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent), _contentHeight(0), _firstRun(false)
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 {
     _tabs = new TabWidget(this);
     _tabs->setTabPosition(QTabWidget::North);
@@ -111,19 +110,6 @@ void MainWindow::moveEvent(QMoveEvent *e)
 {
     _prefs->setWindowPosition(e->pos());
     return QMainWindow::moveEvent(e);
-}
-
-void MainWindow::resizeEvent(QResizeEvent *e)
-{
-    const QSize &size = e->size();
-    int height = size.height();
-    if (!_firstRun && height > _contentHeight)
-    {
-        _firstRun = true;
-        setFixedSize(size.width(), height + 3);
-    }
-
-    QMainWindow::resizeEvent(e);
 }
 
 }   // namespace Qelly

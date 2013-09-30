@@ -62,8 +62,6 @@ Controller::Controller(QObject *parent) :
     connect(_window->tabs(), SIGNAL(tabCloseRequested(int)),
             SLOT(closeTab(int)));
 
-    SharedPreferences *prefs = SharedPreferences::sharedInstance();
-    _window->setContentHeight(prefs->cellHeight() * BBS::SizeRowCount);
     _window->show();
     addTab();
 }

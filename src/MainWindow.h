@@ -49,7 +49,6 @@ public:
 protected:
     void closeEvent(QCloseEvent *e);
     void moveEvent(QMoveEvent *e);
-    void resizeEvent(QResizeEvent *e);
 
 signals:
     void windowShouldClose();
@@ -66,8 +65,6 @@ private:
     QWidget *_inputFrame;
     QLineEdit *_address;
     SharedPreferences *_prefs;
-    int _contentHeight;
-    bool _firstRun;
 
 public: // Setts & Getters
     inline QLineEdit *address()
@@ -77,10 +74,6 @@ public: // Setts & Getters
     inline TabWidget *tabs()
     {
         return _tabs;
-    }
-    inline void setContentHeight(int height)
-    {
-        _contentHeight = height;
     }
 };
 
