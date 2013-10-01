@@ -31,6 +31,7 @@
 #include "Telnet.h"
 #include "Terminal.h"
 #include "View.h"
+#include "Tab.h"
 
 namespace UJ
 {
@@ -120,7 +121,7 @@ void Controller::focusAddressField()
 
 void Controller::addTab()
 {
-    _window->tabs()->addTab(new View(), "");
+    _window->tabs()->addTab(new Tab(new View()), "");
     _window->address()->setText(QString());
     focusAddressField();
 }
@@ -272,7 +273,7 @@ void Controller::onAddressReturnPressed()
 
     if (!_window->tabs()->count() || currentView()->terminal())
     {
-        int newTab = _window->tabs()->addTab(new View(), "");
+        int newTab = _window->tabs()->addTab(new Tab(new View()), "");
         _window->tabs()->setCurrentIndex(newTab);
     }
     connectWithAddress(address);
@@ -322,12 +323,12 @@ void Controller::updateAll()
 
 View *Controller::currentView() const
 {
-    return static_cast<View *>(_window->tabs()->currentWidget());
+    return static_cast<Tab *>(_window->tabs()->currentWidget())->view();
 }
 
 View *Controller::viewInTab(int index) const
 {
-    return static_cast<View *>(_window->tabs()->widget(index));
+    return static_cast<Tab *>(_window->tabs()->widget(index))->view();
 }
 
 }   // namespace Qelly

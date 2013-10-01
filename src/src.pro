@@ -66,7 +66,8 @@ SOURCES += main.cpp \
     PreferencesColor.cpp \
     ColorWell.cpp \
     PreeditTextHolder.cpp \
-    View_p.cpp
+    View_p.cpp \
+    Tab.cpp
 
 HEADERS  += \
     SharedMenuBar.h \
@@ -92,7 +93,8 @@ HEADERS  += \
     PreferencesColor.h \
     ColorWell.h \
     PreeditTextHolder.h \
-    View_p.h
+    View_p.h \
+    Tab.h
 
 RESOURCES += \
     GeneralResources.qrc
