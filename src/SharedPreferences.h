@@ -51,6 +51,9 @@ public:
         return g;
     }
 
+public slots:
+    void sync();
+
 private:
     QSettings *_settings;
 

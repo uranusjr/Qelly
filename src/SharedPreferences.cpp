@@ -24,6 +24,11 @@ namespace UJ
 namespace Qelly
 {
 
+void SharedPreferences::sync()
+{
+    _settings->sync();
+}
+
 }   // namespace Qelly
 
 }   // namespace UJ

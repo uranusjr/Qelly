@@ -293,7 +293,7 @@ void Controller::showPreferencesWindow()
         connect(_preferencesWindow, SIGNAL(displayPreferenceChanged()),
                 SLOT(updateAll()));
     }
-    _preferencesWindow->exec();
+    _preferencesWindow->show();
 }
 
 void Controller::showAbout()
