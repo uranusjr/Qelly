@@ -308,9 +308,14 @@ void Controller::visitProject()
 void Controller::updateAll()
 {
     View *view = currentView();
-    if (!view || !view->terminal())
+    if (!view)
         return;
-    view->terminal()->setDirtyAll();
+    view->updateCellSize();
+
+    Connection::Terminal *terminal = view->terminal();
+    if(!terminal)
+        return;
+    terminal->setDirtyAll();
     view->updateBackImage();
     view->update();
 }

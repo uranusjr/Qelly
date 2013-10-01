@@ -39,7 +39,6 @@ class MainWindow : public QMainWindow
 
 public:
     explicit MainWindow(QWidget *parent = 0);
-    virtual ~MainWindow();
     static inline MainWindow *sharedInstance()
     {
         static MainWindow *g = new MainWindow();
@@ -47,8 +46,8 @@ public:
     }
 
 protected:
-    void closeEvent(QCloseEvent *e);
-    void moveEvent(QMoveEvent *e);
+    virtual void closeEvent(QCloseEvent *e);
+    virtual void moveEvent(QMoveEvent *e);
 
 signals:
     void windowShouldClose();
@@ -57,8 +56,6 @@ signals:
 
 private:
     void buildToolBar();
-    int _width;
-    int _height;
     TabWidget *_tabs;
     QToolBar *_toolbar;
     QWidget *_stretch;

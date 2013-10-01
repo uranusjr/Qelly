@@ -49,6 +49,8 @@ private slots:
     void goToTabForKey(int key);
 
 private:
+    void preAddTab(QWidget *w);
+    void postAddTab(int index, const QString &label);
     int _tabBarHeight;
 
 public: // Setters & Getters

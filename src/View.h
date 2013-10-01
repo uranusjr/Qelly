@@ -44,6 +44,7 @@ class View : public Qx::Widget
 public:
     explicit View(QWidget *parent = 0);
     virtual ~View();
+    void updateCellSize();
     bool needBlinking();
     bool isConnected();
 

@@ -54,12 +54,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     move(_prefs->windowPosition());
 }
 
-MainWindow::~MainWindow()
-{
-    delete _stretch;
-    delete _inputFrame;
-}
-
 void MainWindow::buildToolBar()
 {
     _stretch = new QWidget();

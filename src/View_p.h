@@ -59,6 +59,7 @@ public:
     ~ViewPrivate();
 
     void buildInfo();
+    void updateCellSize();
 
     int indexFromPoint(const QPoint &point);
     QPoint pointFromIndex(int x, int y);
@@ -104,8 +105,8 @@ public:
                       Qt::MouseButtons buttons);
 
     SharedPreferences *prefs;
-    double cellWidth;
-    double cellHeight;
+    int cellWidth;
+    int cellHeight;
     int row;
     int column;
     int x;

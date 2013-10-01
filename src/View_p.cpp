@@ -62,15 +62,7 @@ ViewPrivate::~ViewPrivate()
 
 void ViewPrivate::buildInfo()
 {
-    cellWidth = prefs->cellWidth();
-    cellHeight = prefs->cellHeight();
-    row = BBS::SizeRowCount;
-    column = BBS::SizeColumnCount;
-
-    if (backImage)
-        delete backImage;
-    backImage = new QPixmap(cellWidth * column, cellHeight * row);
-
+    updateCellSize();
     if (singleAdvances.isEmpty() || doubleAdvances.isEmpty())
     {
         singleAdvances.clear();
@@ -86,6 +78,19 @@ void ViewPrivate::buildInfo()
     insertTimer = new QTimer(q_ptr);
     q_ptr->connect(insertTimer, SIGNAL(timeout()), SLOT(popInsertBuffer()));
     // NOTE: Set _textField hidden...This is the MarkedTextView thingy
+}
+
+void ViewPrivate::updateCellSize()
+{
+    row = BBS::SizeRowCount;
+    column = BBS::SizeColumnCount;
+    cellWidth = prefs->cellWidth();
+    cellHeight = prefs->cellHeight();
+
+    if (backImage)
+        delete backImage;
+    backImage = new QPixmap(cellWidth * column, cellHeight * row);
+    q_ptr->setFixedSize(cellWidth * column, cellHeight * row);
 }
 
 int ViewPrivate::indexFromPoint(const QPoint &point)

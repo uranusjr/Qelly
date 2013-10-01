@@ -21,7 +21,6 @@
 #include <QShortcut>
 #include <QSignalMapper>
 #include <QTabBar>
-#include <QTextStream>
 #include "View.h"
 
 namespace UJ
@@ -32,18 +31,11 @@ namespace Qelly
 
 TabWidget::TabWidget(QWidget *parent) : QTabWidget(parent)
 {
-    int size = font().pointSize();
     _tabBarHeight = fontMetrics().height() * 1.5;
-    QString s;
-    QTextStream stream(&s);
-    stream << "QTabBar::tab {"
-           << "width: 150px;"
-           << "font-size:" << size * 0.9 << "pt;"
-           << "}";
-    setStyleSheet(s);
+    setStyleSheet("QTabBar::tab { width: 150px; }");
     tabBar()->setAutoFillBackground(true);
     QPalette p;
-    p.setBrush(QPalette::Window, QBrush(Qt::black));
+    p.setBrush(QPalette::Background, QBrush(Qt::black));
     setPalette(p);
     setAutoFillBackground(true);
     setDocumentMode(true);
@@ -68,23 +60,17 @@ TabWidget::TabWidget(QWidget *parent) : QTabWidget(parent)
 
 int TabWidget::addTab(QWidget *widget, const QIcon &icon, const QString &label)
 {
-    setUpdatesEnabled(false);
-    widget->setParent(this);
+    preAddTab(widget);
     int result = QTabWidget::addTab(widget, icon, label);
-    setTabText(result, label);
-    setCurrentIndex(result);
-    setUpdatesEnabled(true);
+    postAddTab(result, label);
     return result;
 }
 
 int TabWidget::addTab(QWidget *widget, const QString &label)
 {
-    setUpdatesEnabled(false);
-    widget->setParent(this);
+    preAddTab(widget);
     int result = QTabWidget::addTab(widget, label);
-    setTabText(result, label);
-    setCurrentIndex(result);
-    setUpdatesEnabled(true);
+    postAddTab(result, label);
     return result;
 }
 
@@ -156,6 +142,20 @@ void TabWidget::goToTabForKey(int key)
     if (i == 0)
         i = 10;
     setCurrentIndex(i - 1);
+}
+
+void TabWidget::preAddTab(QWidget *w)
+{
+    setUpdatesEnabled(false);
+    w->setParent(this);
+    w->installEventFilter(this);
+}
+
+void TabWidget::postAddTab(int index, const QString &label)
+{
+    setTabText(index, label);
+    setCurrentIndex(index);
+    setUpdatesEnabled(true);
 }
 
 }   // namespace Qelly

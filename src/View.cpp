@@ -47,19 +47,22 @@ namespace Qelly
 View::View(QWidget *parent) : Widget(parent)
 {
     d_ptr = new ViewPrivate(this);
-    Q_D(View);
 
     setMouseTracking(true);
     setFocusPolicy(Qt::StrongFocus);
     setAttribute(Qt::WA_InputMethodEnabled);
     setAttribute(Qt::WA_KeyCompression, false);     // One key per key event
-    setFixedSize(d->cellWidth * d->column, d->cellHeight * d->row);
     startTimer(QApplication::cursorFlashTime());    // NOTE: Use preferences
 }
 
 View::~View()
 {
     delete d_ptr;
+}
+
+void View::updateCellSize()
+{
+    d_ptr->updateCellSize();
 }
 
 void View::timerEvent(QTimerEvent *)
@@ -485,7 +488,6 @@ void View::updateBackImage()
 void View::updateBackground(int row, int startColumn, int endColumn)
 {
     Q_D(View);
-
     BBS::Cell *cells = d->terminal->cellsAtRow(row);
     BBS::CellAttribute now;
     BBS::CellAttribute last = cells[startColumn].attr;
@@ -555,7 +557,6 @@ void View::updateText(int row, int x)
 void View::paintEvent(QPaintEvent *e)
 {
     Q_D(View);
-
     d->painter->begin(this);
     if (isConnected())
     {
