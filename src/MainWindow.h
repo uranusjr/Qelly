@@ -47,7 +47,7 @@ public:
 
 protected:
     virtual void closeEvent(QCloseEvent *e);
-    virtual void moveEvent(QMoveEvent *e);
+    virtual bool event(QEvent *e);
 
 signals:
     void windowShouldClose();

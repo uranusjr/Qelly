@@ -51,7 +51,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     setCentralWidget(_tabs);
     setWindowTitle("Qelly");
 
-    move(_prefs->windowPosition());
+    restoreGeometry(_prefs->windowGeometry());
 }
 
 void MainWindow::buildToolBar()
@@ -100,10 +100,26 @@ void MainWindow::closeEvent(QCloseEvent *e)
     emit windowShouldClose();
 }
 
-void MainWindow::moveEvent(QMoveEvent *e)
+bool MainWindow::event(QEvent *e)
 {
-    _prefs->setWindowPosition(e->pos());
-    return QMainWindow::moveEvent(e);
+    switch (e->type())
+    {
+    case QEvent::Resize:
+    case QEvent::Move:
+        _prefs->setWindowGeometry(saveGeometry());
+        break;
+    case QEvent::WindowStateChange:
+    {
+        // When return to normal state from maximized state, automatically
+        // adapt the recommended size.
+        QWindowStateChangeEvent *ce = static_cast<QWindowStateChangeEvent *>(e);
+        if ((ce->oldState() & Qt::WindowMaximized) && !isMaximized())
+            resize(sizeHint());
+    }
+    default:
+        break;
+    }
+    return QMainWindow::event(e);
 }
 
 }   // namespace Qelly

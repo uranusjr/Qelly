@@ -25,7 +25,6 @@
 #include <QFileInfo>
 #include <QFont>
 #include <QFontDatabase>
-#include <QPoint>
 #include <QSettings>
 #include "Globals.h"
 #include "Ssh.h"
@@ -56,15 +55,14 @@ private:
     QSettings *_settings;
 
 public: // Setters & Getters
-    inline QPoint windowPosition() const
+    inline QByteArray windowGeometry() const
     {
-        return _settings->value("window position", QPoint(200, 100)).toPoint();
+        return _settings->value("window frame", QByteArray()).toByteArray();
     }
-    inline void setWindowPosition(QPoint p)
+    inline void setWindowGeometry(const QByteArray &geo)
     {
-        _settings->setValue("window position", p);
+        _settings->setValue("window frame", geo);
     }
-
     inline int cellWidth() const
     {
         return _settings->value("cell width", 12).toInt();
