@@ -288,12 +288,12 @@ void Controller::showPreferencesWindow()
 {
     if (!_preferencesWindow)
     {
-        _preferencesWindow = new PreferencesWindow();
+        _preferencesWindow = new PreferencesWindow(_window);
         _preferencesWindow->setAttribute(Qt::WA_DeleteOnClose);
         connect(_preferencesWindow, SIGNAL(displayPreferenceChanged()),
                 SLOT(updateAll()));
     }
-    _preferencesWindow->show();
+    _preferencesWindow->exec();
 }
 
 void Controller::showAbout()
