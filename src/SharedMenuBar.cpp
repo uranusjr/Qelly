@@ -68,7 +68,7 @@ SharedMenuBar::SharedMenuBar(QWidget *parent) : QMenuBar(parent)
     menu->addAction(tr("Select All"), this, SIGNAL(editSelectAll()),
                     Seq(UJ::ModModifier | Qt::Key_A));
     menu->addSeparator();
-    menu->addAction(tr("Emicons..."), this, SIGNAL(editEmicons()),
+    menu->addAction(tr("Emoticons..."), this, SIGNAL(editEmoticons()),
                     Seq(UJ::ModModifier | Qt::Key_E));
     menu->addSeparator();
 #ifdef Q_WS_MAC

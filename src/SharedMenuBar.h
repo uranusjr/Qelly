@@ -52,7 +52,7 @@ signals:
     void editPasteWrap();
     void editPasteColor();
     void editSelectAll();
-    void editEmicons();
+    void editEmoticons();
     void editCustomizeToolbar();    // Mac only...
     void editPreferences();
     void viewAntiIdle(bool);
