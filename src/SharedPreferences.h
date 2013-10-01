@@ -43,7 +43,8 @@ class SharedPreferences : public QObject
 public:
     explicit SharedPreferences(QObject *parent = 0) : QObject(parent)
     {
-        _settings = new QSettings("uranusjr.org", "qelly", this);
+        _settings = new QSettings(QSettings::IniFormat, QSettings::UserScope,
+                                  "uranusjr.org", "qelly", this);
     }
     static inline SharedPreferences *sharedInstance()
     {
