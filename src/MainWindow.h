@@ -53,6 +53,7 @@ signals:
     void windowShouldClose();
     void newTabRequested();
     void reconnect();
+    void antiIdleTriggered(bool);
 
 private:
     void buildToolBar();

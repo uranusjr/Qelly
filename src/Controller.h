@@ -56,6 +56,10 @@ public slots:
     void showPreferencesWindow();
     void showAbout();
     void visitProject();
+    void toggleAntiIdle(bool enabled);
+
+protected:
+    virtual void timerEvent(QTimerEvent *e);
 
 private slots:
     void updateAll();
@@ -63,6 +67,8 @@ private slots:
 private:
     View *currentView() const;
     View *viewInTab(int index) const;
+    void setAntiIdleTimer(bool enabled);
+    int _antiIdleTimer;
     MainWindow *_window;
     QPointer<PreferencesWindow> _preferencesWindow;
 };

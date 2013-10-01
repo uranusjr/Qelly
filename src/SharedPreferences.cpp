@@ -482,6 +482,17 @@ void SharedPreferences::setSshClientPath(const QString &path)
     }
 }
 
+bool SharedPreferences::isAntiIdleActive() const
+{
+    return _settings->value("anti idle", true).toBool();
+}
+
+void SharedPreferences::setAntiIdleActive(bool value)
+{
+    _settings->setValue("anti idle", value);
+    emit antiIdleChanged(value);
+}
+
 }   // namespace Qelly
 
 }   // namespace UJ

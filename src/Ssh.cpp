@@ -51,7 +51,7 @@ bool Ssh::connectTo(const QString &address, qint16 port)
 {
     setProcessing(true);
 
-    if (!_site)
+    if (!site())
         setSite(new Site(address, address, this));
 
     _socket->setReadChannel(QProcess::StandardOutput);
@@ -138,6 +138,7 @@ void Ssh::sendBytes(QByteArray bytes)
     if (bytes.isEmpty())
         return;
 
+    setLastTouch();
     _socket->write(bytes);
 }
 

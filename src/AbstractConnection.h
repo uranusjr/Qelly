@@ -20,6 +20,7 @@
 #define ABSTRACTCONNECTION_H
 
 #include <QObject>
+#include <QDateTime>
 
 namespace UJ
 {
@@ -46,7 +47,7 @@ public slots:
     virtual void reconnect() = 0;
     virtual void sendBytes(QByteArray bytes) = 0;
 
-protected:
+private:
     Site *_site;
     QString _name;
     QString _address;
@@ -54,6 +55,7 @@ protected:
     //       Haven't decided which class, maybe QIcon?
     bool _isConnected;
     bool _isProcessing;
+    QDateTime _lastTouch;
 
 protected slots:
     virtual void processBytes(QByteArray bytes) = 0;
@@ -102,6 +104,17 @@ public: // Getters & Setters
     virtual inline void setProcessing(bool isProcessing)
     {
         _isProcessing = isProcessing;
+    }
+    inline QDateTime lastTouch() const
+    {
+        return _lastTouch;
+    }
+    void setLastTouch(const QDateTime &dt = QDateTime())
+    {
+        if (!dt.isValid())
+            _lastTouch = QDateTime::currentDateTime();
+        else
+            _lastTouch = dt;
     }
 };
 

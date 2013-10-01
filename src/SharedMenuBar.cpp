@@ -20,6 +20,7 @@
 #include <QKeySequence>
 #include <QMenu>
 #include "Globals.h"
+#include "SharedPreferences.h"
 
 namespace UJ
 {
@@ -30,6 +31,8 @@ namespace Qelly
 SharedMenuBar::SharedMenuBar(QWidget *parent) : QMenuBar(parent)
 {
     QMenu *menu = 0;
+    QAction *action;
+    SharedPreferences *prefs = SharedPreferences::sharedInstance();
     typedef QKeySequence Seq;
 
     connect(this, SIGNAL(editPreferences()), this, SIGNAL(preferences()));
@@ -76,7 +79,12 @@ SharedMenuBar::SharedMenuBar(QWidget *parent) : QMenuBar(parent)
                     Seq(UJ::ModModifier | Qt::Key_Comma));
 
     menu = addMenu(tr("View"));
-    menu->addAction(tr("Anti-Idle"), this, SIGNAL(viewAntiIdle()));
+    action = menu->addAction(tr("Anti-Idle"));
+    action->setCheckable(true);
+    action->setChecked(prefs->isAntiIdleActive());
+    action->connect(prefs, SIGNAL(antiIdleChanged(bool)),
+                    SLOT(setChecked(bool)));
+    connect(action, SIGNAL(triggered(bool)), SIGNAL(viewAntiIdle(bool)));
     menu->addAction(tr("Show Hidden Text"), this, SIGNAL(viewShowHiddenText()));
     menu->addAction(tr("Detect Double Byte"),
                     this, SIGNAL(viewDetectDoubleByte()));

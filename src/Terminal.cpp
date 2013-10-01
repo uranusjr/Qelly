@@ -1170,6 +1170,12 @@ QString Terminal::urlStringAt(int row, int column, bool *hasUrl)
     return url;
 }
 
+bool Terminal::isConnected() const
+{
+    AbstractConnection *conn = connection();
+    return (conn && conn->isConnected());
+}
+
 BBS::Encoding Terminal::encoding() const
 {
     return connection()->site()->encoding();

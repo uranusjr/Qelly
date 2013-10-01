@@ -58,7 +58,7 @@ bool Telnet::connectTo(const QString &address, qint16 port)
 
     _port = port < 0 ? DefaultPort : port;
 
-    if (!_site)
+    if (!site())
         setSite(new Site(address, address, this));
     _socket->connectToHost(address, _port);
 
@@ -326,6 +326,8 @@ void Telnet::sendBytes(QByteArray bytes)
 {
     if (bytes.isEmpty())
         return;
+
+    setLastTouch();
     switch (_socket->state())
     {
     case QAbstractSocket::UnconnectedState:

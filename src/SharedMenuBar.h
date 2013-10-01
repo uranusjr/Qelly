@@ -55,7 +55,7 @@ signals:
     void editEmicons();
     void editCustomizeToolbar();    // Mac only...
     void editPreferences();
-    void viewAntiIdle();
+    void viewAntiIdle(bool);
     void viewShowHiddenText();
     void viewDetectDoubleByte();
     void viewEncodingBig5();

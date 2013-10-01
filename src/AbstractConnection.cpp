@@ -28,6 +28,7 @@ namespace Connection
 AbstractConnection::AbstractConnection(QObject *parent) :
     QObject(parent), _site(0)
 {
+    setLastTouch();
     setProcessing(false);
     setConnected(false);
 }

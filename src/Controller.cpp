@@ -40,10 +40,12 @@ namespace Qelly
 {
 
 Controller::Controller(QObject *parent) :
-    QObject(parent), _preferencesWindow(0)
+    QObject(parent), _antiIdleTimer(0), _preferencesWindow(0)
 {
     _window = new MainWindow();
     SharedMenuBar *menu = SharedMenuBar::sharedInstance();
+    setAntiIdleTimer(SharedPreferences::sharedInstance()->isAntiIdleActive());
+
     connect(menu, SIGNAL(preferences()), SLOT(showPreferencesWindow()));
     connect(menu, SIGNAL(fileNewTab()), SLOT(addTab()));
     connect(menu, SIGNAL(fileOpenLocation()), SLOT(focusAddressField()));
@@ -53,11 +55,14 @@ Controller::Controller(QObject *parent) :
     connect(menu, SIGNAL(editCopy()), SLOT(copy()));
     connect(menu, SIGNAL(editPaste()), SLOT(paste()));
     connect(menu, SIGNAL(editPasteColor()), SLOT(pasteColor()));
+    connect(menu, SIGNAL(viewAntiIdle(bool)), SLOT(toggleAntiIdle(bool)));
     connect(menu, SIGNAL(about()), SLOT(showAbout()));
     connect(menu, SIGNAL(helpVisitProjectHome()), SLOT(visitProject()));
     connect(_window, SIGNAL(reconnect()), SLOT(reconnect()));
     connect(_window, SIGNAL(windowShouldClose()), SLOT(closeWindow()));
     connect(_window, SIGNAL(newTabRequested()), SLOT(addTab()));
+    connect(_window, SIGNAL(antiIdleTriggered(bool)),
+            SLOT(toggleAntiIdle(bool)));
     connect(_window->address(), SIGNAL(returnPressed()),
             SLOT(onAddressReturnPressed()));
     connect(_window->tabs(), SIGNAL(tabCloseRequested(int)),
@@ -306,6 +311,33 @@ void Controller::visitProject()
     QDesktopServices::openUrl(QUrl("https://github.com/uranusjr/Qelly"));
 }
 
+void Controller::toggleAntiIdle(bool enabled)
+{
+    SharedPreferences::sharedInstance()->setAntiIdleActive(enabled);
+    setAntiIdleTimer(enabled);
+}
+
+void Controller::timerEvent(QTimerEvent *e)
+{
+    if (e->timerId() == _antiIdleTimer)
+    {
+        for (int i = 0; i < _window->tabs()->count(); i++)
+        {
+            Connection::Terminal *terminal = viewInTab(i)->terminal();
+            if (!terminal || !terminal->isConnected())
+                continue;
+
+            QDateTime now = QDateTime::currentDateTime();
+            Connection::AbstractConnection *conn = terminal->connection();
+            if (conn->lastTouch().secsTo(now) >= 119)
+            {
+                qDebug() << "sending";
+                conn->sendBytes(QByteArray("\0\0\0\0\0\0", 6));
+            }
+        }
+    }
+}
+
 void Controller::updateAll()
 {
     View *view = currentView();
@@ -329,6 +361,19 @@ View *Controller::currentView() const
 View *Controller::viewInTab(int index) const
 {
     return static_cast<Tab *>(_window->tabs()->widget(index))->view();
+}
+
+void Controller::setAntiIdleTimer(bool enabled)
+{
+    if (enabled)
+    {
+        _antiIdleTimer = startTimer(2 * 60 * 1000);
+    }
+    else
+    {
+        killTimer(_antiIdleTimer);
+        _antiIdleTimer = 0;
+    }
 }
 
 }   // namespace Qelly

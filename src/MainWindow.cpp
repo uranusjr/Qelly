@@ -76,6 +76,7 @@ void MainWindow::buildToolBar()
     inputLayout->addWidget(inputLabel);
     _inputFrame->setLayout(inputLayout);
 
+    QAction *action;
     QStyle *style = qApp->style();
     _toolbar = addToolBar(tr("General"));
     _toolbar->addAction(QIcon(":/images/Bookmarks.png"), tr("Sites"));
@@ -87,7 +88,13 @@ void MainWindow::buildToolBar()
     _toolbar->addWidget(_stretch);
     _toolbar->addAction(style->standardIcon(QStyle::SP_DirIcon),
                         tr("Emicons"));
-    _toolbar->addAction(QIcon(":/images/Anti-sleep.png"), tr("Anti-Idle"));
+    action = _toolbar->addAction(QIcon(":/images/Anti-sleep.png"),
+                                 tr("Anti-Idle"));
+    action->setCheckable(true);
+    action->setChecked(_prefs->isAntiIdleActive());
+    connect(action, SIGNAL(triggered(bool)), SIGNAL(antiIdleTriggered(bool)));
+    action->connect(_prefs, SIGNAL(antiIdleChanged(bool)),
+                    SLOT(setChecked(bool)));
     _toolbar->addAction(QIcon(":/images/Flashlight.png"), tr("Peek"));
     _toolbar->addAction(style->standardIcon(QStyle::SP_DirIcon),
                         tr("Double Byte"));

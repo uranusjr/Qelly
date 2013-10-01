@@ -54,6 +54,9 @@ public:
 public slots:
     void sync();
 
+signals:
+    void antiIdleChanged(bool);
+
 private:
     QSettings *_settings;
 
@@ -71,6 +74,8 @@ public:
     void setCustomBeepFile(const QString &filename);
     QString sshClientPath() const;
     void setSshClientPath(const QString &path);
+    bool isAntiIdleActive() const;
+    void setAntiIdleActive(bool value);
 
     // Site defaults
     BBS::Encoding defaultEncoding() const;

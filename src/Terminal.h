@@ -63,6 +63,7 @@ public:
     QString urlStringAt(int row, int column, bool *hasUrl);
 
     static inline const QStringList &protocols();
+    bool isConnected() const;
 
 signals:
     void dataProcessed();
