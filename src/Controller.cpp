@@ -298,6 +298,7 @@ void Controller::showPreferencesWindow()
         connect(_preferencesWindow, SIGNAL(displayPreferenceChanged()),
                 SLOT(updateAll()));
     }
+    _preferencesWindow->setAttribute(Qt::WA_ShowModal);
     _preferencesWindow->show();
 }
 
