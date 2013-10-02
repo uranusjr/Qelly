@@ -28,73 +28,30 @@ namespace UJ
 namespace Connection
 {
 
+class SitePrivate;
+
 class Site : public QObject
 {
     Q_OBJECT
+    Q_DECLARE_PRIVATE(Site)
+    SitePrivate *d_ptr;
 
 public:
-    explicit Site(QString form = QString("protocol://site.address"),
-                  QString name = QString("Name"),
-                  QObject *parent = 0);
+    explicit Site(const QString &form = "protocol://site.address",
+                  const QString &name = "Name", QObject *parent = 0);
 
-private:
-    Type _type;
-    QString _name;
-    QString _address;
-    qint16 _port;
-    BBS::Encoding _encoding;
-    BBS::AnsiColorKey _colorKey;
-    bool _manualDoubleByte;
-
-public:     // Setters & Getters
-    inline QString name() const
-    {
-        return _name;
-    }
-    inline void setName(const QString &name)
-    {
-        _name = name;
-    }
-    inline QString address() const
-    {
-        return _address;
-    }
-    inline void setAddress(const QString &address)
-    {
-        _address = address;
-    }
-    inline Type type() const
-    {
-        return _type;
-    }
-    inline qint16 port() const
-    {
-        return _port;
-    }
-    inline BBS::Encoding encoding() const
-    {
-        return _encoding;
-    }
-    inline void setEncoding(BBS::Encoding encoding)
-    {
-        _encoding = encoding;
-    }
-    inline BBS::AnsiColorKey colorKey() const
-    {
-        return _colorKey;
-    }
-    inline void setColorKey(BBS::AnsiColorKey k)
-    {
-        _colorKey = k;
-    }
-    inline bool manualDoubleByte() const
-    {
-        return _manualDoubleByte;
-    }
-    inline void setManualDoubleByte(bool db)
-    {
-        _manualDoubleByte = db;
-    }
+    QString name() const;
+    void setName(const QString &name);
+    QString address() const;
+    void setAddress(const QString &address);
+    Type type() const;
+    qint16 port() const;
+    BBS::Encoding encoding() const;
+    void setEncoding(BBS::Encoding encoding);
+    BBS::AnsiColorKey colorKey() const;
+    void setColorKey(BBS::AnsiColorKey k);
+    bool manualDoubleByte() const;
+    void setManualDoubleByte(bool db);
 };
 
 }       // namespace Connection
