@@ -451,6 +451,7 @@ void ViewPrivate::drawSpecialSymbol(
                  row * h + h/2, row * h + h/2, row * h + h/2,
                  (row + 1) * h, (row + 1) * h, (row + 1) * h};
     painter->begin(backImage);
+    painter->setRenderHint(QPainter::Antialiasing);
     painter->setPen(Qt::NoPen);
     QPoint points[4];
     switch (code)
@@ -575,6 +576,7 @@ void ViewPrivate::drawDoubleColor(
     QPixmap lp(cellWidth, cellHeight);
     lp.fill(prefs->bColor(left.f.bColorIndex));
     painter->begin(&lp);
+    painter->setRenderHint(QPainter::TextAntialiasing);
     painter->setFont(dblFont);
     painter->setPen(prefs->fColor(left.f.fColorIndex, left.f.bright));
     painter->drawText(dblPadLeft, cellHeight - dblPadBottom, QChar(code));
@@ -584,6 +586,7 @@ void ViewPrivate::drawDoubleColor(
     QPixmap rp(cellWidth, cellHeight);
     rp.fill(prefs->bColor(right.f.bColorIndex));
     painter->begin(&rp);
+    painter->setRenderHint(QPainter::TextAntialiasing);
     painter->setFont(dblFont);
     painter->setPen(prefs->fColor(right.f.fColorIndex, right.f.bright));
     painter->drawText(dblPadLeft - cellWidth, cellHeight - dblPadBottom,
@@ -714,6 +717,7 @@ void ViewPrivate::updateText(int row, int column)
     {
     case 0: // Not double byte
         painter->begin(backImage);
+        painter->setRenderHint(QPainter::TextAntialiasing);
         painter->setFont(sglFont);
         painter->setPen(prefs->fColor(attr.f.fColorIndex, attr.f.bright));
         code = cells[column].byte ? cells[column].byte : ' ';
@@ -757,6 +761,7 @@ void ViewPrivate::updateText(int row, int column)
             else
             {
                 painter->begin(backImage);
+                painter->setRenderHint(QPainter::TextAntialiasing);
                 painter->setFont(dblFont);
                 painter->setPen(prefs->fColor(attr.f.fColorIndex,
                                                     attr.f.bright));
