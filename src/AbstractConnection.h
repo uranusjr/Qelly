@@ -65,6 +65,7 @@ signals:
     void disconnected();
     void receivedBytes(QByteArray data);
     void processedBytes(QByteArray bytes);
+    void hasBytesToSend(QByteArray bytes);
 
 public: // Getters & Setters
     virtual inline Site *site()

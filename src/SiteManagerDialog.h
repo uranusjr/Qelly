@@ -1,7 +1,7 @@
 /*****************************************************************************
- * Ssh.h
+ * SiteManagerDialog.h
  *
- * Created: 05/10 2011 by uranusjr
+ * Created: 02/10 2013 by uranusjr
  *
  * Copyright 2013 uranusjr. All rights reserved.
  *
@@ -16,46 +16,39 @@
  * this file belongs to.
  *****************************************************************************/
 
-#ifndef SSH_H
-#define SSH_H
+#ifndef SITEMANAGERDIALOG_H
+#define SITEMANAGERDIALOG_H
 
-#include "AbstractConnection.h"
-class QProcess;
+#include <QDialog>
+
+namespace Ui
+{
+class SiteManagerDialog;
+}
 
 namespace UJ
 {
 
-namespace Connection
+namespace Qelly
 {
 
-class Ssh : public AbstractConnection
+class SiteManagerDialog : public QDialog
 {
     Q_OBJECT
 
 public:
-    explicit Ssh(QObject *parent = 0);
-    virtual ~Ssh();
-    virtual bool connectTo(const QString &address, qint16 port);
-    static const qint16 DefaultPort = 22;
+    explicit SiteManagerDialog(QWidget *parent = 0);
+    ~SiteManagerDialog();
 
 public slots:
-    virtual void close();
-    virtual void reconnect();
-    virtual void processBytes(QByteArray bytes);
-    virtual void sendBytes(QByteArray bytes);
-
-private slots:
-    void onProcessStarted();
-    void onProcessReadyRead();
-    void onProcessError();
-    void onProcessFinished();
+    virtual void accept();
 
 private:
-    QProcess *_socket;
+    Ui::SiteManagerDialog *_ui;
 };
 
-}   // namespace Connection
+}   // namespace Qelly
 
 }   // namespace UJ
 
-#endif // SSH_H
+#endif // SITEMANAGERDIALOG_H
