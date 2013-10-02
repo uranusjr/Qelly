@@ -67,7 +67,10 @@ SOURCES += main.cpp \
     ColorWell.cpp \
     PreeditTextHolder.cpp \
     View_p.cpp \
-    Tab.cpp
+    Tab.cpp \
+    EmoticonViewer.cpp \
+    JsonFileListModel.cpp \
+    Globals.cpp
 
 HEADERS  += \
     SharedMenuBar.h \
@@ -94,7 +97,9 @@ HEADERS  += \
     ColorWell.h \
     PreeditTextHolder.h \
     View_p.h \
-    Tab.h
+    Tab.h \
+    EmoticonViewer.h \
+    JsonFileListModel.h
 
 RESOURCES += \
     GeneralResources.qrc
@@ -102,4 +107,5 @@ RESOURCES += \
 FORMS += \
     PreferencesGeneral.ui \
     PreferencesFont.ui \
-    PreferencesColor.ui
+    PreferencesColor.ui \
+    EmoticonViewer.ui

@@ -24,6 +24,8 @@
 namespace UJ
 {
 
+QString absoluteDataStoragePath(const QString &filename);
+
 enum KeyboardModifier
 {
 // On Macs,

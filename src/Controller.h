@@ -28,6 +28,7 @@ namespace UJ
 namespace Qelly
 {
 
+class EmoticonViewer;
 class MainWindow;
 class PreferencesWindow;
 class View;
@@ -51,12 +52,14 @@ public slots:
     void paste();
     void pasteColor();
     void reconnect();
+    void insertText(const QString &text);
     void onAddressReturnPressed();
     void changeAddressField(const QString &address);
     void showPreferencesWindow();
     void showAbout();
     void visitProject();
     void toggleAntiIdle(bool enabled);
+    void showEmoticonViewer();
 
 protected:
     virtual void timerEvent(QTimerEvent *e);
@@ -71,6 +74,7 @@ private:
     int _antiIdleTimer;
     MainWindow *_window;
     QPointer<PreferencesWindow> _preferencesWindow;
+    QPointer<EmoticonViewer> _emoticonViewer;
 };
 
 }   // namespace Qelly

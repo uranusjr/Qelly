@@ -23,6 +23,7 @@
 #include <QMessageBox>
 #include <QUrl>
 #include "Globals.h"
+#include "EmoticonViewer.h"
 #include "MainWindow.h"
 #include "PreferencesWindow.h"
 #include "SharedMenuBar.h"
@@ -53,6 +54,7 @@ Controller::Controller(QObject *parent) :
     connect(menu, SIGNAL(fileCloseTab()), SLOT(closeTab()));
     connect(menu, SIGNAL(fileQuit()), SLOT(closeWindow()));
     connect(menu, SIGNAL(editCopy()), SLOT(copy()));
+    connect(menu, SIGNAL(editEmoticons()), SLOT(showEmoticonViewer()));
     connect(menu, SIGNAL(editPaste()), SLOT(paste()));
     connect(menu, SIGNAL(editPasteColor()), SLOT(pasteColor()));
     connect(menu, SIGNAL(viewAntiIdle(bool)), SLOT(toggleAntiIdle(bool)));
@@ -63,6 +65,8 @@ Controller::Controller(QObject *parent) :
     connect(_window, SIGNAL(newTabRequested()), SLOT(addTab()));
     connect(_window, SIGNAL(antiIdleTriggered(bool)),
             SLOT(toggleAntiIdle(bool)));
+    connect(_window, SIGNAL(emoticonViewerShouldOpen()),
+            SLOT(showEmoticonViewer()));
     connect(_window->address(), SIGNAL(returnPressed()),
             SLOT(onAddressReturnPressed()));
     connect(_window->tabs(), SIGNAL(tabCloseRequested(int)),
@@ -270,6 +274,14 @@ void Controller::reconnect()
     connection->reconnect();
 }
 
+void Controller::insertText(const QString &text)
+{
+    View *view = currentView();
+    if (!view || !view->isConnected())
+        return;
+    view->insertText(text);
+}
+
 void Controller::onAddressReturnPressed()
 {
     QString address = _window->address()->text();
@@ -316,6 +328,19 @@ void Controller::toggleAntiIdle(bool enabled)
 {
     SharedPreferences::sharedInstance()->setAntiIdleActive(enabled);
     setAntiIdleTimer(enabled);
+}
+
+void Controller::showEmoticonViewer()
+{
+    if (!_emoticonViewer)
+    {
+        _emoticonViewer = new EmoticonViewer(_window);
+        _emoticonViewer->setAttribute(Qt::WA_DeleteOnClose);
+        connect(_emoticonViewer, SIGNAL(hasTextToInsert(QString)),
+                SLOT(insertText(QString)));
+    }
+    _emoticonViewer->setAttribute(Qt::WA_ShowModal);
+    _emoticonViewer->show();
 }
 
 void Controller::timerEvent(QTimerEvent *e)

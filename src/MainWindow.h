@@ -54,6 +54,7 @@ signals:
     void newTabRequested();
     void reconnect();
     void antiIdleTriggered(bool);
+    void emoticonViewerShouldOpen();
 
 private:
     void buildToolBar();

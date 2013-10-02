@@ -86,8 +86,9 @@ void MainWindow::buildToolBar()
                         this, SIGNAL(newTabRequested()));
     _toolbar->addWidget(_inputFrame);
     _toolbar->addWidget(_stretch);
-    _toolbar->addAction(style->standardIcon(QStyle::SP_DirIcon),
-                        tr("Emoticons"));
+    _toolbar->addAction(
+                style->standardIcon(QStyle::SP_DirIcon), tr("Emoticons"),
+                this, SIGNAL(emoticonViewerShouldOpen()));
     action = _toolbar->addAction(QIcon(":/images/Anti-sleep.png"),
                                  tr("Anti-Idle"));
     action->setCheckable(true);
