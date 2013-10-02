@@ -102,7 +102,7 @@ bool TabWidget::eventFilter(QObject *obj, QEvent *e)
             if (me->button() == Qt::MiddleButton)
             {
                 int index = tabBar()->tabAt(me->pos());
-                if (index == middlePressedTab)
+                if (index != -1 && index == middlePressedTab)
                     emit tabCloseRequested(index);
                 middlePressedTab = -1;
             }
