@@ -29,8 +29,9 @@ class JsonFileListModelPrivate
     JsonFileListModel *q_ptr;
 
 public:
-    JsonFileListModelPrivate(const QString &filename, JsonFileListModel *q) :
-        q_ptr(q), file(new QFile(filename))
+    JsonFileListModelPrivate(const QString &filename, const QString &cKey,
+                             const QString &iKey, JsonFileListModel *q) :
+        q_ptr(q), file(new QFile(filename)), labelsKey(cKey), itemsKey(iKey)
     {
         load();
     }
@@ -43,8 +44,7 @@ public:
     {
         if (file->open(QIODevice::WriteOnly | flags()))
         {
-            cleanList();
-            file->write(QxtJSON::stringify(list).toUtf8());
+            file->write(QxtJSON::stringify(data).toUtf8());
             file->close();
             return true;
         }
@@ -54,18 +54,15 @@ public:
     {
         if (file->open(QIODevice::ReadOnly | flags()))
         {
-            list = QxtJSON::parse(file->readAll()).toList();
+            data = QxtJSON::parse(file->readAll()).toMap();
             file->close();
         }
     }
-    void cleanList()
-    {
-        list.removeAll(QVariant());
-        list.removeAll(QVariant(""));
-    }
 
     QFile *file;
-    QVariantList list;
+    QVariantMap data;
+    QString labelsKey;
+    QString itemsKey;
 
 private:
     inline static const QIODevice::OpenMode flags()
@@ -74,9 +71,11 @@ private:
     }
 };
 
-JsonFileListModel::JsonFileListModel(const QString &filename, QObject *parent) :
+JsonFileListModel::JsonFileListModel(
+        const QString &filename, const QString &columsKey,
+        const QString &itemsKey, QObject *parent) :
     QAbstractListModel(parent),
-    d_ptr(new JsonFileListModelPrivate(filename, this))
+    d_ptr(new JsonFileListModelPrivate(filename, columsKey, itemsKey, this))
 {
 }
 
@@ -87,7 +86,12 @@ JsonFileListModel::~JsonFileListModel()
 
 int JsonFileListModel::rowCount(const QModelIndex &) const
 {
-    return d_ptr->list.size();
+    return d_ptr->data[d_ptr->itemsKey].toList().count();
+}
+
+int JsonFileListModel::columnCount(const QModelIndex &) const
+{
+    return d_ptr->data[d_ptr->labelsKey].toList().count();
 }
 
 QVariant JsonFileListModel::data(const QModelIndex &index, int role) const
@@ -96,7 +100,12 @@ QVariant JsonFileListModel::data(const QModelIndex &index, int role) const
     {
     case Qt::DisplayRole:
     case Qt::EditRole:
-        return d_ptr->list.at(index.row());
+    {
+        QVariant v = d_ptr->data[d_ptr->itemsKey].toList().at(index.row());
+        if (v.canConvert<QVariantList>())
+            v = v.toList().at(index.column());
+        return v;
+    }
     default:
         return QVariant();
     }
@@ -110,13 +119,26 @@ Qt::ItemFlags JsonFileListModel::flags(const QModelIndex &index) const
 bool JsonFileListModel::setData(
         const QModelIndex &index, const QVariant &value, int role)
 {
+    Q_D(JsonFileListModel);
     switch (role)
     {
     case Qt::EditRole:
     {
-        d_ptr->list[index.row()].setValue(value.toString());
+        QVariantList items = d->data[d->itemsKey].toList();
+        QVariant &item = items[index.row()];
+        if (item.canConvert<QVariantList>())
+        {
+            QVariantList list = item.toList();
+            list[index.column()].setValue(value.toString());
+            item.setValue(list);
+        }
+        else
+        {
+            item.setValue(value.toString());
+        }
+        d->data[d->itemsKey].setValue(items);
         if (submit())
-            emit dataChanged(index, index);
+            emit dataChanged(index, index, QVector<int>() << role);
         return true;
     }
     default:
@@ -127,9 +149,17 @@ bool JsonFileListModel::setData(
 bool JsonFileListModel::insertRows(
         int row, int count, const QModelIndex &parent)
 {
+    Q_D(JsonFileListModel);
     beginInsertRows(parent, row, row + count - 1);
+    QVariantList items = d->data[d->itemsKey].toList();
     for (int i = row; i < row + count; i++)
-        d_ptr->list.insert(i, "^.<");
+    {
+        QVariantList values;
+        for (int j = 0; j < d->data[d->labelsKey].toList().count(); j++)
+            values << QVariant("");
+        items.insert(i, values.size() > 1 ? values : values.first());
+    }
+    d->data[d->itemsKey].setValue(items);
     endInsertRows();
     return submit();
 }
@@ -137,12 +167,15 @@ bool JsonFileListModel::insertRows(
 bool JsonFileListModel::removeRows(
         int row, int count, const QModelIndex &parent)
 {
+    Q_D(JsonFileListModel);
     beginRemoveRows(parent, row, row + count - 1);
+    QVariantList items = d->data[d->itemsKey].toList();
     while (count)
     {
-        d_ptr->list.removeAt(row);
+        items.removeAt(row);
         count--;
     }
+    d->data[d->itemsKey].setValue(items);
     endRemoveRows();
     return submit();
 }
