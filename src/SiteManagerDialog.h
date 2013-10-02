@@ -20,6 +20,8 @@
 #define SITEMANAGERDIALOG_H
 
 #include <QDialog>
+#include <QModelIndex>
+#include "Globals.h"
 
 namespace Ui
 {
@@ -28,6 +30,11 @@ class SiteManagerDialog;
 
 namespace UJ
 {
+
+namespace Connection
+{
+class Site;
+}
 
 namespace Qelly
 {
@@ -43,7 +50,26 @@ public:
 public slots:
     virtual void accept();
 
+protected:
+    virtual void showEvent(QShowEvent *e);
+
+signals:
+    void connectRequested(QString);
+
+private slots:
+    void displaySiteDetailAtIndex(const QModelIndex &index);
+    void setSiteName(const QString &name);
+    void setSiteFullForm(const QString &form);
+    void setSiteEncoding(int encoding);
+    void setSiteColorKey(int k);
+    void setSiteManualDoubleByte(bool db);
+    void addNewSite();
+    void removeCurrentSite();
+
 private:
+    void setSiteProperty(const char *name, QVariant v);
+    Connection::Site *_currentSite;
+    QHash<QString, int> _headers;
     Ui::SiteManagerDialog *_ui;
 };
 

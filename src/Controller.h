@@ -25,12 +25,18 @@
 namespace UJ
 {
 
+namespace Connection
+{
+class Site;
+}
+
 namespace Qelly
 {
 
 class EmoticonViewer;
 class MainWindow;
 class PreferencesWindow;
+class SiteManagerDialog;
 class View;
 
 class Controller : public QObject
@@ -60,6 +66,7 @@ public slots:
     void visitProject();
     void toggleAntiIdle(bool enabled);
     void showEmoticonViewer();
+    void showSiteManager();
 
 protected:
     virtual void timerEvent(QTimerEvent *e);
@@ -75,6 +82,7 @@ private:
     MainWindow *_window;
     QPointer<PreferencesWindow> _preferencesWindow;
     QPointer<EmoticonViewer> _emoticonViewer;
+    QPointer<SiteManagerDialog> _siteManager;
 };
 
 }   // namespace Qelly

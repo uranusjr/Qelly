@@ -19,7 +19,7 @@
 #ifndef GLOBALS_H
 #define GLOBALS_H
 
-#include <Qt>
+#include <QObject>
 
 namespace UJ
 {
@@ -65,58 +65,62 @@ enum Type
 
 }   // namespace Connection
 
-namespace BBS
+class BBS
 {
+    Q_GADGET
+    Q_ENUMS(Encoding)
+    Q_ENUMS(AnsiColorKey)
 
-enum Encoding
-{
-    EncodingUnknown,
-    EncodingBig5,
-    EncodingGBK
-};
-
-enum AnsiColorKey
-{
-    ColorKeyCtrlU,
-    ColorKeyDoubleEsc
-};
-
-enum Size
-{
-    SizeRowCount = 24,
-    SizeColumnCount = 80
-};
-
-enum ColorIndex
-{
-    ColorIndexBackground = 0,
-    ColorIndexForeground = 7
-};
-
-union CellAttribute
-{
-    ushort v;
-    struct
+public:
+    enum Encoding
     {
-        uint fColorIndex    : 4;
-        uint bColorIndex    : 4;
-        uint bright         : 1;
-        uint underlined     : 1;
-        uint blinking       : 1;
-        uint reversed       : 1;
-        uint doubleByte     : 2;
-        uint isUrl          : 1;
-        uint isNothing      : 1;
-    } f;
-};
+        EncodingBig5,
+        EncodingGBK,
+        EncodingUnknown = -1
+    };
 
-struct Cell
-{
-    uchar byte;
-    CellAttribute attr;
-};
+    enum AnsiColorKey
+    {
+        ColorKeyCtrlU,
+        ColorKeyDoubleEsc
+    };
 
-}   // namespace BBS
+    enum Size
+    {
+        SizeRowCount = 24,
+        SizeColumnCount = 80
+    };
+
+    enum ColorIndex
+    {
+        ColorIndexBackground = 0,
+        ColorIndexForeground = 7
+    };
+
+    union CellAttribute
+    {
+        ushort v;
+        struct
+        {
+            uint fColorIndex    : 4;
+            uint bColorIndex    : 4;
+            uint bright         : 1;
+            uint underlined     : 1;
+            uint blinking       : 1;
+            uint reversed       : 1;
+            uint doubleByte     : 2;
+            uint isUrl          : 1;
+            uint isNothing      : 1;
+        } f;
+    };
+
+    struct Cell
+    {
+        uchar byte;
+        CellAttribute attr;
+    };
+
+};
 
 }   // namespace UJ
 

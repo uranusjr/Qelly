@@ -28,6 +28,7 @@
 #include "PreferencesWindow.h"
 #include "SharedMenuBar.h"
 #include "SharedPreferences.h"
+#include "SiteManagerDialog.h"
 #include "TabWidget.h"
 #include "Telnet.h"
 #include "Terminal.h"
@@ -58,8 +59,10 @@ Controller::Controller(QObject *parent) :
     connect(menu, SIGNAL(editPaste()), SLOT(paste()));
     connect(menu, SIGNAL(editPasteColor()), SLOT(pasteColor()));
     connect(menu, SIGNAL(viewAntiIdle(bool)), SLOT(toggleAntiIdle(bool)));
+    connect(menu, SIGNAL(sitesEditSites()), SLOT(showSiteManager()));
     connect(menu, SIGNAL(about()), SLOT(showAbout()));
     connect(menu, SIGNAL(helpVisitProjectHome()), SLOT(visitProject()));
+    connect(_window, SIGNAL(siteManageShouldOpen()), SLOT(showSiteManager()));
     connect(_window, SIGNAL(reconnect()), SLOT(reconnect()));
     connect(_window, SIGNAL(windowShouldClose()), SLOT(closeWindow()));
     connect(_window, SIGNAL(newTabRequested()), SLOT(addTab()));
@@ -341,6 +344,19 @@ void Controller::showEmoticonViewer()
     }
     _emoticonViewer->setAttribute(Qt::WA_ShowModal);
     _emoticonViewer->show();
+}
+
+void Controller::showSiteManager()
+{
+    if (!_siteManager)
+    {
+        _siteManager = new SiteManagerDialog(_window);
+        _siteManager->setAttribute(Qt::WA_DeleteOnClose);
+        connect(_siteManager, SIGNAL(connectRequested(QString)),
+                SLOT(connectWithAddress(QString)));
+    }
+    _siteManager->setAttribute(Qt::WA_ShowModal);
+    _siteManager->show();
 }
 
 void Controller::timerEvent(QTimerEvent *e)

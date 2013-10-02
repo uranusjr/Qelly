@@ -43,7 +43,7 @@ void AbstractConnection::setSite(Site *site)
 
 bool AbstractConnection::connectToSite(Site *site)
 {
-    QString address = site->address();
+    QString address = site->url();
     return connectTo(address, site->port());
 }
 

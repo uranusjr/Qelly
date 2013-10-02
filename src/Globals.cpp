@@ -18,6 +18,7 @@
 
 #include "Globals.h"
 #include <QDir>
+#include <QTextStream>
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
     #include <QStandardPaths>
 #else

@@ -48,6 +48,8 @@ public:
     virtual bool removeRows(
             int row, int count, const QModelIndex &parent = QModelIndex());
     virtual bool submit();
+    virtual QVariant headerData(int section, Qt::Orientation orientation,
+                                int role = Qt::DisplayRole) const;
 
 private:
     JsonFileListModelPrivate *d_ptr;

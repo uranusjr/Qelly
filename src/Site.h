@@ -36,21 +36,32 @@ class Site : public QObject
     Q_DECLARE_PRIVATE(Site)
     SitePrivate *d_ptr;
 
+    Q_PROPERTY(QString name READ name WRITE setName)
+    Q_PROPERTY(QString fullForm READ fullForm WRITE setFullForm)
+    Q_PROPERTY(UJ::BBS::Encoding encoding READ encoding WRITE setEncoding)
+    Q_PROPERTY(UJ::BBS::AnsiColorKey colorKey READ colorKey WRITE setColorKey)
+    Q_PROPERTY(bool doubleByte READ manualDoubleByte WRITE setManualDoubleByte)
+
 public:
     explicit Site(const QString &form = "protocol://site.address",
                   const QString &name = "Name", QObject *parent = 0);
+    static Site *fromProperties(const QMap<QString, QVariant> &properties);
 
     QString name() const;
-    void setName(const QString &name);
-    QString address() const;
-    void setAddress(const QString &address);
+    QString fullForm() const;
+    BBS::Encoding encoding() const;
+    BBS::AnsiColorKey colorKey() const;
+    bool manualDoubleByte() const;
+
+    QString url() const;
     Type type() const;
     qint16 port() const;
-    BBS::Encoding encoding() const;
+
+public slots:
+    void setName(const QString &name);
+    void setFullForm(const QString &form);
     void setEncoding(BBS::Encoding encoding);
-    BBS::AnsiColorKey colorKey() const;
     void setColorKey(BBS::AnsiColorKey k);
-    bool manualDoubleByte() const;
     void setManualDoubleByte(bool db);
 };
 

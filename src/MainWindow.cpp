@@ -79,7 +79,8 @@ void MainWindow::buildToolBar()
     QAction *action;
     QStyle *style = qApp->style();
     _toolbar = addToolBar(tr("General"));
-    _toolbar->addAction(QIcon(":/images/Bookmarks.png"), tr("Sites"));
+    _toolbar->addAction(QIcon(":/images/Bookmarks.png"), tr("Sites"),
+                        this, SIGNAL(siteManageShouldOpen()));
     _toolbar->addAction(QIcon(":/images/Reload.png"), tr("Reconnect"),
                         this, SIGNAL(reconnect()));
     _toolbar->addAction(QIcon(":/images/New.png"), tr("Add"),

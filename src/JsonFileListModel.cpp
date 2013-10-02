@@ -129,12 +129,12 @@ bool JsonFileListModel::setData(
         if (item.canConvert<QVariantList>())
         {
             QVariantList list = item.toList();
-            list[index.column()].setValue(value.toString());
+            list[index.column()].setValue(value);
             item.setValue(list);
         }
         else
         {
-            item.setValue(value.toString());
+            item.setValue(value);
         }
         d->data[d->itemsKey].setValue(items);
         if (submit())
@@ -183,6 +183,25 @@ bool JsonFileListModel::removeRows(
 bool JsonFileListModel::submit()
 {
     return d_ptr->save();
+}
+
+QVariant JsonFileListModel::headerData(
+        int section, Qt::Orientation orientation, int role) const
+{
+    switch (orientation)
+    {
+    case Qt::Horizontal:
+        switch (role)
+        {
+        case Qt::DisplayRole:
+        case Qt::EditRole:
+            return d_ptr->data[d_ptr->labelsKey].toList().at(section);
+        default:
+            return QVariant();
+        }
+    default:
+        return QVariant();
+    }
 }
 
 }   // namespace UJ

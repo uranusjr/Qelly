@@ -55,6 +55,7 @@ signals:
     void reconnect();
     void antiIdleTriggered(bool);
     void emoticonViewerShouldOpen();
+    void siteManageShouldOpen();
 
 private:
     void buildToolBar();

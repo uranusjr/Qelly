@@ -70,7 +70,8 @@ SOURCES += main.cpp \
     Tab.cpp \
     EmoticonViewer.cpp \
     JsonFileListModel.cpp \
-    Globals.cpp
+    Globals.cpp \
+    SiteManagerDialog.cpp
 
 HEADERS  += \
     SharedMenuBar.h \
@@ -99,7 +100,8 @@ HEADERS  += \
     View_p.h \
     Tab.h \
     EmoticonViewer.h \
-    JsonFileListModel.h
+    JsonFileListModel.h \
+    SiteManagerDialog.h
 
 RESOURCES += \
     GeneralResources.qrc
@@ -108,4 +110,5 @@ FORMS += \
     PreferencesGeneral.ui \
     PreferencesFont.ui \
     PreferencesColor.ui \
-    EmoticonViewer.ui
+    EmoticonViewer.ui \
+    SiteManagerDialog.ui

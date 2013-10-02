@@ -47,9 +47,6 @@ public slots:
     virtual void processBytes(QByteArray bytes);
     virtual void sendBytes(QByteArray bytes);
 
-signals:
-    void hasBytesToSend(QByteArray bytes);
-
 protected slots:
     virtual void sendCommand(uchar cmd, uchar option);
 
