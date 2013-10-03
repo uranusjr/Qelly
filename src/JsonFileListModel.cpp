@@ -135,7 +135,7 @@ bool JsonFileListModel::setData(
             item.setValue(value);
         }
         if (submit())
-            emit dataChanged(index, index, QVector<int>() << role);
+            emit dataChanged(index, index);
         return true;
     }
     default:
