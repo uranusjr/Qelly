@@ -55,6 +55,8 @@ SiteManagerDialog::SiteManagerDialog(QWidget *parent) :
     connect(_ui->buttonBox, SIGNAL(rejected()), SLOT(close()));
     connect(_ui->listView, SIGNAL(clicked(QModelIndex)),
             SLOT(displaySiteDetailAtIndex(QModelIndex)));
+    connect(_ui->listView, SIGNAL(doubleClicked(QModelIndex)),
+            SLOT(connectToSiteAtIndex(QModelIndex)));
 
     QString filePath = absoluteDataStoragePath("sites.json");
     QAbstractItemModel *model =
@@ -93,21 +95,19 @@ void SiteManagerDialog::displaySiteDetailAtIndex(const QModelIndex &index)
         delete _currentSite;
 
     _ui->listView->setCurrentIndex(index);
-    int row = index.row();
-    QAbstractItemModel *model = _ui->listView->model();
-    QMap<QString, QVariant> properties;
-    for (int c = 0; c < model->columnCount(); c++)
-    {
-        properties.insert(model->headerData(c, Qt::Horizontal).toString(),
-                          model->data(model->index(row, c)));
-    }
-    _currentSite = Connection::Site::fromProperties(properties, this);
+    _currentSite = siteAtIndex(index);
     _ui->nameLineEdit->setText(_currentSite->name());
     _ui->addressLineEdit->setText(_currentSite->fullForm());
     _ui->encodingComboBox->setCurrentIndex(_currentSite->encoding());
     _ui->ansiColorKeyComboBox->setCurrentIndex(_currentSite->colorKey());
     _ui->detectDoubleByteCheckBox->setCheckState(
                 _currentSite->manualDoubleByte() ? Qt::Checked : Qt::Unchecked);
+}
+
+void SiteManagerDialog::connectToSiteAtIndex(const QModelIndex &index)
+{
+    _currentSite = siteAtIndex(index);
+    accept();
 }
 
 void SiteManagerDialog::setSiteName(const QString &name)
@@ -152,6 +152,7 @@ void SiteManagerDialog::addNewSite()
         model->setData(model->index(row, i.value()), v);
     }
     displaySiteDetailAtIndex(model->index(row, 0));
+    _ui->nameLineEdit->setFocus();
 }
 
 void SiteManagerDialog::removeCurrentSite()
@@ -172,6 +173,19 @@ void SiteManagerDialog::setSiteProperty(const char *name, QVariant v)
     int column = _headers.value(name);
     int row = _ui->listView->currentIndex().row();
     model->setData(model->index(row, column), v);
+}
+
+Connection::Site *SiteManagerDialog::siteAtIndex(const QModelIndex &index)
+{
+    int row = index.row();
+    QAbstractItemModel *model = _ui->listView->model();
+    QMap<QString, QVariant> properties;
+    for (int c = 0; c < model->columnCount(); c++)
+    {
+        properties.insert(model->headerData(c, Qt::Horizontal).toString(),
+                          model->data(model->index(row, c)));
+    }
+    return Connection::Site::fromProperties(properties, this);
 }
 
 }   // namespace Qelly

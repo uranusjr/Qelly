@@ -58,6 +58,7 @@ signals:
 
 private slots:
     void displaySiteDetailAtIndex(const QModelIndex &index);
+    void connectToSiteAtIndex(const QModelIndex &index);
     void setSiteName(const QString &name);
     void setSiteFullForm(const QString &form);
     void setSiteEncoding(int encoding);
@@ -68,6 +69,7 @@ private slots:
 
 private:
     void setSiteProperty(const char *name, QVariant v);
+    Connection::Site *siteAtIndex(const QModelIndex &index);
     Connection::Site *_currentSite;
     QHash<QString, int> _headers;
     Ui::SiteManagerDialog *_ui;
