@@ -174,14 +174,9 @@ void Controller::closeTab(int index)
     // Finish up after the tab is closed
     view = viewInTab(_window->tabs()->currentIndex());
     if (view)
-    {
         view->setFocus(Qt::TabFocusReason);
-    }
     else
-    {
-        _window->address()->setFocus(Qt::TabFocusReason);
-        _window->address()->setText(QString());
-    }
+        addTab();
 }
 
 void Controller::closeWindow()
@@ -415,7 +410,10 @@ View *Controller::currentView() const
 
 View *Controller::viewInTab(int index) const
 {
-    return static_cast<Tab *>(_window->tabs()->widget(index))->view();
+    QWidget *w = _window->tabs()->widget(index);
+    if (!w)
+        return 0;
+    return static_cast<Tab *>(w)->view();
 }
 
 void Controller::setAntiIdleTimer(bool enabled)
