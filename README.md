@@ -7,12 +7,12 @@ Nally, every platform, every machine.
 
 ## Introduction
 
-Qelly is a Qt port of Nally, the open-source Telnet/SSH client for Mac OS X.
-Qt is chosen to be the underlying framework of this application bacause it
-enables us to build a GUI-based application with a native interface for every
-operating system with minimal effort. The project is currently only a Qt version
-of Nally (hence the name), but more features from other Telnet/SSH clients are
-also planned.
+Qelly (pronounced as the name "Kelly") is a Qt port of Nally, the open-source
+Telnet/SSH client for Mac OS X. Qt is chosen to be the underlying framework of
+this application bacause it enables us to build a GUI-based application with a
+native interface for every operating system with minimal effort. The project is
+currently only a Qt version of Nally (hence the name), but more features from
+other Telnet/SSH clients are also planned.
 
 
 ## Licensing
