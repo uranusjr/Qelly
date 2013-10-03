@@ -160,8 +160,9 @@ void View::mouseDoubleClickEvent(QMouseEvent *e)
     return Qx::Widget::mouseDoubleClickEvent(e);
 }
 
-void View::focusInEvent(QFocusEvent *)
+void View::focusInEvent(QFocusEvent *e)
 {
+    Qx::Widget::focusInEvent(e);
     emit shouldChangeAddress(d_ptr->address);
 }
 

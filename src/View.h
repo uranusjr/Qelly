@@ -72,7 +72,7 @@ protected:
     virtual void keyReleaseEvent(QKeyEvent *e);
     virtual void inputMethodEvent(QInputMethodEvent *e);
     virtual void paintEvent(QPaintEvent *e);
-    virtual void focusInEvent(QFocusEvent *);
+    virtual void focusInEvent(QFocusEvent *e);
     virtual void timerEvent(QTimerEvent *);
     virtual bool focusNextPrevChild(bool);
 

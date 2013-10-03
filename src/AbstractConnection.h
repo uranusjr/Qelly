@@ -25,8 +25,6 @@
 namespace UJ
 {
 
-class Terminal;
-
 namespace Connection
 {
 

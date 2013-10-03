@@ -5,3 +5,4 @@ test/build/
 *.DS_Store
 Makefile*
 object_script.*
+*.autosave
