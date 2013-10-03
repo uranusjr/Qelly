@@ -34,7 +34,7 @@ QString absoluteDataStoragePath(const QString &filename)
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
             QStandardPaths::writableLocation(QStandardPaths::DataLocation);
 #else
-            QDesktopServices::storageLocation(QStandardPaths::DataLocation);
+            QDesktopServices::storageLocation(QDesktopServices::DataLocation);
 #endif
     QDir dir(dirPath);
     if (!dir.exists())
