@@ -20,6 +20,7 @@
 #define JSONFILELISTMODEL_H
 
 #include <QAbstractListModel>
+#include <QStringList>
 
 namespace UJ
 {
@@ -32,9 +33,9 @@ class JsonFileListModel : public QAbstractListModel
     Q_DECLARE_PRIVATE(JsonFileListModel)
 
 public:
-    explicit JsonFileListModel(
-            const QString &filename, const QString &columsKey = "labels",
-            const QString &itemsKey = "items", QObject *parent = 0);
+    explicit JsonFileListModel(const QString &filename,
+                               const QStringList &keys = QStringList(),
+                               QObject *parent = 0);
     virtual ~JsonFileListModel();
     virtual int rowCount(const QModelIndex & = QModelIndex()) const;
     virtual int columnCount(const QModelIndex & = QModelIndex()) const;

@@ -110,6 +110,13 @@ Site *Site::fromProperties(const QMap<QString, QVariant> &properties)
     return site;
 }
 
+QStringList Site::propertyKeys()
+{
+    static QStringList keys = (QStringList() << "name" << "fullForm" <<
+                               "encoding" << "colorKey" << "doubleByte");
+    return keys;
+}
+
 QString Site::name() const
 {
     return d_ptr->name;

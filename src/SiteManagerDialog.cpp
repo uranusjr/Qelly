@@ -57,7 +57,8 @@ SiteManagerDialog::SiteManagerDialog(QWidget *parent) :
             SLOT(displaySiteDetailAtIndex(QModelIndex)));
 
     QString filePath = absoluteDataStoragePath("sites.json");
-    QAbstractItemModel *model = new JsonFileListModel(filePath);
+    QAbstractItemModel *model =
+            new JsonFileListModel(filePath, Connection::Site::propertyKeys());
     _ui->listView->setModel(model);
     _headers.clear();
     for (int i = 0; i < model->columnCount(); i++)
