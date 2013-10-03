@@ -69,16 +69,6 @@ signals:
     void windowBringAllToFront();
     void windowAbout();
     void helpVisitProjectHome();
-
-private:
-    QAction *_reconnectAction;
-
-public:
-    inline QAction *reconnectAction() const
-    {
-        return _reconnectAction;
-    }
-
 };
 
 }   // namespace Qelly

@@ -43,14 +43,13 @@ SharedMenuBar::SharedMenuBar(QWidget *parent) : QMenuBar(parent)
                     Seq(UJ::ModModifier | Qt::Key_T));
     menu->addAction(tr("Open Location..."), this, SIGNAL(fileOpenLocation()),
                     Seq(UJ::ModModifier | Qt::Key_L));
-    _reconnectAction = menu->addAction(tr("Reconnect"),
-                                       this, SIGNAL(fileReconnect()));
+    menu->addAction(tr("Reconnect"), this, SIGNAL(fileReconnect()));
     menu->addSeparator();
     menu->addAction(tr("Close Tab"), this, SIGNAL(fileCloseTab()),
                     Seq(UJ::ModModifier | Qt::Key_W));
     menu->addSeparator();
     menu->addAction(tr("Quit"), this, SIGNAL(fileQuit()),
-                    Seq(UJ::ModModifier | Qt::Key_Q));
+                    Seq(Qt::AltModifier | Qt::Key_F4));
 
     menu = addMenu(tr("Edit"));
     menu->addAction(tr("Copy"), this, SIGNAL(editCopy()),
