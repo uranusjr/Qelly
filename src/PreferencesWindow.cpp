@@ -39,9 +39,12 @@ PreferencesWindow::PreferencesWindow(QWidget *parent) : QxtConfigDialog(parent)
     PreferencesFont *font = new PreferencesFont(this);
     PreferencesColor *color = new PreferencesColor(this);
 
-    addPage(general, QIcon(":/images/General.png"), tr("General"));
-    addPage(font, QIcon(":/images/Font.png"), tr("Fonts"));
-    addPage(color, QIcon(":/images/Color.png"), tr("Color"));
+    addPage(general, QIcon(":/images/icons/preferences-system.png"),
+            tr("General"));
+    addPage(font, QIcon(":/images/icons/preferences-desktop-font.png"),
+            tr("Fonts"));
+    addPage(color, QIcon(":/images/icons/preferences-desktop-color.png"),
+            tr("Color"));
 
     // If anyone of the pages has been updated, trigger redraw
     displayPreferenceGroup->addSignal(font, SIGNAL(preferencesUpdated()));

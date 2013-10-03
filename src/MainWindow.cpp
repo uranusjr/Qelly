@@ -27,7 +27,6 @@
 #include <QMessageBox>
 #include <QTabBar>
 #include <QToolBar>
-#include <QStyle>
 #include "Globals.h"
 #include "SharedMenuBar.h"
 #include "SharedPreferences.h"
@@ -78,27 +77,26 @@ void MainWindow::buildToolBar()
     _inputFrame->setLayout(inputLayout);
 
     QAction *action;
-    QStyle *style = qApp->style();
     _toolbar = addToolBar(tr("General"));
-    _toolbar->addAction(QIcon(":/images/Bookmarks.png"), tr("Sites"),
-                        this, SIGNAL(siteManageShouldOpen()));
-    _toolbar->addAction(QIcon(":/images/Reload.png"), tr("Reconnect"),
-                        this, SIGNAL(reconnect()));
-    _toolbar->addAction(QIcon(":/images/New.png"), tr("Add"),
-                        this, SIGNAL(newTabRequested()));
+    _toolbar->addAction(QIcon(":/images/icons/bookmarks-organize.png"),
+                        tr("Sites"), this, SIGNAL(siteManageShouldOpen()));
+    _toolbar->addAction(QIcon(":/images/icons/view-refresh.png"),
+                        tr("Reconnect"), this, SIGNAL(reconnect()));
+    _toolbar->addAction(QIcon(":/images/icons/list-add.png"),
+                        tr("Add"), this, SIGNAL(newTabRequested()));
     _toolbar->addWidget(_inputFrame);
     _toolbar->addWidget(stretch);
-    _toolbar->addAction(
-                style->standardIcon(QStyle::SP_DirIcon), tr("Emoticons"),
-                this, SIGNAL(emoticonViewerShouldOpen()));
-    action = _toolbar->addAction(QIcon(":/images/Anti-sleep.png"),
+    _toolbar->addAction(QIcon(":/images/icons/face-wink.png"), tr("Emoticons"),
+                        this, SIGNAL(emoticonViewerShouldOpen()));
+    action = _toolbar->addAction(QIcon(":/images/icons/player-time.png"),
                                  tr("Anti-Idle"));
     action->setCheckable(true);
     action->setChecked(_prefs->isAntiIdleActive());
     connect(action, SIGNAL(triggered(bool)), SIGNAL(antiIdleTriggered(bool)));
     action->connect(_prefs, SIGNAL(antiIdleChanged(bool)),
                     SLOT(setChecked(bool)));
-    action = _toolbar->addAction(QIcon(":/images/Flashlight.png"), tr("Peek"));
+    action = _toolbar->addAction(QIcon(":/images/icons/strigi.png"),
+                                 tr("Peek"));
     action->setCheckable(true);
     action->setChecked(_prefs->showHiddenText());
     connect(action, SIGNAL(triggered(bool)),

@@ -3,14 +3,14 @@
         <file>UJ_Translate.qm</file>
     </qresource>
     <qresource prefix="/images">
-        <file>General.png</file>
-        <file>Font.png</file>
-        <file>Advanced.png</file>
-        <file>Bookmarks.png</file>
-        <file>New.png</file>
-        <file>Reload.png</file>
-        <file>Flashlight.png</file>
-        <file>Anti-sleep.png</file>
-        <file>Color.png</file>
+        <file>icons/bookmarks-organize.png</file>
+        <file>icons/face-wink.png</file>
+        <file>icons/list-add.png</file>
+        <file>icons/player-time.png</file>
+        <file>icons/preferences-desktop-color.png</file>
+        <file>icons/preferences-desktop-font.png</file>
+        <file>icons/preferences-system.png</file>
+        <file>icons/strigi.png</file>
+        <file>icons/view-refresh.png</file>
     </qresource>
 </RCC>

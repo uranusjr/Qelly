@@ -86,3 +86,18 @@ Foundation. http://libqxt.org/
 Plink (PuTTY Link) is distributed under the MIT license. For more, see:
 http://www.chiark.greenend.org.uk/~sgtatham/putty/licence.html
 
+The following Oxygen Icons are used in PNG format in Qelly, under the terms of
+LGPL v3:
+
+* bookmarks-organize
+* face-wink
+* list-add
+* player-time
+* preferences-desktop-color
+* preferences-desktop-font
+* preferences-system
+* strigi
+* view-refresh
+
+You may obtain the SVG and PNG version of all of the above images, among others,
+at Oxygen Icons's website: http://www.oxygen-icons.org/
