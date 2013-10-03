@@ -39,6 +39,14 @@ SiteManagerDialog::SiteManagerDialog(QWidget *parent) :
     _ui->ansiColorKeyComboBox->insertItem(BBS::ColorKeyDoubleEsc,
                                           tr("ESC ESC"));
 
+    QString filePath = absoluteDataStoragePath("sites.json");
+    QAbstractItemModel *model =
+            new JsonFileListModel(filePath, Connection::Site::propertyKeys());
+    _ui->listView->setModel(model);
+    _headers.clear();
+    for (int i = 0; i < model->columnCount(); i++)
+        _headers.insert(model->headerData(i, Qt::Horizontal).toString(), i);
+
     connect(_ui->nameLineEdit, SIGNAL(textChanged(QString)),
             SLOT(setSiteName(QString)));
     connect(_ui->addressLineEdit, SIGNAL(textChanged(QString)),
@@ -53,18 +61,11 @@ SiteManagerDialog::SiteManagerDialog(QWidget *parent) :
     connect(_ui->removeButton, SIGNAL(clicked()), SLOT(removeCurrentSite()));
     connect(_ui->buttonBox, SIGNAL(accepted()), SLOT(accept()));
     connect(_ui->buttonBox, SIGNAL(rejected()), SLOT(close()));
-    connect(_ui->listView, SIGNAL(clicked(QModelIndex)),
+    connect(_ui->listView->selectionModel(),
+            SIGNAL(currentRowChanged(QModelIndex,QModelIndex)),
             SLOT(displaySiteDetailAtIndex(QModelIndex)));
     connect(_ui->listView, SIGNAL(doubleClicked(QModelIndex)),
             SLOT(connectToSiteAtIndex(QModelIndex)));
-
-    QString filePath = absoluteDataStoragePath("sites.json");
-    QAbstractItemModel *model =
-            new JsonFileListModel(filePath, Connection::Site::propertyKeys());
-    _ui->listView->setModel(model);
-    _headers.clear();
-    for (int i = 0; i < model->columnCount(); i++)
-        _headers.insert(model->headerData(i, Qt::Horizontal).toString(), i);
 }
 
 SiteManagerDialog::~SiteManagerDialog()
@@ -82,19 +83,14 @@ void SiteManagerDialog::accept()
 void SiteManagerDialog::showEvent(QShowEvent *e)
 {
     QDialog::showEvent(e);
-
-    QModelIndex index = _ui->listView->model()->index(0, 0);
-    displaySiteDetailAtIndex(index);
+    _ui->listView->setCurrentIndex(_ui->listView->model()->index(0, 0));
 }
 
 void SiteManagerDialog::displaySiteDetailAtIndex(const QModelIndex &index)
 {
-    if (index == _ui->listView->currentIndex())
-        return;
+    _ui->listView->setCurrentIndex(index);
     if (_currentSite)
         delete _currentSite;
-
-    _ui->listView->setCurrentIndex(index);
     _currentSite = siteAtIndex(index);
     _ui->nameLineEdit->setText(_currentSite->name());
     _ui->addressLineEdit->setText(_currentSite->fullForm());
