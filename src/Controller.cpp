@@ -92,6 +92,8 @@ void Controller::connectWith(const QString &address)
 
 void Controller::connectWith(Connection::Site *site)
 {
+    if (currentView()->isConnected())
+        addTab();
     _window->tabs()->setTabText(_window->tabs()->currentIndex(), site->name());
     View *view = currentView();
     Connection::Terminal *terminal = new Connection::Terminal(view);
