@@ -54,7 +54,7 @@ protected:
     virtual void showEvent(QShowEvent *e);
 
 signals:
-    void connectRequested(QString);
+    void connectRequested(Connection::Site *);
 
 private slots:
     void displaySiteDetailAtIndex(const QModelIndex &index);

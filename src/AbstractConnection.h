@@ -38,8 +38,7 @@ class AbstractConnection : public QObject
 
 public:
     explicit AbstractConnection(QObject *parent = 0);
-    virtual bool connectToSite(Site *s);
-    virtual bool connectTo(const QString &address, qint16 port) = 0;
+    virtual bool connectToSite(Site *site);
     static const qint16 DefaultPort = -1;
 
 public slots:
@@ -56,6 +55,9 @@ private:
     bool _isConnected;
     bool _isProcessing;
     QDateTime _lastTouch;
+
+protected:
+    virtual bool connectTo(const QString &address, qint16 port) = 0;
 
 protected slots:
     virtual void processBytes(QByteArray bytes) = 0;

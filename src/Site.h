@@ -45,7 +45,8 @@ class Site : public QObject
 public:
     explicit Site(const QString &form = "protocol://site.address",
                   const QString &name = "Name", QObject *parent = 0);
-    static Site *fromProperties(const QMap<QString, QVariant> &properties);
+    static Site *fromProperties(const QMap<QString, QVariant> &properties,
+                                QObject *parent = 0);
     static QStringList propertyKeys();
 
     QString name() const;

@@ -38,7 +38,6 @@ class Telnet : public AbstractConnection
 public:
     explicit Telnet(QObject *parent = 0);
     virtual ~Telnet();
-    virtual bool connectTo(const QString &address, qint16 port);
     static const qint16 DefaultPort = 23;
 
 public slots:
@@ -46,6 +45,9 @@ public slots:
     virtual void reconnect();
     virtual void processBytes(QByteArray bytes);
     virtual void sendBytes(QByteArray bytes);
+
+protected:
+    virtual bool connectTo(const QString &address, qint16 port);
 
 protected slots:
     virtual void sendCommand(uchar cmd, uchar option);

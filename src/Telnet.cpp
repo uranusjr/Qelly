@@ -55,13 +55,8 @@ Telnet::~Telnet()
 bool Telnet::connectTo(const QString &address, qint16 port)
 {
     setProcessing(true);
-
     _port = port < 0 ? DefaultPort : port;
-
-    if (!site())
-        setSite(new Site(address, address, this));
     _socket->connectToHost(address, _port);
-
     return true;
 }
 

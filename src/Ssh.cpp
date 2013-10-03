@@ -51,9 +51,6 @@ bool Ssh::connectTo(const QString &address, qint16 port)
 {
     setProcessing(true);
 
-    if (!site())
-        setSite(new Site(address, address, this));
-
     _socket->setReadChannel(QProcess::StandardOutput);
     _socket->setReadChannelMode(QProcess::MergedChannels);
 

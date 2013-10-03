@@ -68,16 +68,12 @@ SiteManagerDialog::SiteManagerDialog(QWidget *parent) :
 SiteManagerDialog::~SiteManagerDialog()
 {
     delete _ui;
-    if (_currentSite)
-        _currentSite->deleteLater();
 }
 
 void SiteManagerDialog::accept()
 {
-    // TODO: Implement connectWithSite in controller
-    QString address = _currentSite->fullForm();
-    if (!address.isEmpty())
-        emit connectRequested(address);
+    if (!_currentSite->fullForm().isEmpty())
+        emit connectRequested(_currentSite);
     close();
 }
 
@@ -105,7 +101,7 @@ void SiteManagerDialog::displaySiteDetailAtIndex(const QModelIndex &index)
         properties.insert(model->headerData(c, Qt::Horizontal).toString(),
                           model->data(model->index(row, c)));
     }
-    _currentSite = Connection::Site::fromProperties(properties);
+    _currentSite = Connection::Site::fromProperties(properties, this);
     _ui->nameLineEdit->setText(_currentSite->name());
     _ui->addressLineEdit->setText(_currentSite->fullForm());
     _ui->encodingComboBox->setCurrentIndex(_currentSite->encoding());

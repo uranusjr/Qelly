@@ -87,9 +87,7 @@ Controller::~Controller()
 
 void Controller::connectWith(const QString &address)
 {
-    Connection::Site *site = new Connection::Site(address, address);
-    connectWith(site);
-    site->deleteLater();
+    connectWith(new Connection::Site(address, address));
 }
 
 void Controller::connectWith(Connection::Site *site)
@@ -342,8 +340,8 @@ void Controller::showSiteManager()
     {
         _siteManager = new SiteManagerDialog(_window);
         _siteManager->setAttribute(Qt::WA_DeleteOnClose);
-        connect(_siteManager, SIGNAL(connectRequested(QString)),
-                SLOT(connectWith(QString)));
+        connect(_siteManager, SIGNAL(connectRequested(Connection::Site*)),
+                SLOT(connectWith(Connection::Site*)));
     }
     _siteManager->setAttribute(Qt::WA_ShowModal);
     _siteManager->show();
