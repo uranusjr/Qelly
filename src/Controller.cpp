@@ -61,6 +61,9 @@ Controller::Controller(QObject *parent) :
     connect(menu, SIGNAL(editPasteColor()), SLOT(pasteColor()));
     connect(menu, SIGNAL(viewAntiIdle(bool)), SLOT(toggleAntiIdle(bool)));
     connect(menu, SIGNAL(sitesEditSites()), SLOT(showSiteManager()));
+    connect(menu, SIGNAL(windowMinimize()), SLOT(minimize()));
+    connect(menu, SIGNAL(windowSelectNextTab()), SLOT(tabNext()));
+    connect(menu, SIGNAL(windowSelectPreviousTab()), SLOT(tabPrevious()));
     connect(menu, SIGNAL(about()), SLOT(showAbout()));
     connect(menu, SIGNAL(helpVisitProjectHome()), SLOT(visitProject()));
     connect(_window, SIGNAL(siteManageShouldOpen()), SLOT(showSiteManager()));
@@ -349,6 +352,21 @@ void Controller::showSiteManager()
     _siteManager->show();
 }
 
+void Controller::tabNext()
+{
+    QTabWidget *tabs = _window->tabs();
+    tabs->setCurrentIndex((tabs->currentIndex() + 1) % tabs->count());
+}
+
+void Controller::tabPrevious()
+{
+    QTabWidget *tabs = _window->tabs();
+    int next = tabs->currentIndex() - 1;
+    if (next < 0)
+        next += tabs->count();
+    tabs->setCurrentIndex(next % tabs->count());
+}
+
 void Controller::timerEvent(QTimerEvent *e)
 {
     if (e->timerId() == _antiIdleTimer)
@@ -383,6 +401,11 @@ void Controller::updateAll()
     terminal->setDirtyAll();
     view->updateBackImage();
     view->update();
+}
+
+void Controller::minimize()
+{
+    _window->setWindowState(Qt::WindowMinimized);
 }
 
 View *Controller::currentView() const

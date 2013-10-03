@@ -19,6 +19,7 @@
 #include "MainWindow.h"
 #include <QApplication>
 #include <QCloseEvent>
+#include <QDesktopWidget>
 #include <QVBoxLayout>
 #include <QLabel>
 #include <QLineEdit>

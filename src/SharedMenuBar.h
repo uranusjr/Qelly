@@ -63,7 +63,6 @@ signals:
     void sitesEditSites();
     void siteAddThisSite();
     void windowMinimize();
-    void windowZoom();
     void windowSelectNextTab();
     void windowSelectPreviousTab();
     void windowBringAllToFront();

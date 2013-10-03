@@ -68,12 +68,15 @@ public slots:
     void toggleAntiIdle(bool enabled);
     void showEmoticonViewer();
     void showSiteManager();
+    void tabNext();
+    void tabPrevious();
 
 protected:
     virtual void timerEvent(QTimerEvent *e);
 
 private slots:
     void updateAll();
+    void minimize();
 
 private:
     View *currentView() const;

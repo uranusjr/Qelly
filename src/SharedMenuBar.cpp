@@ -101,10 +101,10 @@ SharedMenuBar::SharedMenuBar(QWidget *parent) : QMenuBar(parent)
     menu = addMenu(tr("Window"));
     menu->addAction(tr("Minimize"), this, SIGNAL(windowMinimize()),
                     Seq(UJ::ModModifier | Qt::Key_M));
-    menu->addAction(tr("Zoom"), this, SIGNAL(windowZoom()));
     menu->addAction(tr("Select Next Tab"), this, SIGNAL(windowSelectNextTab()),
                     Seq(UJ::ModModifier | Qt::Key_Right));
-    menu->addAction(tr("Select Previous Tab"), this, SIGNAL(windowSelectPreviousTab()),
+    menu->addAction(tr("Select Previous Tab"),
+                    this, SIGNAL(windowSelectPreviousTab()),
                     Seq(UJ::ModModifier | Qt::Key_Left));
 #ifdef Q_WS_MAC
     menu->addAction(tr("Bring All to Front"),
