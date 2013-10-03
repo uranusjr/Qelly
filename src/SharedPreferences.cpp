@@ -67,6 +67,7 @@ bool SharedPreferences::showHiddenText() const
 void SharedPreferences::setShowHiddenText(bool show)
 {
     _settings->setValue("show hidden text", show);
+    emit showHiddenTextChanged(show);
 }
 
 bool SharedPreferences::manualDoubleByte() const

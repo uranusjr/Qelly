@@ -56,7 +56,7 @@ signals:
     void editCustomizeToolbar();    // Mac only...
     void editPreferences();
     void viewAntiIdle(bool);
-    void viewShowHiddenText();
+    void viewShowHiddenText(bool);
     void sitesEditSites();
     void siteAddThisSite();
     void windowMinimize();

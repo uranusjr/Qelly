@@ -98,7 +98,13 @@ void MainWindow::buildToolBar()
     connect(action, SIGNAL(triggered(bool)), SIGNAL(antiIdleTriggered(bool)));
     action->connect(_prefs, SIGNAL(antiIdleChanged(bool)),
                     SLOT(setChecked(bool)));
-    _toolbar->addAction(QIcon(":/images/Flashlight.png"), tr("Peek"));
+    action = _toolbar->addAction(QIcon(":/images/Flashlight.png"), tr("Peek"));
+    action->setCheckable(true);
+    action->setChecked(_prefs->showHiddenText());
+    connect(action, SIGNAL(triggered(bool)),
+            SIGNAL(showHiddenTextTriggered(bool)));
+    action->connect(_prefs, SIGNAL(showHiddenTextChanged(bool)),
+                    SLOT(setChecked(bool)));
     setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 }
 

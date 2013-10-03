@@ -718,12 +718,26 @@ void ViewPrivate::updateText(int row, int column)
     case 0: // Not double byte
         painter->begin(backImage);
         painter->setRenderHint(QPainter::TextAntialiasing);
-        painter->setFont(sglFont);
         painter->setPen(prefs->fColor(attr.f.fColorIndex, attr.f.bright));
         code = cells[column].byte ? cells[column].byte : ' ';
-        painter->drawText(column * cellWidth + sglPadLeft,
-                             (row + 1) * cellHeight - sglPadBott,
-                             QChar(code));
+        if (attr.f.isHidden() && prefs->showHiddenText())
+        {
+            // Draw outline font for hidden text
+            QPainterPath path;
+            path.addText(column * cellWidth + sglPadLeft,
+                         (row + 1) * cellHeight - sglPadBott,
+                         sglFont, QChar(code));
+            painter->setPen(QColor(Qt::white));
+            painter->drawPath(path);
+        }
+        else
+        {
+            // Draw normally
+            painter->setFont(sglFont);
+            painter->drawText(column * cellWidth + sglPadLeft,
+                              (row + 1) * cellHeight - sglPadBott,
+                              QChar(code));
+        }
         painter->end();
         break;
     case 1: // First half of double byte
@@ -762,12 +776,26 @@ void ViewPrivate::updateText(int row, int column)
             {
                 painter->begin(backImage);
                 painter->setRenderHint(QPainter::TextAntialiasing);
-                painter->setFont(dblFont);
                 painter->setPen(prefs->fColor(attr.f.fColorIndex,
                                                     attr.f.bright));
-                painter->drawText((column - 1) * cellWidth + dblPadLeft,
-                                     (row + 1) * cellHeight - dblPadBott,
-                                     QChar(code));
+                if (attr.f.isHidden() && prefs->showHiddenText())
+                {
+                    // Draw outline font for hidden text
+                    QPainterPath path;
+                    path.addText((column - 1) * cellWidth + dblPadLeft,
+                                 (row + 1) * cellHeight - dblPadBott,
+                                 dblFont, QChar(code));
+                    painter->setPen(QColor(Qt::white));
+                    painter->drawPath(path);
+                }
+                else
+                {
+                    // Draw normally
+                    painter->setFont(dblFont);
+                    painter->drawText((column - 1) * cellWidth + dblPadLeft,
+                                         (row + 1) * cellHeight - dblPadBott,
+                                         QChar(code));
+                }
                 painter->end();
             }
         }

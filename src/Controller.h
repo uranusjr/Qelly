@@ -66,6 +66,7 @@ public slots:
     void showAbout();
     void visitProject();
     void toggleAntiIdle(bool enabled);
+    void toggleShowHiddenText(bool enabled);
     void showEmoticonViewer();
     void showSiteManager();
     void tabNext();

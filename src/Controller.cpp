@@ -60,6 +60,8 @@ Controller::Controller(QObject *parent) :
     connect(menu, SIGNAL(editPaste()), SLOT(paste()));
     connect(menu, SIGNAL(editPasteColor()), SLOT(pasteColor()));
     connect(menu, SIGNAL(viewAntiIdle(bool)), SLOT(toggleAntiIdle(bool)));
+    connect(menu, SIGNAL(viewShowHiddenText(bool)),
+            SLOT(toggleShowHiddenText(bool)));
     connect(menu, SIGNAL(sitesEditSites()), SLOT(showSiteManager()));
     connect(menu, SIGNAL(windowMinimize()), SLOT(minimize()));
     connect(menu, SIGNAL(windowSelectNextTab()), SLOT(tabNext()));
@@ -72,6 +74,8 @@ Controller::Controller(QObject *parent) :
     connect(_window, SIGNAL(newTabRequested()), SLOT(addTab()));
     connect(_window, SIGNAL(antiIdleTriggered(bool)),
             SLOT(toggleAntiIdle(bool)));
+    connect(_window, SIGNAL(showHiddenTextTriggered(bool)),
+            SLOT(toggleShowHiddenText(bool)));
     connect(_window, SIGNAL(emoticonViewerShouldOpen()),
             SLOT(showEmoticonViewer()));
     connect(_window->address(), SIGNAL(returnPressed()),
@@ -319,6 +323,16 @@ void Controller::toggleAntiIdle(bool enabled)
 {
     SharedPreferences::sharedInstance()->setAntiIdleActive(enabled);
     setAntiIdleTimer(enabled);
+}
+
+void Controller::toggleShowHiddenText(bool enabled)
+{
+    SharedPreferences *prefs = SharedPreferences::sharedInstance();
+    if (prefs->showHiddenText() != enabled)
+    {
+        prefs->setShowHiddenText(enabled);
+        updateAll();
+    }
 }
 
 void Controller::showEmoticonViewer()

@@ -111,6 +111,13 @@ public:
             uint doubleByte     : 2;
             uint isUrl          : 1;
             uint isNothing      : 1;
+
+            inline bool isHidden()
+            {
+                return (!bright
+                        && ((fColorIndex == bColorIndex)
+                            || (fColorIndex == 0 && bColorIndex == 9)));
+            }
         } f;
     };
 

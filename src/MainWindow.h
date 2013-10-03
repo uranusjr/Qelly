@@ -54,6 +54,7 @@ signals:
     void newTabRequested();
     void reconnect();
     void antiIdleTriggered(bool);
+    void showHiddenTextTriggered(bool);
     void emoticonViewerShouldOpen();
     void siteManageShouldOpen();
 

@@ -84,7 +84,12 @@ SharedMenuBar::SharedMenuBar(QWidget *parent) : QMenuBar(parent)
     action->connect(prefs, SIGNAL(antiIdleChanged(bool)),
                     SLOT(setChecked(bool)));
     connect(action, SIGNAL(triggered(bool)), SIGNAL(viewAntiIdle(bool)));
-    menu->addAction(tr("Show Hidden Text"), this, SIGNAL(viewShowHiddenText()));
+    action = menu->addAction(tr("Show Hidden Text"));
+    action->setCheckable(true);
+    action->setChecked(prefs->showHiddenText());
+    action->connect(prefs, SIGNAL(showHiddenTextChanged(bool)),
+                    SLOT(setChecked(bool)));
+    connect(action, SIGNAL(triggered(bool)), SIGNAL(viewShowHiddenText(bool)));
 
     menu = addMenu(tr("Sites"));
     menu->addAction(tr("Edit Sites..."), this, SIGNAL(sitesEditSites()),

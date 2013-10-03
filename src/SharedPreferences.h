@@ -56,6 +56,7 @@ public slots:
 
 signals:
     void antiIdleChanged(bool);
+    void showHiddenTextChanged(bool);
 
 private:
     QSettings *_settings;
