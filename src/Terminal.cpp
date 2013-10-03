@@ -1191,6 +1191,7 @@ void Terminal::setConnection(AbstractConnection *connection)
     if (_connection)
         _connection->deleteLater();
     _connection = connection;
+    _connection->setParent(this);
     if (!_connection)
         return;
     connect(_connection, SIGNAL(connected()), this, SLOT(startConnection()));

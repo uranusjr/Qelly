@@ -865,11 +865,15 @@ void View::setTerminal(Connection::Terminal *terminal)
     Q_D(View);
     if (d->terminal == terminal)
         return;
-    disconnect(d->terminal);
-    delete d->terminal;
+    if (d->terminal)
+    {
+        disconnect(d->terminal);
+        delete d->terminal;
+    }
     d->terminal = terminal;
     if (!d->terminal)
         return;
+    d->terminal->setParent(this);
     d->terminal->setView(this);
     connect(d->terminal, SIGNAL(dataProcessed()), SLOT(updateScreen()));
     d->terminal->connection()->connect(this, SIGNAL(hasBytesToSend(QByteArray)),

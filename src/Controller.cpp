@@ -28,6 +28,7 @@
 #include "PreferencesWindow.h"
 #include "SharedMenuBar.h"
 #include "SharedPreferences.h"
+#include "Site.h"
 #include "SiteManagerDialog.h"
 #include "TabWidget.h"
 #include "Telnet.h"
@@ -84,46 +85,35 @@ Controller::~Controller()
     _window->deleteLater();
 }
 
-void Controller::connectWithAddress(QString address)
+void Controller::connectWith(const QString &address)
 {
-    // NOTE: Search saved sites for matching address
-    QString name = address;
-    _window->tabs()->setTabText(_window->tabs()->currentIndex(), name);
+    Connection::Site *site = new Connection::Site(address, address);
+    connectWith(site);
+    site->deleteLater();
+}
+
+void Controller::connectWith(Connection::Site *site)
+{
+    _window->tabs()->setTabText(_window->tabs()->currentIndex(), site->name());
     View *view = currentView();
     Connection::Terminal *terminal = new Connection::Terminal(view);
     Connection::AbstractConnection *connection;
-    qint16 defaultPort = Connection::AbstractConnection::DefaultPort;
-    if (address.startsWith("ssh://"))
+    switch (site->type())
     {
-        address = address.section("://", 1);
+    case Connection::TypeSsh:
         connection = new Connection::Ssh(terminal);
-        terminal->setConnection(connection);
-        defaultPort = Connection::Ssh::DefaultPort;
-    }
-    else if (address.startsWith("telnet://"))
-    {
-        address = address.section("://", 1);
+        break;
+    default:
         connection = new Connection::Telnet(terminal);
-        terminal->setConnection(connection);
-        defaultPort = Connection::Telnet::DefaultPort;
+        break;
     }
-    else
-    {
-        connection = new Connection::Telnet(terminal);
-        terminal->setConnection(connection);
-        defaultPort = Connection::Telnet::DefaultPort;
-    }
+    terminal->setConnection(connection);
     view->setTerminal(terminal);
-    view->setAddress(_window->address()->text());
+    view->setAddress(site->fullForm());
     view->setFocus(Qt::OtherFocusReason);
     connect(view, SIGNAL(shouldChangeAddress(const QString &)),
-            this, SLOT(changeAddressField(const QString &)));
-
-    QStringList comps = address.split(':');
-    if (comps.size() == 1)
-        connection->connectTo(address, defaultPort);
-    else
-        connection->connectTo(comps.first(), comps.last().toLong());
+            SLOT(changeAddressField(const QString &)));
+    connection->connectToSite(site);
 }
 
 void Controller::focusAddressField()
@@ -296,7 +286,7 @@ void Controller::onAddressReturnPressed()
         int newTab = _window->tabs()->addTab(new Tab(new View()), "");
         _window->tabs()->setCurrentIndex(newTab);
     }
-    connectWithAddress(address);
+    connectWith(address);
 }
 
 void Controller::changeAddressField(const QString &address)
@@ -353,7 +343,7 @@ void Controller::showSiteManager()
         _siteManager = new SiteManagerDialog(_window);
         _siteManager->setAttribute(Qt::WA_DeleteOnClose);
         connect(_siteManager, SIGNAL(connectRequested(QString)),
-                SLOT(connectWithAddress(QString)));
+                SLOT(connectWith(QString)));
     }
     _siteManager->setAttribute(Qt::WA_ShowModal);
     _siteManager->show();

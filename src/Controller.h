@@ -48,7 +48,8 @@ public:
     virtual ~Controller();
 
 public slots:
-    void connectWithAddress(QString address);
+    void connectWith(const QString &address);
+    void connectWith(Connection::Site *site);
     void focusAddressField();
     void addTab();
     void closeTab();
