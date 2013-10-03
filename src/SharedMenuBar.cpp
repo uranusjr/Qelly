@@ -85,12 +85,6 @@ SharedMenuBar::SharedMenuBar(QWidget *parent) : QMenuBar(parent)
                     SLOT(setChecked(bool)));
     connect(action, SIGNAL(triggered(bool)), SIGNAL(viewAntiIdle(bool)));
     menu->addAction(tr("Show Hidden Text"), this, SIGNAL(viewShowHiddenText()));
-    menu->addAction(tr("Detect Double Byte"),
-                    this, SIGNAL(viewDetectDoubleByte()));
-    menu->addSeparator();
-    QMenu *encoding = menu->addMenu(tr("Encoding"));
-    encoding->addAction(tr("Big5"), this, SIGNAL(viewEncodingBig5()));
-    encoding->addAction(tr("GBK"), this, SIGNAL(viewEncodingGbk()));
 
     menu = addMenu(tr("Sites"));
     menu->addAction(tr("Edit Sites..."), this, SIGNAL(sitesEditSites()),

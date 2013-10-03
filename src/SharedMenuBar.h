@@ -57,9 +57,6 @@ signals:
     void editPreferences();
     void viewAntiIdle(bool);
     void viewShowHiddenText();
-    void viewDetectDoubleByte();
-    void viewEncodingBig5();
-    void viewEncodingGbk();
     void sitesEditSites();
     void siteAddThisSite();
     void windowMinimize();

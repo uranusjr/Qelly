@@ -61,7 +61,6 @@ private:
     void buildToolBar();
     TabWidget *_tabs;
     QToolBar *_toolbar;
-    QWidget *_stretch;
     QWidget *_inputFrame;
     QLineEdit *_address;
     SharedPreferences *_prefs;

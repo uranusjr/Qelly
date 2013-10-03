@@ -57,8 +57,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
 
 void MainWindow::buildToolBar()
 {
-    _stretch = new QWidget();
-    _stretch->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
+    QWidget *stretch = new QWidget(this);
+    stretch->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 
     _address = new QLineEdit();
     _address->setPlaceholderText(tr("Input site address"));
@@ -87,7 +87,7 @@ void MainWindow::buildToolBar()
     _toolbar->addAction(QIcon(":/images/New.png"), tr("Add"),
                         this, SIGNAL(newTabRequested()));
     _toolbar->addWidget(_inputFrame);
-    _toolbar->addWidget(_stretch);
+    _toolbar->addWidget(stretch);
     _toolbar->addAction(
                 style->standardIcon(QStyle::SP_DirIcon), tr("Emoticons"),
                 this, SIGNAL(emoticonViewerShouldOpen()));
@@ -99,8 +99,6 @@ void MainWindow::buildToolBar()
     action->connect(_prefs, SIGNAL(antiIdleChanged(bool)),
                     SLOT(setChecked(bool)));
     _toolbar->addAction(QIcon(":/images/Flashlight.png"), tr("Peek"));
-    _toolbar->addAction(style->standardIcon(QStyle::SP_DirIcon),
-                        tr("Double Byte"));
     setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 }
 
