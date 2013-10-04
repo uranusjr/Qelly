@@ -44,7 +44,8 @@ CONFIG(static) {
 }
 
 TRANSLATIONS += UJ_Translate.ts
-RC_FILE = icons/Qelly.rc
+RC_FILE = icons/Qelly.rc        # Windows
+ICON = icons/qower-icon.icns    # OS X
 
 PRECOMPILED_HEADER = UJCommonDefs.h
 
