@@ -436,10 +436,7 @@ void Controller::timerEvent(QTimerEvent *e)
             QDateTime now = QDateTime::currentDateTime();
             Connection::AbstractConnection *conn = terminal->connection();
             if (conn->lastTouch().secsTo(now) >= 119)
-            {
-                qDebug() << "sending";
                 conn->sendBytes(QByteArray("\0\0\0\0\0\0", 6));
-            }
         }
     }
 }

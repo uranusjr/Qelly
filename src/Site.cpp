@@ -17,7 +17,9 @@
  *****************************************************************************/
 
 #include "Site.h"
+#include <QMap>
 #include <QStringList>
+#include <QVariant>
 #include "AbstractConnection.h"
 #include "SharedPreferences.h"
 
@@ -97,12 +99,11 @@ Site::Site(const QString &form, const QString &name, QObject *parent) :
 {
 }
 
-Site *Site::fromProperties(const QMap<QString, QVariant> &properties,
-                           QObject *parent)
+Site *Site::fromProperties(const QVariantMap &properties, QObject *parent)
 {
     Site *site = new Site(properties["full_form"].toString(),
                           properties["name"].toString(), parent);
-    for (QMap<QString, QVariant>::const_iterator i = properties.constBegin();
+    for (QVariantMap::const_iterator i = properties.constBegin();
          i != properties.constEnd(); i++)
     {
         const char *name = i.key().toUtf8().data();
