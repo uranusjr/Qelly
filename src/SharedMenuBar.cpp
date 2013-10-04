@@ -111,7 +111,9 @@ SharedMenuBar::SharedMenuBar(QWidget *parent) : QMenuBar(parent)
                     Seq(UJ::ModModifier | UJ::OptModifier | Qt::Key_Up));
 #endif
     menu = addMenu(tr("Help"));
-    menu->addAction(tr("About"), this, SIGNAL(about()));
+    menu->addAction(tr("About..."), this, SIGNAL(about()));
+    menu->addAction(tr("Acknowledgements..."),
+                    this, SIGNAL(windowAcknowledgement()));
     menu->addAction(tr("Visit Project Home..."),
                     this, SIGNAL(helpVisitProjectHome()));
 }

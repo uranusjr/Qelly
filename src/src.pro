@@ -117,4 +117,6 @@ FORMS += \
     SiteManagerDialog.ui
 
 OTHER_FILES += \
-    icons/Qelly.rc
+    icons/Qelly.rc \
+    about.html \
+    acknowledgement.html

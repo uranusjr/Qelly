@@ -25,6 +25,7 @@ namespace UJ
 {
 
 QString absoluteDataStoragePath(const QString &filename);
+QByteArray fromFile(const QString &filename);
 
 enum KeyboardModifier
 {

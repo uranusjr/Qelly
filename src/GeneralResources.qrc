@@ -12,5 +12,10 @@
         <file>images/preferences-system.png</file>
         <file>images/strigi.png</file>
         <file>images/view-refresh.png</file>
+        <file>icons/png/qower-icon_128x128x32.png</file>
+    </qresource>
+    <qresource prefix="/data">
+        <file>about.html</file>
+        <file>acknowledgement.html</file>
     </qresource>
 </RCC>

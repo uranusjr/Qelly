@@ -65,6 +65,7 @@ public slots:
     void addCurrentSite();
     void showPreferencesWindow();
     void showAbout();
+    void showAcknowledgement();
     void visitProject();
     void toggleAntiIdle(bool enabled);
     void toggleShowHiddenText(bool enabled);

@@ -68,6 +68,7 @@ Controller::Controller(QObject *parent) :
     connect(menu, SIGNAL(windowSelectNextTab()), SLOT(tabNext()));
     connect(menu, SIGNAL(windowSelectPreviousTab()), SLOT(tabPrevious()));
     connect(menu, SIGNAL(about()), SLOT(showAbout()));
+    connect(menu, SIGNAL(windowAcknowledgement()), SLOT(showAcknowledgement()));
     connect(menu, SIGNAL(helpVisitProjectHome()), SLOT(visitProject()));
     connect(_window, SIGNAL(siteManageShouldOpen()), SLOT(showSiteManager()));
     connect(_window, SIGNAL(reconnect()), SLOT(reconnect()));
@@ -324,7 +325,14 @@ void Controller::showPreferencesWindow()
 
 void Controller::showAbout()
 {
-    // TODO: Implement me
+    static const QString text(fromFile(":/data/about.html"));
+    QMessageBox::about(_window, "About", text);
+}
+
+void Controller::showAcknowledgement()
+{
+    static const QString text(fromFile(":/data/acknowledgement.html"));
+    QMessageBox::about(_window, "About", text);
 }
 
 void Controller::visitProject()

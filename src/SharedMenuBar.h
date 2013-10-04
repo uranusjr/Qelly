@@ -64,6 +64,7 @@ signals:
     void windowSelectPreviousTab();
     void windowBringAllToFront();
     void windowAbout();
+    void windowAcknowledgement();
     void helpVisitProjectHome();
 };
 

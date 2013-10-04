@@ -18,6 +18,7 @@
 
 #include "Globals.h"
 #include <QDir>
+#include <QFile>
 #include <QTextStream>
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
     #include <QStandardPaths>
@@ -40,6 +41,16 @@ QString absoluteDataStoragePath(const QString &filename)
     if (!dir.exists())
         dir.mkpath(".");
     return dir.filePath(filename);
+}
+
+QByteArray fromFile(const QString &filename)
+{
+    QFile f(filename);
+    if (!f.open(QIODevice::ReadOnly))
+        return QByteArray();
+    QByteArray bytes = f.readAll();
+    f.close();
+    return bytes;
 }
 
 }   // namespace UJ
