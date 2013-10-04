@@ -35,6 +35,8 @@ AbstractConnection::AbstractConnection(QObject *parent) :
 
 void AbstractConnection::setSite(Site *site)
 {
+    if (_site == site)
+        return;
     if (_site)
         delete _site;
     _site = site;
