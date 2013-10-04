@@ -6,3 +6,4 @@ test/build/
 Makefile*
 object_script.*
 *.autosave
+*.qm

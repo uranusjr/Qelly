@@ -52,13 +52,18 @@ SharedMenuBar::SharedMenuBar(QWidget *parent) : QMenuBar(parent)
                     Seq(Qt::AltModifier | Qt::Key_F4));
 
     menu = addMenu(tr("Edit"));
-    menu->addAction(tr("Copy"), this, SIGNAL(editCopy()),
+#ifdef Q_OS_MAC
+    menu->addAction(tr("Copy", "Mac"), this, SIGNAL(editCopy()),
                     Seq(UJ::ModModifier | Qt::Key_C));
+#else
+    menu->addAction(tr("Copy", "General"), this, SIGNAL(editCopy()),
+                    Seq(UJ::ModModifier | Qt::Key_C));
+#endif
     menu->addAction(tr("Paste"), this, SIGNAL(editPaste()),
                     Seq(UJ::ModModifier | Qt::Key_V));
     menu->addAction(tr("Paste Wrap"), this, SIGNAL(editPasteWrap()),
                     Seq(UJ::ModModifier | Qt::ShiftModifier | Qt::Key_V));
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     menu->addAction(tr("Paste Color"), this, SIGNAL(editPasteColor()),
                     Seq(UJ::ModModifier | UJ::OptModifier | Qt::Key_V));
 #else
@@ -70,11 +75,11 @@ SharedMenuBar::SharedMenuBar(QWidget *parent) : QMenuBar(parent)
     menu->addAction(tr("Emoticons..."), this, SIGNAL(editEmoticons()),
                     Seq(UJ::ModModifier | Qt::Key_E));
     menu->addSeparator();
-#ifdef Q_WS_MAC
+#ifdef Q_OS_MAC
     menu->addAction(tr("Customize Toolbar..."),
                     this, SIGNAL(editCustomizeToolbar()));
 #endif
-    menu->addAction(tr("Preferences..."), this, SIGNAL(editPreferences()),
+    menu->addAction(tr("Preferences"), this, SIGNAL(editPreferences()),
                     Seq(UJ::ModModifier | Qt::Key_Comma));
 
     menu = addMenu(tr("View"));

@@ -17,6 +17,7 @@
  *****************************************************************************/
 
 #include <QApplication>
+#include <QLocale>
 #include <QTranslator>
 #include "Encodings.h"
 #include "Controller.h"
@@ -34,9 +35,8 @@ int main(int argc, char *argv[])
     a.setAttribute(Qt::AA_MacDontSwapCtrlAndMeta);
 
     YL::init_table();
-
     QTranslator trans;
-    trans.load(":/translations/UJ_Translate");
+    trans.load(QLocale::system(), "Qelly", "_");
     a.installTranslator(&trans);
 
     UJ::Qelly::Controller c;

@@ -43,7 +43,7 @@ CONFIG(static) {
     }
 }
 
-TRANSLATIONS += UJ_Translate.ts
+TRANSLATIONS += Qelly_zh_tw.ts
 RC_FILE = icons/Qelly.rc        # Windows
 ICON = icons/qower-icon.icns    # OS X
 

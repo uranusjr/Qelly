@@ -286,7 +286,7 @@ void ViewPrivate::addActionsToContextMenu(QMenu *menu)
             {
                 QString title = (urls.size() == 1) ?
                             urls.first() :
-                            q->tr("Open as multiple URLs");
+                            QObject::tr("Open as multiple URLs");
                 QAction *action = menu->addAction(title, q, SLOT(openUrl()));
                 action->setData(urls);
             }
@@ -338,7 +338,11 @@ void ViewPrivate::addActionsToContextMenu(QMenu *menu)
 
         // copy() calculates the selection by itself, so we don't need to
         // provide user data here
-        menu->addAction(q->tr("Copy"), q, SLOT(copy()));
+#ifdef Q_OS_MAC
+        menu->addAction(QObject::tr("Copy", "Mac"), q, SLOT(copy()));
+#else
+        menu->addAction(QObject::tr("Copy", "General"), q, SLOT(copy()));
+#endif
     }
 }
 

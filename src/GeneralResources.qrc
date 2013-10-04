@@ -1,7 +1,4 @@
 <RCC>
-    <qresource prefix="/translations">
-        <file>UJ_Translate.qm</file>
-    </qresource>
     <qresource prefix="/">
         <file>images/bookmarks-organize.png</file>
         <file>images/face-wink.png</file>
