@@ -80,6 +80,22 @@ void SiteManagerDialog::accept()
     close();
 }
 
+void SiteManagerDialog::addSite(Connection::Site *site)
+{
+    QAbstractItemModel *model = _ui->listView->model();
+    int row = model->rowCount();
+    model->insertRow(row);
+
+    for (QHash<QString, int>::const_iterator i = _headers.constBegin();
+            i != _headers.constEnd(); i++)
+    {
+        QVariant v = site->property(i.key().toUtf8().data());
+        model->setData(model->index(row, i.value()), v);
+    }
+    displaySiteDetailAtIndex(model->index(row, 0));
+    _ui->nameLineEdit->setFocus();
+}
+
 void SiteManagerDialog::showEvent(QShowEvent *e)
 {
     QDialog::showEvent(e);
@@ -137,18 +153,7 @@ void SiteManagerDialog::addNewSite()
         delete _currentSite;
 
     _currentSite = new Connection::Site();
-    QAbstractItemModel *model = _ui->listView->model();
-    int row = model->rowCount();
-    model->insertRow(row);
-
-    for (QHash<QString, int>::const_iterator i = _headers.constBegin();
-            i != _headers.constEnd(); i++)
-    {
-        QVariant v = _currentSite->property(i.key().toUtf8().data());
-        model->setData(model->index(row, i.value()), v);
-    }
-    displaySiteDetailAtIndex(model->index(row, 0));
-    _ui->nameLineEdit->setFocus();
+    addSite(_currentSite);
 }
 
 void SiteManagerDialog::removeCurrentSite()

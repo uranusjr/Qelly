@@ -63,6 +63,7 @@ Controller::Controller(QObject *parent) :
     connect(menu, SIGNAL(viewShowHiddenText(bool)),
             SLOT(toggleShowHiddenText(bool)));
     connect(menu, SIGNAL(sitesEditSites()), SLOT(showSiteManager()));
+    connect(menu, SIGNAL(siteAddThisSite()), SLOT(addCurrentSite()));
     connect(menu, SIGNAL(windowMinimize()), SLOT(minimize()));
     connect(menu, SIGNAL(windowSelectNextTab()), SLOT(tabNext()));
     connect(menu, SIGNAL(windowSelectPreviousTab()), SLOT(tabPrevious()));
@@ -294,6 +295,18 @@ void Controller::onAddressReturnPressed()
 void Controller::changeAddressField(const QString &address)
 {
     _window->address()->setText(address);
+}
+
+void Controller::addCurrentSite()
+{
+    View *view = currentView();
+    if (!view || !view->isConnected())
+        return;
+    Connection::Site *site = view->terminal()->connection()->site();
+    if (!site)
+        return;
+    showSiteManager();
+    _siteManager->addSite(site);
 }
 
 void Controller::showPreferencesWindow()

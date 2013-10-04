@@ -62,6 +62,7 @@ public slots:
     void insertText(const QString &text);
     void onAddressReturnPressed();
     void changeAddressField(const QString &address);
+    void addCurrentSite();
     void showPreferencesWindow();
     void showAbout();
     void visitProject();

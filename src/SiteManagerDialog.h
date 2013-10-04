@@ -49,6 +49,7 @@ public:
 
 public slots:
     virtual void accept();
+    void addSite(Connection::Site *site);
 
 protected:
     virtual void showEvent(QShowEvent *e);
