@@ -20,17 +20,16 @@
 #define SHAREDPREFERENCES_H
 
 #include <QObject>
-#include <QApplication>
-#include <QColor>
-#include <QFileInfo>
-#include <QFont>
-#include <QFontDatabase>
-#include <QSettings>
 #include "Globals.h"
-#include "Ssh.h"
+class QSettings;
 
 namespace UJ
 {
+
+namespace Connection
+{
+class Site;
+}
 
 namespace Qelly
 {
@@ -40,16 +39,8 @@ class SharedPreferences : public QObject
     Q_OBJECT
 
 public:
-    explicit SharedPreferences(QObject *parent = 0) : QObject(parent)
-    {
-        _settings = new QSettings(QSettings::IniFormat, QSettings::UserScope,
-                                  "uranusjr.org", "qelly", this);
-    }
-    static inline SharedPreferences *sharedInstance()
-    {
-        static SharedPreferences *g = new SharedPreferences();
-        return g;
-    }
+    explicit SharedPreferences(QObject *parent = 0);
+    static SharedPreferences *sharedInstance();
 
 public slots:
     void sync();
@@ -77,6 +68,10 @@ public:
     void setSshClientPath(const QString &path);
     bool isAntiIdleActive() const;
     void setAntiIdleActive(bool value);
+    bool restoreConnectionsOnStartup() const;
+    void setRestoreConnectionsOnStartup(bool value);
+    QList<Connection::Site *> storedConnections() const;
+    void storeConnections(const QList<Connection::Site *> &sites);
 
     // Site defaults
     BBS::Encoding defaultEncoding() const;

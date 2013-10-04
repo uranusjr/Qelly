@@ -85,7 +85,7 @@
      <item row="0" column="0">
       <widget class="QCheckBox" name="restoreOnStartupChecker">
        <property name="text">
-        <string>Restore connection on startup</string>
+        <string>Restore connections on startup</string>
        </property>
       </widget>
      </item>

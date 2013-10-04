@@ -19,6 +19,7 @@
 #include "View.h"
 #include "View_p.h"
 #include <QAction>
+#include <QApplication>
 #include <QClipboard>
 #include <QDesktopServices>
 #include <QMenu>

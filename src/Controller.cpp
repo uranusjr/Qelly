@@ -30,6 +30,7 @@
 #include "SharedPreferences.h"
 #include "Site.h"
 #include "SiteManagerDialog.h"
+#include "Ssh.h"
 #include "TabWidget.h"
 #include "Telnet.h"
 #include "Terminal.h"
@@ -85,12 +86,35 @@ Controller::Controller(QObject *parent) :
     connect(_window->tabs(), SIGNAL(tabCloseRequested(int)),
             SLOT(closeTab(int)));
 
+    SharedPreferences *prefs = SharedPreferences::sharedInstance();
     _window->show();
     addTab();
+    if (prefs->restoreConnectionsOnStartup())
+    {
+        foreach (Connection::Site *site, prefs->storedConnections())
+        {
+            connectWith(site);
+            changeAddressField(site->fullForm());
+        }
+    }
 }
 
 Controller::~Controller()
 {
+    SharedPreferences *prefs = SharedPreferences::sharedInstance();
+    if (prefs->restoreConnectionsOnStartup())
+    {
+        QList<Connection::Site *> sites;
+        for (int i = 0; i < _window->tabs()->count(); i++)
+        {
+            View *view = viewInTab(i);
+            if (!view->isConnected())
+                continue;
+            sites << view->terminal()->connection()->site();
+        }
+        prefs->storeConnections(sites);
+    }
+    prefs->sync();  // Force sync because we might not have another chance!
     _window->deleteLater();
 }
 

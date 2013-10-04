@@ -45,6 +45,8 @@ void PreferencesGeneral::initialize()
     _visited = true;
     SharedPreferences *prefs = SharedPreferences::sharedInstance();
     _ui->sshClientPath->setText(prefs->sshClientPath());
+    _ui->restoreOnStartupChecker->setChecked(
+                prefs->restoreConnectionsOnStartup());
 }
 
 void PreferencesGeneral::cleanup()
@@ -57,6 +59,8 @@ void PreferencesGeneral::accept()
         return;
 
     SharedPreferences *prefs = SharedPreferences::sharedInstance();
+    prefs->setRestoreConnectionsOnStartup(
+                _ui->restoreOnStartupChecker->isChecked());
     try
     {
         prefs->setSshClientPath(_ui->sshClientPath->text());

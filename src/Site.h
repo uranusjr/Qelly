@@ -47,7 +47,9 @@ public:
                   const QString &name = "Name", QObject *parent = 0);
     static Site *fromProperties(const QMap<QString, QVariant> &properties,
                                 QObject *parent = 0);
+    QVariantMap toPropertyMap() const;
     static QStringList propertyKeys();
+
 
     QString name() const;
     QString fullForm() const;

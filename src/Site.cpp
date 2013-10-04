@@ -17,6 +17,7 @@
  *****************************************************************************/
 
 #include "Site.h"
+#include <QStringList>
 #include "AbstractConnection.h"
 #include "SharedPreferences.h"
 
@@ -109,6 +110,14 @@ Site *Site::fromProperties(const QMap<QString, QVariant> &properties,
             site->setProperty(name, i.value());
     }
     return site;
+}
+
+QVariantMap Site::toPropertyMap() const
+{
+    QVariantMap properties;
+    foreach (const QString &key, propertyKeys())
+        properties.insert(key, property(key.toUtf8().data()));
+    return properties;
 }
 
 QStringList Site::propertyKeys()

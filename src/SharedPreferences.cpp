@@ -17,12 +17,31 @@
  *****************************************************************************/
 
 #include "SharedPreferences.h"
+#include <QColor>
+#include <QFileInfo>
+#include <QFont>
+#include <QFontDatabase>
+#include <QSettings>
+#include "Site.h"
+#include "Ssh.h"
 
 namespace UJ
 {
 
 namespace Qelly
 {
+
+SharedPreferences::SharedPreferences(QObject *parent) : QObject(parent)
+{
+    _settings = new QSettings(QSettings::IniFormat, QSettings::UserScope,
+                              "uranusjr.org", "qelly", this);
+}
+
+SharedPreferences *SharedPreferences::sharedInstance()
+{
+    static SharedPreferences *g = new SharedPreferences();
+    return g;
+}
 
 void SharedPreferences::sync()
 {
@@ -496,6 +515,35 @@ void SharedPreferences::setAntiIdleActive(bool value)
 {
     _settings->setValue("anti idle", value);
     emit antiIdleChanged(value);
+}
+
+bool SharedPreferences::restoreConnectionsOnStartup() const
+{
+    return _settings->value("restore connections on startup", true).toBool();
+}
+
+void SharedPreferences::setRestoreConnectionsOnStartup(bool value)
+{
+    _settings->setValue("restore connections on startup", value);
+}
+
+QList<Connection::Site *> SharedPreferences::storedConnections() const
+{
+    using namespace Connection;
+    QVariantList values = _settings->value("stored connections").toList();
+
+    QList<Site *> sites;
+    foreach (const QVariant &value, values)
+        sites << Site::fromProperties(value.toMap(), 0);
+    return sites;
+}
+
+void SharedPreferences::storeConnections(const QList<Connection::Site *> &sites)
+{
+    QVariantList values;
+    foreach (Connection::Site *site, sites)
+        values << site->toPropertyMap();
+    _settings->setValue("stored connections", values);
 }
 
 }   // namespace Qelly
