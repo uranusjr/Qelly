@@ -546,6 +546,16 @@ void SharedPreferences::storeConnections(const QList<Connection::Site *> &sites)
     _settings->setValue("stored connections", values);
 }
 
+bool SharedPreferences::warnOnClose()
+{
+    return _settings->value("warn on close", true).toBool();
+}
+
+void SharedPreferences::setWarnOnClose(bool value)
+{
+    _settings->setValue("warn on close", value);
+}
+
 }   // namespace Qelly
 
 }   // namespace UJ

@@ -72,6 +72,8 @@ public:
     void setRestoreConnectionsOnStartup(bool value);
     QList<Connection::Site *> storedConnections() const;
     void storeConnections(const QList<Connection::Site *> &sites);
+    bool warnOnClose();
+    void setWarnOnClose(bool value);
 
     // Site defaults
     BBS::Encoding defaultEncoding() const;

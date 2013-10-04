@@ -170,9 +170,10 @@ void Controller::closeTab(int index)
 {
     TabWidget *tabs = _window->tabs();
     View *view = viewInTab(index);
+    SharedPreferences *prefs = SharedPreferences::sharedInstance();
     if (view)
     {
-        if (view->isConnected())
+        if (view->isConnected() && prefs->warnOnClose())
         {
             QMessageBox sure(_window);
             sure.setIcon(QMessageBox::Warning);
@@ -211,7 +212,8 @@ void Controller::closeTab(int index)
 
 void Controller::closeWindow()
 {
-    if (!_window->tabs()->count())
+    SharedPreferences *prefs = SharedPreferences::sharedInstance();
+    if (!_window->tabs()->count() || !prefs->warnOnClose())
     {
         qApp->quit();
         return;
