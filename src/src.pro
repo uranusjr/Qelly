@@ -44,6 +44,8 @@ CONFIG(static) {
 }
 
 TRANSLATIONS += UJ_Translate.ts
+RC_FILE = icons/Qelly.rc
+
 PRECOMPILED_HEADER = UJCommonDefs.h
 
 SOURCES += main.cpp \
@@ -112,3 +114,6 @@ FORMS += \
     PreferencesColor.ui \
     EmoticonViewer.ui \
     SiteManagerDialog.ui
+
+OTHER_FILES += \
+    icons/Qelly.rc

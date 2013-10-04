@@ -39,11 +39,11 @@ PreferencesWindow::PreferencesWindow(QWidget *parent) : QxtConfigDialog(parent)
     PreferencesFont *font = new PreferencesFont(this);
     PreferencesColor *color = new PreferencesColor(this);
 
-    addPage(general, QIcon(":/images/icons/preferences-system.png"),
+    addPage(general, QIcon(":/images/preferences-system.png"),
             tr("General"));
-    addPage(font, QIcon(":/images/icons/preferences-desktop-font.png"),
+    addPage(font, QIcon(":/images/preferences-desktop-font.png"),
             tr("Fonts"));
-    addPage(color, QIcon(":/images/icons/preferences-desktop-color.png"),
+    addPage(color, QIcon(":/images/preferences-desktop-color.png"),
             tr("Color"));
 
     // If anyone of the pages has been updated, trigger redraw

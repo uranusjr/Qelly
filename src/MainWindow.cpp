@@ -78,24 +78,24 @@ void MainWindow::buildToolBar()
 
     QAction *action;
     _toolbar = addToolBar(tr("General"));
-    _toolbar->addAction(QIcon(":/images/icons/bookmarks-organize.png"),
+    _toolbar->addAction(QIcon(":/images/bookmarks-organize.png"),
                         tr("Sites"), this, SIGNAL(siteManageShouldOpen()));
-    _toolbar->addAction(QIcon(":/images/icons/view-refresh.png"),
+    _toolbar->addAction(QIcon(":/images/view-refresh.png"),
                         tr("Reconnect"), this, SIGNAL(reconnect()));
-    _toolbar->addAction(QIcon(":/images/icons/list-add.png"),
+    _toolbar->addAction(QIcon(":/images/list-add.png"),
                         tr("Add"), this, SIGNAL(newTabRequested()));
     _toolbar->addWidget(_inputFrame);
     _toolbar->addWidget(stretch);
-    _toolbar->addAction(QIcon(":/images/icons/face-wink.png"), tr("Emoticons"),
+    _toolbar->addAction(QIcon(":/images/face-wink.png"), tr("Emoticons"),
                         this, SIGNAL(emoticonViewerShouldOpen()));
-    action = _toolbar->addAction(QIcon(":/images/icons/player-time.png"),
+    action = _toolbar->addAction(QIcon(":/images/player-time.png"),
                                  tr("Anti-Idle"));
     action->setCheckable(true);
     action->setChecked(_prefs->isAntiIdleActive());
     connect(action, SIGNAL(triggered(bool)), SIGNAL(antiIdleTriggered(bool)));
     action->connect(_prefs, SIGNAL(antiIdleChanged(bool)),
                     SLOT(setChecked(bool)));
-    action = _toolbar->addAction(QIcon(":/images/icons/strigi.png"),
+    action = _toolbar->addAction(QIcon(":/images/strigi.png"),
                                  tr("Peek"));
     action->setCheckable(true);
     action->setChecked(_prefs->showHiddenText());
