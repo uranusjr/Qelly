@@ -51,7 +51,6 @@ private slots:
 private:
     void preAddTab(QWidget *w);
     void postAddTab(int index, const QString &label);
-    int _tabBarHeight;
 
 public: // Setters & Getters
     inline QString tabText(int index) const
@@ -61,10 +60,6 @@ public: // Setters & Getters
     inline void setTabText(int index, const QString &text)
     {
         QTabWidget::setTabText(index, QString::number(index + 1) + ". " + text);
-    }
-    inline int tabBarHeight()
-    {
-        return _tabBarHeight;
     }
 };
 

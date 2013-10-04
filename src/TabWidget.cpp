@@ -31,7 +31,6 @@ namespace Qelly
 
 TabWidget::TabWidget(QWidget *parent) : QTabWidget(parent)
 {
-    _tabBarHeight = fontMetrics().height() * 1.5;
     setStyleSheet("QTabBar::tab { width: 150px; }");
     tabBar()->setAutoFillBackground(true);
     QPalette p;
