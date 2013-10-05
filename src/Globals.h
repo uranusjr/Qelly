@@ -113,12 +113,29 @@ public:
             uint isUrl          : 1;
             uint isNothing      : 1;
 
-            inline bool isHidden()
+            inline bool isHidden() const
             {
                 return (!bright
                         && ((fColorIndex == bColorIndex)
                             || (fColorIndex == 0 && bColorIndex == 9)));
             }
+            inline int foregroundColorCode() const
+            {
+                return reversed ? bColorIndex : fColorIndex;
+            }
+            inline int backgroundColorCode() const
+            {
+                return reversed ? fColorIndex : bColorIndex;
+            }
+            inline bool isForegroundBright() const
+            {
+                return !reversed && bright;
+            }
+            inline bool isBackgroundBright() const
+            {
+                return reversed && bright;
+            }
+
         } f;
     };
 

@@ -499,17 +499,17 @@ void View::updateBackground(int row, int startColumn, int endColumn)
     for (int x = startColumn + 1; x <= endColumn; x++)
     {
         now = cells[x].attr;
-        bool changed = now.f.bColorIndex != last.f.bColorIndex ||
-                       (now.f.reversed & now.f.bright)
-                            != (last.f.reversed & last.f.bright) ||
-                       x == endColumn;
+        bool changed =
+                   now.f.backgroundColorCode() != last.f.backgroundColorCode()
+                || now.f.isBackgroundBright() != last.f.isBackgroundBright()
+                || x == endColumn;
         if (changed)
         {
             d->painter->fillRect(
                         (x - length) * d->cellWidth, row * d->cellHeight,
                         length * d->cellWidth, d->cellHeight,
-                        d->prefs->bColor(last.f.bColorIndex,
-                                         last.f.reversed && last.f.bright));
+                        d->prefs->bColor(last.f.backgroundColorCode(),
+                                         last.f.isBackgroundBright()));
             length = 1;
             last = now;
         }

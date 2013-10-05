@@ -478,21 +478,25 @@ void ViewPrivate::drawSpecialSymbol(
         painter->fillRect(
                 xs[0], ys[6] - h * (code - 0x2580) / 8, w,
                 h * (code - 0x2580) / 8,
-                prefs->fColor(left.f.fColorIndex, left.f.bright));
+                prefs->fColor(left.f.foregroundColorCode(),
+                              left.f.isForegroundBright()));
         painter->fillRect(
                 xs[1], ys[7] - h * (code - 0x2580) / 8, w,
                 h * (code - 0x2580) / 8,
-                prefs->fColor(right.f.fColorIndex, right.f.bright));
+                prefs->fColor(right.f.foregroundColorCode(),
+                              right.f.isForegroundBright()));
         break;
     case 0x2589:    // ▉ Left seven eights block
     case 0x258a:    // ▊ Left three quarters block
     case 0x258b:    // ▋ Left five eighths block
         painter->fillRect(
                 xs[0], ys[0], w, h,
-                prefs->fColor(left.f.fColorIndex, left.f.bright));
+                prefs->fColor(left.f.foregroundColorCode(),
+                              left.f.isForegroundBright()));
         painter->fillRect(
                 xs[1], ys[1], w * (0x258c - code) / 8, h,
-                prefs->fColor(right.f.fColorIndex, right.f.bright));
+                prefs->fColor(right.f.foregroundColorCode(),
+                              right.f.isForegroundBright()));
         break;
     case 0x258c:    // ▌ Left half block
     case 0x258d:    // ▍ Left three eighths block
@@ -500,64 +504,65 @@ void ViewPrivate::drawSpecialSymbol(
     case 0x258f:    // ▏ Left one eighth block
         painter->fillRect(
                 xs[0], ys[0], w * (0x2590 - code) / 8, h,
-                prefs->fColor(left.f.fColorIndex, left.f.bright));
+                prefs->fColor(left.f.foregroundColorCode(),
+                              left.f.isForegroundBright()));
         break;
     case 0x25e2:    // ◢ Black lower right triangle
         //painter->setPen(Qt::SolidLine);
-        painter->setBrush(QBrush(prefs->fColor(left.f.fColorIndex,
-                                               left.f.bright),
+        painter->setBrush(QBrush(prefs->fColor(left.f.foregroundColorCode(),
+                                               left.f.isForegroundBright()),
                                  Qt::SolidPattern));
         points[0] = QPoint(xs[4], ys[4]);
         points[1] = QPoint(xs[7], ys[7]);
         points[2] = QPoint(xs[6], ys[6]);
         painter->drawPolygon(points, 3);
-        painter->setBrush(QBrush(prefs->fColor(right.f.fColorIndex,
-                                                     right.f.bright),
+        painter->setBrush(QBrush(prefs->fColor(right.f.foregroundColorCode(),
+                                               right.f.isForegroundBright()),
                                     Qt::SolidPattern));
         points[2] = QPoint(xs[8], ys[8]);
         points[3] = QPoint(xs[2], ys[2]);
         painter->drawPolygon(points, 4);
         break;
     case 0x25e3:    // ◣ Black lower left triangle
-        painter->setBrush(QBrush(prefs->fColor(left.f.fColorIndex,
-                                                     left.f.bright),
+        painter->setBrush(QBrush(prefs->fColor(left.f.foregroundColorCode(),
+                                               left.f.isForegroundBright()),
                                     Qt::SolidPattern));
         points[0] = QPoint(xs[4], ys[4]);
         points[1] = QPoint(xs[7], ys[7]);
         points[2] = QPoint(xs[6], ys[6]);
         points[3] = QPoint(xs[0], ys[0]);
         painter->drawPolygon(points, 4);
-        painter->setBrush(QBrush(prefs->fColor(right.f.fColorIndex,
-                                                     right.f.bright),
+        painter->setBrush(QBrush(prefs->fColor(right.f.foregroundColorCode(),
+                                               right.f.isForegroundBright()),
                                     Qt::SolidPattern));
         points[2] = QPoint(xs[8], ys[8]);
         painter->drawPolygon(points, 3);
         break;
     case 0x25e4:    // ◤ Black upper left triangle
-        painter->setBrush(QBrush(prefs->fColor(left.f.fColorIndex,
-                                                     left.f.bright),
+        painter->setBrush(QBrush(prefs->fColor(left.f.foregroundColorCode(),
+                                               left.f.isForegroundBright()),
                                     Qt::SolidPattern));
         points[0] = QPoint(xs[4], ys[4]);
         points[1] = QPoint(xs[1], ys[1]);
         points[2] = QPoint(xs[0], ys[0]);
         points[3] = QPoint(xs[6], ys[6]);
         painter->drawPolygon(points, 4);
-        painter->setBrush(QBrush(prefs->fColor(right.f.fColorIndex,
-                                                 right.f.bright),
+        painter->setBrush(QBrush(prefs->fColor(right.f.foregroundColorCode(),
+                                               right.f.isForegroundBright()),
                                 Qt::SolidPattern));
         points[2] = QPoint(xs[2], ys[2]);
         painter->drawPolygon(points, 3);
         break;
     case 0x25e5:    // ◥ Black upper right triangle
-        painter->setBrush(QBrush(prefs->fColor(left.f.fColorIndex,
-                                                 left.f.bright),
+        painter->setBrush(QBrush(prefs->fColor(left.f.foregroundColorCode(),
+                                               left.f.isForegroundBright()),
                                 Qt::SolidPattern));
         points[0] = QPoint(xs[4], ys[4]);
         points[1] = QPoint(xs[1], ys[1]);
         points[2] = QPoint(xs[0], ys[0]);
         painter->drawPolygon(points, 3);
-        painter->setBrush(QBrush(prefs->fColor(right.f.fColorIndex,
-                                                 right.f.bright),
+        painter->setBrush(QBrush(prefs->fColor(right.f.foregroundColorCode(),
+                                               right.f.isForegroundBright()),
                                 Qt::SolidPattern));
         points[2] = QPoint(xs[2], ys[2]);
         points[3] = QPoint(xs[8], ys[8]);
@@ -565,9 +570,11 @@ void ViewPrivate::drawSpecialSymbol(
         break;
     case 0x25fc:    // ◼ Black medium square    // paint as a full block
         painter->fillRect(xs[0], ys[0], w, h,
-                           prefs->fColor(left.f.fColorIndex, left.f.bright));
+                           prefs->fColor(left.f.foregroundColorCode(),
+                                         left.f.isForegroundBright()));
         painter->fillRect(xs[1], ys[1], w, h,
-                           prefs->fColor(right.f.fColorIndex, right.f.bright));
+                           prefs->fColor(right.f.foregroundColorCode(),
+                                         right.f.isForegroundBright()));
         break;
     default:
         break;
@@ -585,21 +592,25 @@ void ViewPrivate::drawDoubleColor(
 
     // Left side
     QPixmap lp(cellWidth, cellHeight);
-    lp.fill(prefs->bColor(left.f.bColorIndex));
+    lp.fill(prefs->bColor(left.f.backgroundColorCode(),
+                          left.f.isBackgroundBright()));
     painter->begin(&lp);
     painter->setRenderHint(QPainter::TextAntialiasing);
     painter->setFont(dblFont);
-    painter->setPen(prefs->fColor(left.f.fColorIndex, left.f.bright));
+    painter->setPen(prefs->fColor(left.f.foregroundColorCode(),
+                                  left.f.isForegroundBright()));
     painter->drawText(dblPadLeft, cellHeight - dblPadBottom, QChar(code));
     painter->end();
 
     // Right side
     QPixmap rp(cellWidth, cellHeight);
-    rp.fill(prefs->bColor(right.f.bColorIndex));
+    rp.fill(prefs->bColor(right.f.backgroundColorCode(),
+                          right.f.isBackgroundBright()));
     painter->begin(&rp);
     painter->setRenderHint(QPainter::TextAntialiasing);
     painter->setFont(dblFont);
-    painter->setPen(prefs->fColor(right.f.fColorIndex, right.f.bright));
+    painter->setPen(prefs->fColor(right.f.foregroundColorCode(),
+                                  right.f.isForegroundBright()));
     painter->drawText(dblPadLeft - cellWidth, cellHeight - dblPadBottom,
                        QChar(code));
     painter->end();
@@ -672,10 +683,9 @@ void ViewPrivate::paintBlink(QRect &r)
             const BBS::CellAttribute &a = cells[x].attr;
             if (!a.f.blinking)
                 continue;
-            int colorIndex = a.f.reversed ? a.f.fColorIndex : a.f.bColorIndex;
-            bool bright = a.f.reversed ? a.f.bright : false;
             painter->setPen(Qt::NoPen);
-            painter->setBrush(QBrush(prefs->bColor(colorIndex, bright)));
+            painter->setBrush(QBrush(prefs->bColor(a.f.backgroundColorCode(),
+                                                   a.f.isBackgroundBright())));
             painter->drawRect(x * cellWidth, y * cellHeight,
                               cellWidth, cellHeight);
         }
@@ -729,7 +739,6 @@ void ViewPrivate::updateText(int row, int column)
     case 0: // Not double byte
         painter->begin(backImage);
         painter->setRenderHint(QPainter::TextAntialiasing);
-        painter->setPen(prefs->fColor(attr.f.fColorIndex, attr.f.bright));
         code = cells[column].byte ? cells[column].byte : ' ';
         if (attr.f.isHidden() && prefs->showHiddenText())
         {
@@ -744,6 +753,8 @@ void ViewPrivate::updateText(int row, int column)
         else
         {
             // Draw normally
+            painter->setPen(prefs->fColor(attr.f.foregroundColorCode(),
+                                          attr.f.isForegroundBright()));
             painter->setFont(sglFont);
             painter->drawText(column * cellWidth + sglPadLeft,
                               (row + 1) * cellHeight - sglPadBott,
@@ -776,9 +787,10 @@ void ViewPrivate::updateText(int row, int column)
         }
         else
         {
-            if (fColorIndex(cells[column - 1].attr)
-                    != fColorIndex(cells[column].attr) ||
-                fBright(cells[column - 1].attr) != fBright(cells[column].attr))
+            if (cells[column - 1].attr.f.foregroundColorCode()
+                    != cells[column].attr.f.foregroundColorCode() ||
+                cells[column - 1].attr.f.isForegroundBright()
+                    != cells[column].attr.f.isForegroundBright())
             {
                 drawDoubleColor(code, row, column - 1,
                                  cells[column - 1].attr, cells[column].attr);
@@ -787,8 +799,8 @@ void ViewPrivate::updateText(int row, int column)
             {
                 painter->begin(backImage);
                 painter->setRenderHint(QPainter::TextAntialiasing);
-                painter->setPen(prefs->fColor(attr.f.fColorIndex,
-                                                    attr.f.bright));
+                painter->setPen(prefs->fColor(attr.f.foregroundColorCode(),
+                                              attr.f.isForegroundBright()));
                 if (attr.f.isHidden() && prefs->showHiddenText())
                 {
                     // Draw outline font for hidden text

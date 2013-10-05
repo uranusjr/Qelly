@@ -84,10 +84,6 @@ public:
     void clearSelection();
     void updateText(int row, int column);
 
-    inline int fColorIndex(BBS::CellAttribute &attribute) const;
-    inline int bColorIndex(BBS::CellAttribute &attribute) const;
-    inline int fBright(BBS::CellAttribute &attribute) const;
-    inline int bBright(BBS::CellAttribute &attribute) const;
     inline bool isAlphanumeric(uchar c) const;
     inline bool isSpecialSymbol(ushort code) const;
 
@@ -127,32 +123,6 @@ public:
     QString address;
     PreeditTextHolder *preeditHolder;
 };
-
-int ViewPrivate::fColorIndex(BBS::CellAttribute &attribute) const
-{
-    if (attribute.f.reversed)
-        return attribute.f.bColorIndex;
-    else
-        return attribute.f.fColorIndex;
-}
-
-int ViewPrivate::bColorIndex(BBS::CellAttribute &attribute) const
-{
-    if (attribute.f.reversed)
-        return attribute.f.fColorIndex;
-    else
-        return attribute.f.bColorIndex;
-}
-
-int ViewPrivate::fBright(BBS::CellAttribute &attribute) const
-{
-    return !attribute.f.reversed && attribute.f.bright;
-}
-
-int ViewPrivate::bBright(BBS::CellAttribute &attribute) const
-{
-    return attribute.f.reversed && attribute.f.bright;
-}
 
 bool ViewPrivate::isAlphanumeric(uchar c) const
 {
