@@ -15,13 +15,6 @@
     </message>
 </context>
 <context>
-    <name>MainWindow</name>
-    <message>
-        <source>Qelly - BBS Viewer</source>
-        <translation type="obsolete">Qelly - BBS 瀏覽器</translation>
-    </message>
-</context>
-<context>
     <name>PreferencesColor</name>
     <message>
         <location filename="PreferencesColor.ui" line="14"/>
@@ -167,28 +160,16 @@
         <translation>開啟多個網址</translation>
     </message>
     <message>
-        <location filename="View_p.cpp" line="342"/>
+        <location filename="View_p.cpp" line="348"/>
         <source>Copy</source>
         <comment>Mac</comment>
         <translation>拷貝</translation>
     </message>
     <message>
-        <location filename="View_p.cpp" line="344"/>
+        <location filename="View_p.cpp" line="350"/>
         <source>Copy</source>
         <comment>General</comment>
         <translation>複製</translation>
-    </message>
-    <message>
-        <source>Copy</source>
-        <translation type="obsolete">拷貝</translation>
-    </message>
-</context>
-<context>
-    <name>SharedMenuBar</name>
-    <message>
-        <source>File</source>
-        <translatorcomment>menu:file</translatorcomment>
-        <translation type="obsolete">檔案</translation>
     </message>
 </context>
 <context>
@@ -381,118 +362,125 @@
         <translation>編輯</translation>
     </message>
     <message>
-        <location filename="SharedMenuBar.cpp" line="55"/>
-        <source>Copy</source>
-        <translation>拷貝</translation>
-    </message>
-    <message>
-        <location filename="SharedMenuBar.cpp" line="57"/>
+        <location filename="SharedMenuBar.cpp" line="62"/>
         <source>Paste</source>
         <translation>貼上</translation>
     </message>
     <message>
-        <location filename="SharedMenuBar.cpp" line="59"/>
+        <location filename="SharedMenuBar.cpp" line="64"/>
         <source>Paste Wrap</source>
         <translation>貼上 (自動換行)</translation>
     </message>
     <message>
-        <location filename="SharedMenuBar.cpp" line="62"/>
-        <location filename="SharedMenuBar.cpp" line="65"/>
+        <location filename="SharedMenuBar.cpp" line="67"/>
+        <location filename="SharedMenuBar.cpp" line="70"/>
         <source>Paste Color</source>
         <translation>貼上 (自動上色)</translation>
     </message>
     <message>
-        <location filename="SharedMenuBar.cpp" line="67"/>
+        <location filename="SharedMenuBar.cpp" line="72"/>
         <source>Select All</source>
         <translation>全選</translation>
     </message>
     <message>
-        <location filename="SharedMenuBar.cpp" line="70"/>
+        <location filename="SharedMenuBar.cpp" line="75"/>
         <source>Emoticons...</source>
         <translation>表情符號…</translation>
     </message>
     <message>
-        <location filename="SharedMenuBar.cpp" line="74"/>
+        <location filename="SharedMenuBar.cpp" line="79"/>
         <source>Customize Toolbar...</source>
         <translation>自訂工具列…</translation>
     </message>
     <message>
-        <location filename="SharedMenuBar.cpp" line="77"/>
-        <source>Preferences...</source>
-        <translation>偏好設定…</translation>
+        <location filename="SharedMenuBar.cpp" line="56"/>
+        <source>Copy</source>
+        <comment>Mac</comment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="SharedMenuBar.cpp" line="80"/>
+        <location filename="SharedMenuBar.cpp" line="59"/>
+        <source>Copy</source>
+        <comment>General</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="SharedMenuBar.cpp" line="82"/>
+        <source>Preferences</source>
+        <translation type="unfinished">偏好設定</translation>
+    </message>
+    <message>
+        <location filename="SharedMenuBar.cpp" line="85"/>
         <source>View</source>
         <translation>檢視</translation>
     </message>
     <message>
-        <location filename="SharedMenuBar.cpp" line="81"/>
+        <location filename="SharedMenuBar.cpp" line="86"/>
         <source>Anti-Idle</source>
         <translation>防閒置</translation>
     </message>
     <message>
-        <location filename="SharedMenuBar.cpp" line="87"/>
+        <location filename="SharedMenuBar.cpp" line="92"/>
         <source>Show Hidden Text</source>
         <translation>顯示隱藏文字</translation>
     </message>
     <message>
-        <location filename="SharedMenuBar.cpp" line="94"/>
+        <location filename="SharedMenuBar.cpp" line="99"/>
         <source>Sites</source>
         <translation>站台</translation>
     </message>
     <message>
-        <location filename="SharedMenuBar.cpp" line="95"/>
+        <location filename="SharedMenuBar.cpp" line="100"/>
         <source>Edit Sites...</source>
         <translation>編輯站台…</translation>
     </message>
     <message>
-        <location filename="SharedMenuBar.cpp" line="97"/>
+        <location filename="SharedMenuBar.cpp" line="102"/>
         <source>Add This Site</source>
         <translation>加入此站台</translation>
     </message>
     <message>
-        <location filename="SharedMenuBar.cpp" line="100"/>
+        <location filename="SharedMenuBar.cpp" line="105"/>
         <source>Window</source>
         <translation>視窗</translation>
     </message>
     <message>
-        <location filename="SharedMenuBar.cpp" line="101"/>
+        <location filename="SharedMenuBar.cpp" line="106"/>
         <source>Minimize</source>
         <translation>最小化</translation>
     </message>
     <message>
-        <location filename="SharedMenuBar.cpp" line="103"/>
+        <location filename="SharedMenuBar.cpp" line="108"/>
         <source>Select Next Tab</source>
         <translation>選擇下一個頁籤</translation>
     </message>
     <message>
-        <location filename="SharedMenuBar.cpp" line="105"/>
+        <location filename="SharedMenuBar.cpp" line="110"/>
         <source>Select Previous Tab</source>
         <translation>選擇上一個頁籤</translation>
     </message>
     <message>
-        <location filename="SharedMenuBar.cpp" line="109"/>
+        <location filename="SharedMenuBar.cpp" line="114"/>
         <source>Bring All to Front</source>
         <translation>移到最前</translation>
     </message>
     <message>
-        <location filename="SharedMenuBar.cpp" line="113"/>
+        <location filename="SharedMenuBar.cpp" line="118"/>
         <source>Help</source>
         <translation>說明</translation>
     </message>
     <message>
-        <location filename="SharedMenuBar.cpp" line="114"/>
+        <location filename="SharedMenuBar.cpp" line="119"/>
         <source>About...</source>
         <translation>關於…</translation>
     </message>
     <message>
-        <location filename="SharedMenuBar.cpp" line="115"/>
+        <location filename="SharedMenuBar.cpp" line="120"/>
         <source>Acknowledgements...</source>
         <translation>銘謝…</translation>
     </message>
     <message>
-        <location filename="SharedMenuBar.cpp" line="117"/>
+        <location filename="SharedMenuBar.cpp" line="122"/>
         <source>Visit Project Home...</source>
         <translation>前往專案官網…</translation>
     </message>
