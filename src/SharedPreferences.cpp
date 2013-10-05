@@ -443,7 +443,7 @@ QColor SharedPreferences::fColor(int index, bool bright) const
     case 7:
         return bright ? colorWhiteBright() : colorWhite();
     default:
-        return bright ? colorWhiteBright() : colorWhite();
+        return backgroundColor();
     }
 }
 
