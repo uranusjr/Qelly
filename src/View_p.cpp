@@ -301,31 +301,37 @@ void ViewPrivate::addActionsToContextMenu(QMenu *menu)
                      menu);
     }
     // -> Pixiv illust (starts with "id=" and follows with 1-9 digits)
-    else if (QRegExp("id=\\d{1,9}").exactMatch(shortUrl))
+    if (QRegExp("id=\\d{1,9}").exactMatch(shortUrl))
     {
         QString url = QString("http://www.pixiv.net/member_illust.php?"
                               "mode=medium&illust_%1").arg(shortUrl);
         addUrlToMenu(url, menu);
     }
     // -> Pixiv member (starts with "mid=" and follows with 1-8 digits)
-    else if (QRegExp("mid=\\d{1,8}").exactMatch(shortUrl))
+    if (QRegExp("mid=\\d{1,8}").exactMatch(shortUrl))
     {
         QString url = QString("http://www.pixiv.net/member.php?"
                               "id=_%1").arg(shortUrl.mid(4));
         addUrlToMenu(url, menu);
     }
+    // -> goo.gl (4 or more alphanumeric characters)
+    if (QRegExp("[A-Za-z0-9]{4,}").exactMatch(shortUrl))
+    {
+        QString url = QString("http://goo.gl/%1").arg(shortUrl);
+        addUrlToMenu(url, menu);
+    }
     // -> ppt.cc (4 characters)
-    else if (shortUrl.size() == 4)
+    if (shortUrl.size() == 4)
     {
         addUrlToMenu(QString("http://ppt.cc/%1").arg(shortUrl), menu);
     }
     // -> 0rz.tw (5 characters)
-    else if (shortUrl.size() == 5)
+    if (shortUrl.size() == 5)
     {
         addUrlToMenu(QString("http://0rz.tw/%1").arg(shortUrl), menu);
     }
     // -> TinyURL (7 characters)
-    else if (shortUrl.size() == 7)
+    if (shortUrl.size() == 7)
     {
         addUrlToMenu(QString("http://tinyurl.com/%1").arg(shortUrl), menu);
     }
