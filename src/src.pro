@@ -44,6 +44,7 @@ CONFIG(static) {
 }
 
 TRANSLATIONS += Qelly_zh_tw.ts
+include("translations.pri")
 RC_FILE = icons/Qelly.rc        # Windows
 ICON = icons/qower-icon.icns    # OS X
 
