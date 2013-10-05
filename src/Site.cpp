@@ -101,7 +101,7 @@ Site::Site(const QString &form, const QString &name, QObject *parent) :
 
 Site *Site::fromProperties(const QVariantMap &properties, QObject *parent)
 {
-    Site *site = new Site(properties["full_form"].toString(),
+    Site *site = new Site(properties["fullForm"].toString(),
                           properties["name"].toString(), parent);
     for (QVariantMap::const_iterator i = properties.constBegin();
          i != properties.constEnd(); i++)
