@@ -468,7 +468,7 @@ QColor SharedPreferences::bColor(int index, bool bright) const
     case 7:
         return bright ? colorWhiteBright() : colorWhite();
     default:
-        return bright ? colorBlackBright() : colorBlack();
+        return backgroundColor();
     }
 }
 

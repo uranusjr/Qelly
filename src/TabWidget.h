@@ -36,6 +36,7 @@ public:
     explicit TabWidget(QWidget *parent = 0);
     int addTab(QWidget *widget, const QIcon &icon, const QString &label);
     int addTab(QWidget *widget, const QString &label);
+    void updateBackground();
 
 public slots:
     void closeTab(int index);

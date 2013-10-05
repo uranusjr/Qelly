@@ -21,6 +21,7 @@
 #include <QShortcut>
 #include <QSignalMapper>
 #include <QTabBar>
+#include "SharedPreferences.h"
 #include "View.h"
 
 namespace UJ
@@ -33,14 +34,12 @@ TabWidget::TabWidget(QWidget *parent) : QTabWidget(parent)
 {
     setStyleSheet("QTabBar::tab { width: 150px; }");
     tabBar()->setAutoFillBackground(true);
-    QPalette p;
-    p.setBrush(QPalette::Background, QBrush(Qt::black));
-    setPalette(p);
     setAutoFillBackground(true);
     setDocumentMode(true);
     setTabsClosable(true);
     setMovable(true);
     setUsesScrollButtons(true);
+    updateBackground();
 
     tabBar()->installEventFilter(this);
     connect(tabBar(), SIGNAL(tabMoved(int,int)), SLOT(onTabMoved(int,int)));
@@ -71,6 +70,14 @@ int TabWidget::addTab(QWidget *widget, const QString &label)
     int result = QTabWidget::addTab(widget, label);
     postAddTab(result, label);
     return result;
+}
+
+void TabWidget::updateBackground()
+{
+    QPalette p;
+    p.setBrush(QPalette::Background,
+               SharedPreferences::sharedInstance()->backgroundColor());
+    setPalette(p);
 }
 
 void TabWidget::closeTab(int index)

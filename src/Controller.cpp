@@ -443,17 +443,20 @@ void Controller::timerEvent(QTimerEvent *e)
 
 void Controller::updateAll()
 {
-    View *view = currentView();
-    if (!view)
-        return;
-    view->updateCellSize();
-
-    Connection::Terminal *terminal = view->terminal();
-    if(!terminal)
-        return;
-    terminal->setDirtyAll();
-    view->updateBackImage();
-    view->update();
+    _window->tabs()->updateBackground();
+    for (int i = 0; i < _window->tabs()->count(); i++)
+    {
+        View *view = viewInTab(i);
+        if (!view)
+            continue;
+        view->updateCellSize();
+        Connection::Terminal *terminal = view->terminal();
+        if(!terminal || !terminal->isConnected())
+            continue;
+        terminal->setDirtyAll();
+        view->updateBackImage();
+        view->update();
+    }
 }
 
 void Controller::minimize()
