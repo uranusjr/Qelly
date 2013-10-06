@@ -48,6 +48,7 @@ public:
 protected:
     virtual void closeEvent(QCloseEvent *e);
     virtual bool event(QEvent *e);
+    virtual bool eventFilter(QObject *obj, QEvent *e);
 
 signals:
     void windowShouldClose();

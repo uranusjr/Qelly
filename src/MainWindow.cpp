@@ -78,6 +78,7 @@ void MainWindow::buildToolBar()
 
     QAction *action;
     _toolbar = addToolBar(tr("General"));
+    _toolbar->installEventFilter(this);
     _toolbar->addAction(QIcon(":/images/bookmarks-organize.png"),
                         tr("Sites"), this, SIGNAL(siteManageShouldOpen()));
     _toolbar->addAction(QIcon(":/images/view-refresh.png"),
@@ -104,6 +105,7 @@ void MainWindow::buildToolBar()
     action->connect(_prefs, SIGNAL(showHiddenTextChanged(bool)),
                     SLOT(setChecked(bool)));
     setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+    _toolbar->setVisible(_prefs->isToolbarVisible());
 }
 
 void MainWindow::closeEvent(QCloseEvent *e)
@@ -132,6 +134,24 @@ bool MainWindow::event(QEvent *e)
         break;
     }
     return QMainWindow::event(e);
+}
+
+bool MainWindow::eventFilter(QObject *obj, QEvent *e)
+{
+    if (obj == _toolbar)
+    {
+        switch (e->type())
+        {
+        case QEvent::Hide:
+            _prefs->setToolbarVisible(false);
+            break;
+        case QEvent::Show:
+            _prefs->setToolbarVisible(true);
+            break;
+        }
+
+    }
+    return false;
 }
 
 }   // namespace Qelly

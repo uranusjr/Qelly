@@ -556,6 +556,16 @@ void SharedPreferences::setWarnOnClose(bool value)
     _settings->setValue("warn on close", value);
 }
 
+bool SharedPreferences::isToolbarVisible()
+{
+    return _settings->value("toolbar visible", true).toBool();
+}
+
+void SharedPreferences::setToolbarVisible(bool value)
+{
+    _settings->setValue("toolbar visible", value);
+}
+
 }   // namespace Qelly
 
 }   // namespace UJ

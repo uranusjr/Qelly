@@ -74,6 +74,8 @@ public:
     void storeConnections(const QList<Connection::Site *> &sites);
     bool warnOnClose();
     void setWarnOnClose(bool value);
+    bool isToolbarVisible();
+    void setToolbarVisible(bool value);
 
     // Site defaults
     BBS::Encoding defaultEncoding() const;
