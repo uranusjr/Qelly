@@ -38,15 +38,21 @@ inline static const QDir &applicationPath()
 
 QString absoluteDataStoragePath(const QString &filename)
 {
+    QString dirPath;
     if (isPortableMode())
-        return applicationPath().filePath(filename);
-
-    QString dirPath =
+    {
+        dirPath = applicationPath().filePath("data");
+    }
+    else
+    {
+        dirPath =
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
             QStandardPaths::writableLocation(QStandardPaths::DataLocation);
 #else
             QDesktopServices::storageLocation(QDesktopServices::DataLocation);
 #endif
+    }
+
     QDir dir(dirPath);
     if (!dir.exists())
         dir.mkpath(".");
