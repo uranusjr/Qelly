@@ -122,14 +122,19 @@ bool MainWindow::event(QEvent *e)
     case QEvent::Move:
         _prefs->setWindowGeometry(saveGeometry());
         break;
+#ifndef Q_OS_MAC
     case QEvent::WindowStateChange:
     {
         // When return to normal state from maximized state, automatically
-        // adapt the recommended size.
+        // adapt the recommended size. We don't do this on for Mac because OS X
+        // windows don't have a "maximized" state anyway, and the auto-resizing
+        // feature doesn't work well with `setUnifiedTitleAndToolBarOnMac`
         QWindowStateChangeEvent *ce = static_cast<QWindowStateChangeEvent *>(e);
         if ((ce->oldState() & Qt::WindowMaximized) && !isMaximized())
             resize(sizeHint());
+        break;
     }
+#endif
     default:
         break;
     }
