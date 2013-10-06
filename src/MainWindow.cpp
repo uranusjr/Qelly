@@ -148,6 +148,8 @@ bool MainWindow::eventFilter(QObject *obj, QEvent *e)
         case QEvent::Show:
             _prefs->setToolbarVisible(true);
             break;
+        default:
+            break;
         }
 
     }
