@@ -33,8 +33,8 @@ namespace Qelly
 
 SharedPreferences::SharedPreferences(QObject *parent) : QObject(parent)
 {
-    _settings = new QSettings(QSettings::IniFormat, QSettings::UserScope,
-                              "uranusjr.org", "qelly", this);
+    _settings = new QSettings(absoluteDataStoragePath("qelly.ini"),
+                              QSettings::IniFormat, this);
 }
 
 SharedPreferences *SharedPreferences::sharedInstance()

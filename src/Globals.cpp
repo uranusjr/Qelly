@@ -17,6 +17,7 @@
  *****************************************************************************/
 
 #include "Globals.h"
+#include <QCoreApplication>
 #include <QDir>
 #include <QFile>
 #include <QTextStream>
@@ -29,8 +30,17 @@
 namespace UJ
 {
 
+inline static const QDir &applicationPath()
+{
+    static QDir path(QCoreApplication::applicationDirPath());
+    return path;
+}
+
 QString absoluteDataStoragePath(const QString &filename)
 {
+    if (isPortableMode())
+        return applicationPath().filePath(filename);
+
     QString dirPath =
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
             QStandardPaths::writableLocation(QStandardPaths::DataLocation);
@@ -51,6 +61,17 @@ QByteArray fromFile(const QString &filename)
     QByteArray bytes = f.readAll();
     f.close();
     return bytes;
+}
+
+bool isPortableMode()
+{
+    // Making portableMode static means that the PORTABLE file check occurs only
+    // once, when this function is being accessed the first time. This avoids
+    // tricky situations in which the user might create/delete the check-file
+    // while the program is running, since the mode will not change unless the
+    // user restarts the program.
+    static bool portableMode = applicationPath().exists("PORTABLE");
+    return portableMode;
 }
 
 }   // namespace UJ

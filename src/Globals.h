@@ -24,6 +24,7 @@
 namespace UJ
 {
 
+bool isPortableMode();
 QString absoluteDataStoragePath(const QString &filename);
 QByteArray fromFile(const QString &filename);
 
