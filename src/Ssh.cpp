@@ -52,7 +52,7 @@ bool Ssh::connectTo(const QString &address, qint16 port)
     setProcessing(true);
 
     _socket->setReadChannel(QProcess::StandardOutput);
-    _socket->setReadChannelMode(QProcess::MergedChannels);
+    _socket->setProcessChannelMode(QProcess::MergedChannels);
 
     port = port < 0 ? DefaultPort : port;
     QStringList args;
