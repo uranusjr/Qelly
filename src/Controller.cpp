@@ -125,21 +125,42 @@ void Controller::connectWith(const QString &address)
 
 void Controller::connectWith(Connection::Site *site)
 {
+    SharedPreferences *prefs = SharedPreferences::sharedInstance();
+    Connection::AbstractConnection *connection = 0;
+    switch (site->type())
+    {
+    case Connection::TypeSsh:
+        if (!prefs->isSshEnabled())
+        {
+            QString title = tr("SSH Not Available");
+            QString msg = tr("To enable SSH connections, you need to enable "
+                             "SSH, and set a correct path to an external SSH "
+                             "client executable.");
+            QMessageBox box(QMessageBox::Question, title, msg,
+                            QMessageBox::Cancel);
+            QPushButton *open = box.addButton("Open preferences",
+                                              QMessageBox::YesRole);
+            box.exec();
+            if (reinterpret_cast<QPushButton *>(box.clickedButton()) == open)
+                showPreferencesWindow();
+            else
+                focusAddressField();
+            break;
+        }
+        connection = new Connection::Ssh(prefs->sshClientPath());
+        break;
+    default:
+        connection = new Connection::Telnet();
+        break;
+    }
+
+    if (!connection)
+        return;
     if (currentView()->isConnected())
         addTab();
     _window->tabs()->setTabText(_window->tabs()->currentIndex(), site->name());
     View *view = currentView();
     Connection::Terminal *terminal = new Connection::Terminal(view);
-    Connection::AbstractConnection *connection;
-    switch (site->type())
-    {
-    case Connection::TypeSsh:
-        connection = new Connection::Ssh(terminal);
-        break;
-    default:
-        connection = new Connection::Telnet(terminal);
-        break;
-    }
     terminal->setConnection(connection);
     view->setTerminal(terminal);
     view->setAddress(site->fullForm());
@@ -151,7 +172,9 @@ void Controller::connectWith(Connection::Site *site)
 
 void Controller::focusAddressField()
 {
-    _window->address()->setFocus(Qt::ShortcutFocusReason);
+    QLineEdit *address = _window->address();
+    address->setFocus(Qt::ShortcutFocusReason);
+    address->selectAll();
 }
 
 void Controller::addTab()

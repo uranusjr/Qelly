@@ -33,7 +33,7 @@ class Ssh : public AbstractConnection
     Q_OBJECT
 
 public:
-    explicit Ssh(QObject *parent = 0);
+    explicit Ssh(const QString &sshPath, QObject *parent = 0);
     virtual ~Ssh();
     static const qint16 DefaultPort = 22;
 
@@ -56,6 +56,7 @@ private slots:
 
 private:
     QProcess *_socket;
+    QString _sshPath;
 };
 
 }   // namespace Connection

@@ -64,6 +64,8 @@ public:
     void setUseSystemBeep(bool use);
     QString customBeepFile() const;
     void setCustomBeepFile(const QString &filename);
+    bool isSshEnabled() const;
+    void setSshEnabled(bool value);
     QString sshClientPath() const;
     void setSshClientPath(const QString &path);
     bool isAntiIdleActive() const;

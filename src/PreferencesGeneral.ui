@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>General</string>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout" stretch="1,0,0,0,0,2">
+  <layout class="QVBoxLayout" name="verticalLayout" stretch="1,0,0,0,2">
    <item>
     <spacer name="verticalSpacer">
      <property name="orientation">
@@ -28,34 +28,38 @@
     </spacer>
    </item>
    <item>
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>SSH client path</string>
+    <widget class="QGroupBox" name="sshClientSettings">
+     <property name="title">
+      <string>SSH Client</string>
      </property>
-     <property name="scaledContents">
-      <bool>false</bool>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
-     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_2">
+      <item>
+       <widget class="QCheckBox" name="sshClientEnabled">
+        <property name="text">
+         <string>Enable SSH (needs external client)</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QLineEdit" name="sshClientPath">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="sshClientPathBrowse">
+          <property name="text">
+           <string>Browse...</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
     </widget>
-   </item>
-   <item>
-    <layout class="QHBoxLayout" name="horizontalLayout">
-     <property name="sizeConstraint">
-      <enum>QLayout::SetMinimumSize</enum>
-     </property>
-     <item>
-      <widget class="QLineEdit" name="sshClientPath"/>
-     </item>
-     <item>
-      <widget class="QPushButton" name="sshClientPathBrowse">
-       <property name="text">
-        <string>Browse…</string>
-       </property>
-      </widget>
-     </item>
-    </layout>
    </item>
    <item>
     <widget class="QWidget" name="widget" native="true"/>

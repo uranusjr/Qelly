@@ -16,6 +16,7 @@
 #include "PreferencesGeneral.h"
 #include "ui_PreferencesGeneral.h"
 #include <QFileDialog>
+#include <QFileInfo>
 #include <QMessageBox>
 #include "SharedPreferences.h"
 
@@ -30,7 +31,9 @@ PreferencesGeneral::PreferencesGeneral(QWidget *parent) : QWidget(parent)
     _ui = new Ui::PreferencesGeneral;
     _ui->setupUi(this);
     connect(_ui->sshClientPathBrowse, SIGNAL(clicked()),
-            this, SLOT(browseSshClientPath()));
+            SLOT(browseSshClientPath()));
+    connect(_ui->sshClientEnabled, SIGNAL(toggled(bool)),
+            SLOT(setSshSettingsVisible(bool)));
 
     initialize();
 }
@@ -43,7 +46,9 @@ PreferencesGeneral::~PreferencesGeneral()
 void PreferencesGeneral::initialize()
 {
     _visited = true;
-    SharedPreferences *prefs = SharedPreferences::sharedInstance();
+    SharedPreferences *prefs = SharedPreferences::sharedInstance();\
+    setSshSettingsVisible(prefs->isSshEnabled());
+    _ui->sshClientEnabled->setChecked(prefs->isSshEnabled());
     _ui->sshClientPath->setText(prefs->sshClientPath());
     _ui->confirmCloseChecker->setChecked(prefs->warnOnClose());
     _ui->restoreOnStartupChecker->setChecked(
@@ -63,15 +68,32 @@ void PreferencesGeneral::accept()
     prefs->setRestoreConnectionsOnStartup(
                 _ui->restoreOnStartupChecker->isChecked());
     prefs->setWarnOnClose(_ui->confirmCloseChecker->isChecked());
-    try
+
+    // Set up SSH configuration
+    // If the SSH is set to enabled by the user, check whether a correct SSH
+    // executable path is set. If the path provided is not valid, ignore the
+    // path and disable SSH. If a valid path is provided, set the path in
+    // prefs.
+    bool isSshEnabled = _ui->sshClientEnabled->isChecked();
+    if (isSshEnabled)
     {
-        prefs->setSshClientPath(_ui->sshClientPath->text());
+        QString path = _ui->sshClientPath->text();
+        if (QFileInfo(path).isExecutable())
+        {
+            prefs->setSshClientPath(path);
+        }
+        else
+        {
+            isSshEnabled = false;
+            QString title = tr("SSH Executable Not Valid");
+            QString msg = tr("To gain SSH functionality, you need to provide a "
+                             "valid path to an external SSH client. SSH will "
+                             "be disabled.");
+            QMessageBox(QMessageBox::Warning, title, msg).exec();
+        }
     }
-    catch (const char *errorMessage)
-    {
-        QString msg = tr("SSH will not be available until it is corrected.");
-        QMessageBox(QMessageBox::Warning, errorMessage, msg).exec();
-    }
+    prefs->setSshEnabled(isSshEnabled);
+
     _visited = false;
 }
 
@@ -87,6 +109,12 @@ void PreferencesGeneral::browseSshClientPath()
                                                 _ui->sshClientPath->text());
     if (!path.isNull())
         _ui->sshClientPath->setText(path);
+}
+
+void PreferencesGeneral::setSshSettingsVisible(bool value)
+{
+    _ui->sshClientPath->setVisible(value);
+    _ui->sshClientPathBrowse->setVisible(value);
 }
 
 }   // namespace Qelly

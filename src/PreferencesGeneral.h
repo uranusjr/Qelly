@@ -45,6 +45,7 @@ public slots:
 
 private slots:
     void browseSshClientPath();
+    void setSshSettingsVisible(bool value);
 
 private:
     Ui::PreferencesGeneral *_ui;

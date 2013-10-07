@@ -119,6 +119,16 @@ void SharedPreferences::setCustomBeepFile(const QString &filename)
     _settings->setValue("custom beep file", filename);
 }
 
+bool SharedPreferences::isSshEnabled() const
+{
+    return _settings->value("ssh enabled", false).toBool();
+}
+
+void SharedPreferences::setSshEnabled(bool value)
+{
+    _settings->setValue("ssh enabled", value);
+}
+
 BBS::Encoding UJ::Qelly::SharedPreferences::defaultEncoding() const
 {
     return BBS::Encoding(_settings->value("dafault encoding",
@@ -497,13 +507,9 @@ void SharedPreferences::setSshClientPath(const QString &path)
 {
     QFileInfo info = QFileInfo(path);
     if (info.exists() && info.isExecutable())
-    {
         _settings->setValue("ssh client path", path);
-    }
     else
-    {
         throw "Invalid SSH Client Path";
-    }
 }
 
 bool SharedPreferences::isAntiIdleActive() const

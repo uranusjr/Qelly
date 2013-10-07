@@ -18,7 +18,6 @@
 
 #include "Ssh.h"
 #include <QProcess>
-#include "SharedPreferences.h"
 #include "Site.h"
 
 namespace UJ
@@ -27,10 +26,9 @@ namespace UJ
 namespace Connection
 {
 
-Ssh::Ssh(QObject *parent) : AbstractConnection(parent)
+Ssh::Ssh(const QString &sshPath, QObject *parent) :
+    AbstractConnection(parent), _socket(new QProcess(this)), _sshPath(sshPath)
 {
-    _socket = new QProcess(this);
-
     connect(this, SIGNAL(receivedBytes(QByteArray)),
             this, SLOT(processBytes(QByteArray)));
     connect(_socket, SIGNAL(started()), this, SLOT(onProcessStarted()));
@@ -79,9 +77,7 @@ bool Ssh::connectTo(const QString &address, qint16 port)
              << address;
 #endif
 
-    _socket->start(Qelly::SharedPreferences::sharedInstance()->sshClientPath(),
-                   args);
-
+    _socket->start(_sshPath, args);
     return true;
 }
 
