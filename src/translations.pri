@@ -25,7 +25,7 @@ updateqm.input = TRANSLATIONS
 updateqm.output = ${QMAKE_FILE_PATH}/${QMAKE_FILE_BASE}.qm
 # This following one is the main building command. -qm outputs the qm file to
 # a specified path
-updateqm.commands = $$QMAKE_LRELEASE ${QMAKE_FILE_IN} -qm \$(DESTDIR)/${QMAKE_FILE_BASE}.qm
+updateqm.commands = $$QMAKE_LRELEASE ${QMAKE_FILE_IN} -qm $${DESTDIR}/${QMAKE_FILE_BASE}.qm
 updateqm.CONFIG += no_link
 
 # Use the custom tool and specify that make_all needs to make this one
