@@ -21,6 +21,8 @@
 
 #include <QObject>
 
+#define ANSI_COLOR_MIME ("application/x-ansi-colored-text-data")
+
 namespace UJ
 {
 
@@ -145,7 +147,6 @@ public:
         uchar byte;
         CellAttribute attr;
     };
-
 };
 
 }   // namespace UJ

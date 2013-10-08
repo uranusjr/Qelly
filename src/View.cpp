@@ -717,7 +717,7 @@ void View::copy()
         data.append(cell.attr.f.underlined);
         data.append(cell.attr.f.reversed);
     }
-    mime->setData("application/x-ansi-colored-text-data", data);
+    mime->setData(ANSI_COLOR_MIME, data);
 
     QApplication::clipboard()->setMimeData(mime);
 }

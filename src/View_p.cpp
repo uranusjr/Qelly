@@ -18,7 +18,10 @@
 
 #include "View_p.h"
 #include <QAction>
+#include <QApplication>
+#include <QClipboard>
 #include <QMenu>
+#include <QMimeData>
 #include <QPainter>
 #include <QRegExp>
 #include <QTimer>
@@ -337,6 +340,7 @@ void ViewPrivate::addActionsToContextMenu(QMenu *menu)
     }
 
     // C. Other menu entries
+    menu->addSeparator();
     if (!s.isEmpty())
     {
         QAction *action = menu->addAction("Google", q, SLOT(google()));
@@ -344,12 +348,18 @@ void ViewPrivate::addActionsToContextMenu(QMenu *menu)
 
         // copy() calculates the selection by itself, so we don't need to
         // provide user data here
+        menu->addSeparator();
 #ifdef Q_OS_MAC
         menu->addAction(QObject::tr("Copy", "Mac"), q, SLOT(copy()));
 #else
         menu->addAction(QObject::tr("Copy", "General"), q, SLOT(copy()));
 #endif
     }
+    const QMimeData *mime = QApplication::clipboard()->mimeData();
+    if (mime->hasText())
+        menu->addAction(QObject::tr("Paste"), q, SLOT(paste()));
+    if (mime->hasFormat(ANSI_COLOR_MIME))
+        menu->addAction(QObject::tr("Paste Color"), q, SLOT(pasteColor()));
 }
 
 void ViewPrivate::handleArrowKey(int key)
