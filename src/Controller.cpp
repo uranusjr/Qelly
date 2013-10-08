@@ -315,7 +315,7 @@ void Controller::reconnect()
     if (!terminal)
         return;
     Connection::AbstractConnection *connection = terminal->connection();
-    if (!connection || !connection->isConnected())
+    if (!connection)
         return;
     connection->reconnect();
 }
