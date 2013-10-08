@@ -14,8 +14,10 @@
  *****************************************************************************/
 
 #include "PreferencesWindow.h"
+#include <QDialogButtonBox>
 #include <QIcon>
 #include <QMetaObject>
+#include <QPushButton>
 #include <QTableWidget>
 #include <QxtSignalGroup>
 #include "PreferencesColor.h"
@@ -29,11 +31,13 @@ namespace UJ
 namespace Qelly
 {
 
-PreferencesWindow::PreferencesWindow(QWidget *parent) : QxtConfigDialog(parent)
+PreferencesWindow::PreferencesWindow(QWidget *parent) :
+    QxtConfigDialog(parent), _displayPreferenceGroup(new QxtSignalGroup(this))
 {
     setWindowTitle(tr("Preferences"));
-    configWidget()->setIconSize(QSize(20, 20));
-    QxtSignalGroup *displayPreferenceGroup = new QxtSignalGroup(this);
+    configWidget()->setIconSize(QSize(30, 30));
+    connect(dialogButtonBox()->addButton(QDialogButtonBox::Apply),
+            SIGNAL(clicked()), SLOT(apply()));
 
     PreferencesGeneral *general = new PreferencesGeneral(this);
     PreferencesFont *font = new PreferencesFont(this);
@@ -47,14 +51,14 @@ PreferencesWindow::PreferencesWindow(QWidget *parent) : QxtConfigDialog(parent)
             tr("Color"));
 
     // If anyone of the pages has been updated, trigger redraw
-    displayPreferenceGroup->addSignal(font, SIGNAL(preferencesUpdated()));
-    displayPreferenceGroup->addSignal(color, SIGNAL(preferencesUpdated()));
-    connect(displayPreferenceGroup, SIGNAL(firstSignalReceived()),
+    _displayPreferenceGroup->addSignal(font, SIGNAL(preferencesUpdated()));
+    _displayPreferenceGroup->addSignal(color, SIGNAL(preferencesUpdated()));
+    connect(_displayPreferenceGroup, SIGNAL(firstSignalReceived()),
             SharedPreferences::sharedInstance(), SLOT(sync()));
-    connect(displayPreferenceGroup, SIGNAL(firstSignalReceived()),
+    connect(_displayPreferenceGroup, SIGNAL(firstSignalReceived()),
             SIGNAL(displayPreferenceChanged()), Qt::QueuedConnection);
-    connect(displayPreferenceGroup, SIGNAL(firstSignalReceived()),
-            displayPreferenceGroup, SLOT(reset()));
+    connect(_displayPreferenceGroup, SIGNAL(firstSignalReceived()),
+            _displayPreferenceGroup, SLOT(reset()));
 
     setFixedWidth(550);
 }
@@ -62,6 +66,12 @@ PreferencesWindow::PreferencesWindow(QWidget *parent) : QxtConfigDialog(parent)
 void PreferencesWindow::addPage(QWidget *page, const QIcon &icon, QString title)
 {
     configWidget()->addPage(page, icon, title);
+}
+
+void PreferencesWindow::apply()
+{
+    configWidget()->accept();
+    _displayPreferenceGroup->reset();
 }
 
 }   // namespace Qelly

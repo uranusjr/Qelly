@@ -17,6 +17,7 @@
 #define PREFERENCESWINDOW_H
 
 #include <QxtConfigDialog>
+class QxtSignalGroup;
 
 namespace UJ
 {
@@ -32,8 +33,14 @@ public:
     explicit PreferencesWindow(QWidget *parent = 0);
     void addPage(QWidget *page, const QIcon &icon, QString title);
 
+private slots:
+    void apply();
+
 signals:
     void displayPreferenceChanged();
+
+private:
+    QxtSignalGroup *_displayPreferenceGroup;
 };
 
 }   // namespace Qelly
