@@ -70,6 +70,12 @@
        <layout class="QHBoxLayout" name="horizontalLayout_2">
         <item>
          <widget class="QLineEdit" name="fontRomanName">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
           <property name="cursor">
            <cursorShape>ArrowCursor</cursorShape>
           </property>
@@ -78,6 +84,9 @@
           </property>
           <property name="acceptDrops">
            <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>Roman Font Example</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -147,6 +156,9 @@
           </property>
           <property name="acceptDrops">
            <bool>false</bool>
+          </property>
+          <property name="text">
+           <string>繁體简体にほんご한국말</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>

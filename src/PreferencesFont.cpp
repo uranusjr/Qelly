@@ -24,6 +24,8 @@ namespace UJ
 namespace Qelly
 {
 
+static const char *FONT_PROPERTY_NAME = "stored_font";
+
 PreferencesFont::PreferencesFont(QWidget *parent) : QWidget(parent)
 {
     _ui = new Ui::PreferencesFont;
@@ -69,11 +71,12 @@ void PreferencesFont::accept()
     prefs->setCellWidth(_ui->cellWidth->value());
     prefs->setCellHeight(_ui->cellHeight->value());
 
-    QFont font;
-    if (font.fromString(_ui->fontRomanName->text()))
-        prefs->setDefaultFont(font);
-    if (font.fromString(_ui->fontDoubleByteName->text()))
-        prefs->setDoubleByteFont(font);
+    QVariant v = _ui->fontRomanName->property(FONT_PROPERTY_NAME);
+    if (v.canConvert<QFont>())
+        prefs->setDefaultFont(v.value<QFont>());
+    v = _ui->fontDoubleByteName->property(FONT_PROPERTY_NAME);
+    if (v.canConvert<QFont>())
+        prefs->setDoubleByteFont(v.value<QFont>());
 
     prefs->setDefaultFontPaddingLeft(_ui->fontRomanMarginLeft->value());
     prefs->setDefaultFontPaddingBottom(_ui->fontRomanMarginBottom->value());
@@ -93,9 +96,8 @@ void PreferencesFont::reject()
 
 void PreferencesFont::browseFontRoman()
 {
-    SharedPreferences *prefs = SharedPreferences::sharedInstance();
     bool ok;
-    QFont defaultFont = prefs->defaultFont();
+    QFont defaultFont = _ui->fontRomanName->font();
     QFont font = QFontDialog::getFont(&ok, defaultFont, this);
     if (ok && (!font.isCopyOf(defaultFont)))
         setFontFieldRoman(font);
@@ -103,9 +105,8 @@ void PreferencesFont::browseFontRoman()
 
 void PreferencesFont::browseFontDoubleByte()
 {
-    SharedPreferences *prefs = SharedPreferences::sharedInstance();
     bool ok;
-    QFont defaultFont = prefs->doubleByteFont();
+    QFont defaultFont = _ui->fontDoubleByteName->font();
     QFont font = QFontDialog::getFont(&ok, defaultFont, this);
     if (ok && (!font.isCopyOf(defaultFont)))
         setFontFieldDoubleByte(font);
@@ -113,12 +114,14 @@ void PreferencesFont::browseFontDoubleByte()
 
 void PreferencesFont::setFontFieldRoman(const QFont &font)
 {
-    _ui->fontRomanName->setText(font.toString().replace(",", ", "));
+    _ui->fontRomanName->setFont(font);
+    _ui->fontRomanName->setProperty(FONT_PROPERTY_NAME, font);
 }
 
 void PreferencesFont::setFontFieldDoubleByte(const QFont &font)
 {
-    _ui->fontDoubleByteName->setText(font.toString().replace(",", ", "));
+    _ui->fontDoubleByteName->setFont(font);
+    _ui->fontDoubleByteName->setProperty(FONT_PROPERTY_NAME, font);
 }
 
 }   // namespace Qelly
