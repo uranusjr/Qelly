@@ -18,7 +18,7 @@
 QT       += core gui widgets network
 
 CONFIG += qxt
-QXT += core gui widgets
+QXT += core gui widgets network
 
 TARGET = Qelly
 TEMPLATE = app
@@ -105,7 +105,8 @@ HEADERS  += \
     Tab.h \
     EmoticonViewer.h \
     JsonFileListModel.h \
-    SiteManagerDialog.h
+    SiteManagerDialog.h \
+    Ssh_p.h
 
 RESOURCES += \
     GeneralResources.qrc

@@ -147,7 +147,7 @@ void Controller::connectWith(Connection::Site *site)
                 focusAddressField();
             break;
         }
-        connection = new Connection::Ssh(prefs->sshClientPath());
+        connection = new Connection::Ssh();
         break;
     default:
         connection = new Connection::Telnet();
