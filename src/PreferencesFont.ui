@@ -86,7 +86,7 @@
            <bool>false</bool>
           </property>
           <property name="text">
-           <string>Roman Font Example</string>
+           <string notr="true">Roman Font Example</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -158,7 +158,7 @@
            <bool>false</bool>
           </property>
           <property name="text">
-           <string>繁體简体にほんご한국말</string>
+           <string notr="true">繁體简体にほんご한국말</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>

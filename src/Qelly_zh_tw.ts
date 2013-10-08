@@ -101,25 +101,25 @@
         <translation>羅馬字元字型</translation>
     </message>
     <message>
-        <location filename="PreferencesFont.ui" line="93"/>
-        <location filename="PreferencesFont.ui" line="162"/>
+        <location filename="PreferencesFont.ui" line="102"/>
+        <location filename="PreferencesFont.ui" line="174"/>
         <source>Choose…</source>
         <translation>選擇…</translation>
     </message>
     <message>
-        <location filename="PreferencesFont.ui" line="104"/>
-        <location filename="PreferencesFont.ui" line="173"/>
+        <location filename="PreferencesFont.ui" line="113"/>
+        <location filename="PreferencesFont.ui" line="185"/>
         <source>Left margin:</source>
         <translation>左間距：</translation>
     </message>
     <message>
-        <location filename="PreferencesFont.ui" line="117"/>
-        <location filename="PreferencesFont.ui" line="186"/>
+        <location filename="PreferencesFont.ui" line="126"/>
+        <location filename="PreferencesFont.ui" line="198"/>
         <source>Bottom margin:</source>
         <translation>底間距：</translation>
     </message>
     <message>
-        <location filename="PreferencesFont.ui" line="135"/>
+        <location filename="PreferencesFont.ui" line="144"/>
         <source>Double-byte font</source>
         <translation>雙字元字型</translation>
     </message>
@@ -133,21 +133,31 @@
     </message>
     <message>
         <location filename="PreferencesGeneral.ui" line="33"/>
-        <source>SSH client path</source>
-        <translation>SSH 客戶端路徑</translation>
+        <source>SSH Client</source>
+        <oldsource>SSH client path</oldsource>
+        <translation>SSH 客戶端</translation>
     </message>
     <message>
-        <location filename="PreferencesGeneral.ui" line="54"/>
-        <source>Browse…</source>
+        <location filename="PreferencesGeneral.ui" line="39"/>
+        <source>Enable SSH (needs external client)</source>
+        <translation>啟用 SSH (需要外部客戶端)</translation>
+    </message>
+    <message>
+        <location filename="PreferencesGeneral.ui" line="55"/>
+        <source>Browse...</source>
         <translation>瀏覽…</translation>
     </message>
     <message>
-        <location filename="PreferencesGeneral.ui" line="81"/>
+        <source>Browse…</source>
+        <translation type="obsolete">瀏覽…</translation>
+    </message>
+    <message>
+        <location filename="PreferencesGeneral.ui" line="85"/>
         <source>Confirm on close</source>
         <translation>關閉時確認</translation>
     </message>
     <message>
-        <location filename="PreferencesGeneral.ui" line="88"/>
+        <location filename="PreferencesGeneral.ui" line="92"/>
         <source>Restore connections on startup</source>
         <translation>啟動時還原上次連線</translation>
     </message>
@@ -218,22 +228,37 @@
 <context>
     <name>UJ::Qelly::Controller</name>
     <message>
-        <location filename="Controller.cpp" line="180"/>
+        <location filename="Controller.cpp" line="135"/>
+        <source>SSH Not Available</source>
+        <translation>無法使用 SSH</translation>
+    </message>
+    <message>
+        <location filename="Controller.cpp" line="136"/>
+        <source>To enable SSH connections, you need to enable SSH, and set a correct path to an external SSH client executable.</source>
+        <translation>若想啟用 SSH 連線功能，必須正確設定外部 SSH 客戶端路徑。</translation>
+    </message>
+    <message>
+        <location filename="Controller.cpp" line="141"/>
+        <source>Configure</source>
+        <translation>設定</translation>
+    </message>
+    <message>
+        <location filename="Controller.cpp" line="203"/>
         <source>Are you sure you want to close this tab?</source>
         <translation>確定要關閉這個頁籤嗎？</translation>
     </message>
     <message>
-        <location filename="Controller.cpp" line="182"/>
+        <location filename="Controller.cpp" line="205"/>
         <source>The connection is still alive. If you close this tab, the connection will be lost. Do you want to close this tab anyway?</source>
         <translation>此連線尚未中斷。如果關閉這個頁籤，將會遺失目前的連線內容。你仍然要關閉此頁籤嗎？</translation>
     </message>
     <message>
-        <location filename="Controller.cpp" line="233"/>
+        <location filename="Controller.cpp" line="256"/>
         <source>Are you sure you want to quit Qelly?</source>
         <translation>確定要離開 Qelly？</translation>
     </message>
     <message numerus="yes">
-        <location filename="Controller.cpp" line="235"/>
+        <location filename="Controller.cpp" line="258"/>
         <source>There are %n tab(s) open in Qelly. Do you want to quit anyway?</source>
         <translation>
             <numerusform>仍有 %n 個正在連線的頁籤。你仍然要關閉 Qelly 嗎？</numerusform>
@@ -258,32 +283,32 @@
         <translation>一般</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="82"/>
+        <location filename="MainWindow.cpp" line="83"/>
         <source>Sites</source>
         <translation>站台</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="84"/>
+        <location filename="MainWindow.cpp" line="85"/>
         <source>Reconnect</source>
         <translation>重新連線</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="86"/>
+        <location filename="MainWindow.cpp" line="87"/>
         <source>Add</source>
         <translation>新增</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="89"/>
+        <location filename="MainWindow.cpp" line="90"/>
         <source>Emoticons</source>
         <translation>表情符號</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="92"/>
+        <location filename="MainWindow.cpp" line="93"/>
         <source>Anti-Idle</source>
         <translation>防閒置</translation>
     </message>
     <message>
-        <location filename="MainWindow.cpp" line="99"/>
+        <location filename="MainWindow.cpp" line="100"/>
         <source>Peek</source>
         <translation>開燈</translation>
     </message>
@@ -291,12 +316,21 @@
 <context>
     <name>UJ::Qelly::PreferencesGeneral</name>
     <message>
-        <location filename="PreferencesGeneral.cpp" line="72"/>
         <source>SSH will not be available until it is corrected.</source>
-        <translation>在您正確設定前，將無法使用 SSH。</translation>
+        <translation type="obsolete">在您正確設定前，將無法使用 SSH。</translation>
     </message>
     <message>
-        <location filename="PreferencesGeneral.cpp" line="86"/>
+        <location filename="PreferencesGeneral.cpp" line="88"/>
+        <source>SSH Executable Not Valid</source>
+        <translation>SSH 執行檔不正確</translation>
+    </message>
+    <message>
+        <location filename="PreferencesGeneral.cpp" line="89"/>
+        <source>To gain SSH functionality, you need to provide a valid path to an external SSH client. SSH will be disabled.</source>
+        <translation>你必須提供一個指向外部 SSH 客戶端的正確路徑，才能啟用 SSH 功能。SSH 功能將被關閉。</translation>
+    </message>
+    <message>
+        <location filename="PreferencesGeneral.cpp" line="108"/>
         <source>Choose SSH Client</source>
         <translation>設定 SSH 客戶端</translation>
     </message>
@@ -304,22 +338,22 @@
 <context>
     <name>UJ::Qelly::PreferencesWindow</name>
     <message>
-        <location filename="PreferencesWindow.cpp" line="34"/>
+        <location filename="PreferencesWindow.cpp" line="37"/>
         <source>Preferences</source>
         <translation>偏好設定</translation>
     </message>
     <message>
-        <location filename="PreferencesWindow.cpp" line="43"/>
+        <location filename="PreferencesWindow.cpp" line="47"/>
         <source>General</source>
         <translation>一般</translation>
     </message>
     <message>
-        <location filename="PreferencesWindow.cpp" line="45"/>
+        <location filename="PreferencesWindow.cpp" line="49"/>
         <source>Fonts</source>
         <translation>字型</translation>
     </message>
     <message>
-        <location filename="PreferencesWindow.cpp" line="47"/>
+        <location filename="PreferencesWindow.cpp" line="51"/>
         <source>Color</source>
         <translation>顏色</translation>
     </message>
@@ -396,18 +430,18 @@
         <location filename="SharedMenuBar.cpp" line="56"/>
         <source>Copy</source>
         <comment>Mac</comment>
-        <translation type="unfinished"></translation>
+        <translation>拷貝</translation>
     </message>
     <message>
         <location filename="SharedMenuBar.cpp" line="59"/>
         <source>Copy</source>
         <comment>General</comment>
-        <translation type="unfinished"></translation>
+        <translation>複製</translation>
     </message>
     <message>
         <location filename="SharedMenuBar.cpp" line="82"/>
         <source>Preferences</source>
-        <translation type="unfinished">偏好設定</translation>
+        <translation>偏好設定</translation>
     </message>
     <message>
         <location filename="SharedMenuBar.cpp" line="85"/>

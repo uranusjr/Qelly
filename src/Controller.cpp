@@ -138,7 +138,7 @@ void Controller::connectWith(Connection::Site *site)
                              "client executable.");
             QMessageBox box(QMessageBox::Question, title, msg,
                             QMessageBox::Cancel);
-            QPushButton *open = box.addButton("Open preferences",
+            QPushButton *open = box.addButton(tr("Configure"),
                                               QMessageBox::YesRole);
             box.exec();
             if (reinterpret_cast<QPushButton *>(box.clickedButton()) == open)
