@@ -1,0 +1,26 @@
+1.0a2
+--------
+
+- Bugfixes
+    * Crash when invoking "Reconnect."
+    * Connection record corruption between launches.
+    * Reverse coloring errors which result in numerous instances of incorrect
+      screen presentation.
+
+- New Features
+    * Traditional Chinese translation added.
+    * goo.gl shortened URL detection.
+    * Toolbar show/hide state restoration between launches.
+    * Introducing "Portable Mode."
+
+- Enhancements
+    * Improved config interface including "Apply" button, font review, and a
+      switch to turn off SSH completely.
+    * Terminal view now redraws instantly when settings update.
+    * Better SSH feature detection logic.
+
+
+1.0a
+--------
+
+Initial release.

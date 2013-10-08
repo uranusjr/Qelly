@@ -22,4 +22,5 @@ SUBDIRS = src
 
 OTHER_FILES += \
     AUTHORS \
-    README.md
+    README.md \
+    CHANGES
