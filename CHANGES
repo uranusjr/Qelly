@@ -12,6 +12,7 @@
     * goo.gl shortened URL detection.
     * Toolbar show/hide state restoration between launches.
     * Introducing "Portable Mode."
+    * "Paste" in context menu.
 
 - Enhancements
     * Improved config interface including "Apply" button, font review, and a
