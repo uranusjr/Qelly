@@ -355,11 +355,14 @@ void ViewPrivate::addActionsToContextMenu(QMenu *menu)
         menu->addAction(QObject::tr("Copy", "General"), q, SLOT(copy()));
 #endif
     }
-    const QMimeData *mime = QApplication::clipboard()->mimeData();
-    if (mime->hasText())
-        menu->addAction(QObject::tr("Paste"), q, SLOT(paste()));
-    if (mime->hasFormat(ANSI_COLOR_MIME))
-        menu->addAction(QObject::tr("Paste Color"), q, SLOT(pasteColor()));
+    if (q->isConnected())
+    {
+        const QMimeData *mime = QApplication::clipboard()->mimeData();
+        if (mime->hasText())
+            menu->addAction(QObject::tr("Paste"), q, SLOT(paste()));
+        if (mime->hasFormat(ANSI_COLOR_MIME))
+            menu->addAction(QObject::tr("Paste Color"), q, SLOT(pasteColor()));
+    }
 }
 
 void ViewPrivate::handleArrowKey(int key)
