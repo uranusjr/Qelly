@@ -19,6 +19,7 @@
 #include "Controller.h"
 #include <QApplication>
 #include <QDesktopServices>
+#include <QInputDialog>
 #include <QLineEdit>
 #include <QMessageBox>
 #include <QUrl>
@@ -63,6 +64,8 @@ Controller::Controller(QObject *parent) :
     connect(menu, SIGNAL(viewAntiIdle(bool)), SLOT(toggleAntiIdle(bool)));
     connect(menu, SIGNAL(viewShowHiddenText(bool)),
             SLOT(toggleShowHiddenText(bool)));
+    _window->connect(menu, SIGNAL(viewToggleToolbar(bool)),
+                     SLOT(setToolbarVisible(bool)));
     connect(menu, SIGNAL(sitesEditSites()), SLOT(showSiteManager()));
     connect(menu, SIGNAL(siteAddThisSite()), SLOT(addCurrentSite()));
     connect(menu, SIGNAL(windowMinimize()), SLOT(minimize()));
@@ -88,15 +91,17 @@ Controller::Controller(QObject *parent) :
 
     SharedPreferences *prefs = SharedPreferences::sharedInstance();
     _window->show();
-    addTab();
     if (prefs->restoreConnectionsOnStartup())
     {
         foreach (Connection::Site *site, prefs->storedConnections())
         {
+            addTab(false);
             connectWith(site);
             changeAddressField(site->fullForm());
         }
     }
+    if (!_window->tabs()->count())
+        addTab();
 }
 
 Controller::~Controller()
@@ -172,16 +177,31 @@ void Controller::connectWith(Connection::Site *site)
 
 void Controller::focusAddressField()
 {
-    QLineEdit *address = _window->address();
-    address->setFocus(Qt::ShortcutFocusReason);
-    address->selectAll();
+    SharedPreferences *prefs = SharedPreferences::sharedInstance();
+    if (prefs->isToolbarVisible())
+    {
+        QLineEdit *address = _window->address();
+        address->setFocus(Qt::ShortcutFocusReason);
+        address->selectAll();
+    }
+    else
+    {
+        QString text = QInputDialog::getText(
+                    _window, tr("Connect to..."), tr("Address:"));
+        if (!text.isEmpty())
+        {
+            _window->address()->setText(text);
+            onAddressReturnPressed();
+        }
+    }
 }
 
-void Controller::addTab()
+void Controller::addTab(bool focus)
 {
     _window->tabs()->addTab(new Tab(new View()), "");
     _window->address()->setText(QString());
-    focusAddressField();
+    if (focus)
+        focusAddressField();
 }
 
 void Controller::closeTab()

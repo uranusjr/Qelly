@@ -54,6 +54,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent)
     restoreGeometry(_prefs->windowGeometry());
 }
 
+void MainWindow::setToolbarVisible(bool visible)
+{
+    if (_toolbar)
+        _toolbar->setVisible(visible);
+}
+
 void MainWindow::buildToolBar()
 {
     QWidget *stretch = new QWidget(this);

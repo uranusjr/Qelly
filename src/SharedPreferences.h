@@ -48,6 +48,7 @@ public slots:
 signals:
     void antiIdleChanged(bool);
     void showHiddenTextChanged(bool);
+    void toolbarVisibleChanged(bool);
 
 private:
     QSettings *_settings;

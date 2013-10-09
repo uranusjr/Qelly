@@ -570,6 +570,7 @@ bool SharedPreferences::isToolbarVisible()
 void SharedPreferences::setToolbarVisible(bool value)
 {
     _settings->setValue("toolbar visible", value);
+    emit toolbarVisibleChanged(value);
 }
 
 }   // namespace Qelly

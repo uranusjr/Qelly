@@ -83,6 +83,13 @@ SharedMenuBar::SharedMenuBar(QWidget *parent) : QMenuBar(parent)
                     Seq(UJ::ModModifier | Qt::Key_Comma));
 
     menu = addMenu(tr("View"));
+    action = menu->addAction(tr("Toolbar"));
+    action->setCheckable(true);
+    action->setChecked(prefs->isToolbarVisible());
+    action->connect(prefs, SIGNAL(toolbarVisibleChanged(bool)),
+                    SLOT(setChecked(bool)));
+    connect(action, SIGNAL(triggered(bool)), SIGNAL(viewToggleToolbar(bool)));
+    menu->addSeparator();
     action = menu->addAction(tr("Anti-Idle"));
     action->setCheckable(true);
     action->setChecked(prefs->isAntiIdleActive());

@@ -57,6 +57,7 @@ signals:
     void editPreferences();
     void viewAntiIdle(bool);
     void viewShowHiddenText(bool);
+    void viewToggleToolbar(bool);
     void sitesEditSites();
     void siteAddThisSite();
     void windowMinimize();

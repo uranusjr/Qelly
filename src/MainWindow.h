@@ -45,6 +45,9 @@ public:
         return g;
     }
 
+public slots:
+    void setToolbarVisible(bool visible);
+
 protected:
     virtual void closeEvent(QCloseEvent *e);
     virtual bool event(QEvent *e);

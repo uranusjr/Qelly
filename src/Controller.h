@@ -51,7 +51,7 @@ public slots:
     void connectWith(const QString &address);
     void connectWith(Connection::Site *site);
     void focusAddressField();
-    void addTab();
+    void addTab(bool focus = true);
     void closeTab();
     void closeTab(int index);
     void closeWindow();
