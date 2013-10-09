@@ -30,4 +30,4 @@ updateqm.CONFIG += no_link
 
 # Use the custom tool and specify that make_all needs to make this one
 QMAKE_EXTRA_COMPILERS += updateqm
-PRE_TARGETDEPS += compiler_updateqm_make_all
+POST_TARGETDEPS += compiler_updateqm_make_all
