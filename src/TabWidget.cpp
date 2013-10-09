@@ -120,7 +120,7 @@ bool TabWidget::eventFilter(QObject *obj, QEvent *e)
             break;
         }
     }
-    else if (w && indexOf(w) >= 0)
+    else if (w && indexOf(w) >= 0)  // w is one of the tabs
     {
         switch (e->type())
         {

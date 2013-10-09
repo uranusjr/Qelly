@@ -36,7 +36,8 @@ int main(int argc, char *argv[])
 
     YL::init_table();
     QTranslator trans;
-    trans.load(QLocale::system(), "Qelly", "_", QApplication::applicationDirPath());
+    trans.load(QLocale::system(), "Qelly", "_",
+               QCoreApplication::applicationDirPath());
     a.installTranslator(&trans);
 
     UJ::Qelly::Controller c;
