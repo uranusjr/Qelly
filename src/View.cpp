@@ -101,9 +101,9 @@ void View::mousePressEvent(QMouseEvent *e)
 {
     Q_D(View);
 
-    setFocus(Qt::MouseFocusReason);
     if (isConnected())
     {
+        setFocus(Qt::MouseFocusReason);
         d->terminal->setHasMessage(false);
 
         if (e->button() == Qt::LeftButton)
@@ -303,7 +303,8 @@ void View::keyPressEvent(QKeyEvent *e)
 
 void View::keyReleaseEvent(QKeyEvent *e)
 {
-    d_ptr->updateCursor(mapFromGlobal(QCursor::pos()), e->modifiers(), 0);
+    if (isConnected())
+        d_ptr->updateCursor(mapFromGlobal(QCursor::pos()), e->modifiers(), 0);
     Qx::Widget::keyReleaseEvent(e);
 }
 
