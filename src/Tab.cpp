@@ -29,7 +29,7 @@ namespace Qelly
 
 Tab::Tab(View *view) : QWidget(0), _view(view)
 {
-    setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Minimum);
+    setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     view->setParent(this);
     view->installEventFilter(this);
 }
@@ -41,8 +41,16 @@ bool Tab::eventFilter(QObject *obj, QEvent *e)
         switch (e->type())
         {
         case QEvent::Resize:
+        {
+            QSize sz = _view->size();
+            if (sz.isValid())
+            {
+                setMinimumSize(sz);
+                resize(sz);
+            }
             centerView(size());
             break;
+        }
         default:
             break;
         }

@@ -33,6 +33,7 @@ namespace Qelly
 TabWidget::TabWidget(QWidget *parent) : QTabWidget(parent)
 {
     setStyleSheet("QTabBar::tab { width: 150px; }");
+    setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
     tabBar()->setAutoFillBackground(true);
     setAutoFillBackground(true);
     setDocumentMode(true);
@@ -91,6 +92,7 @@ void TabWidget::closeTab(int index)
 bool TabWidget::eventFilter(QObject *obj, QEvent *e)
 {
     static int middlePressedTab = -1;
+    QWidget *w = qobject_cast<QWidget *>(obj);
     if (obj == tabBar())
     {
         switch (e->type())
@@ -111,6 +113,24 @@ bool TabWidget::eventFilter(QObject *obj, QEvent *e)
                 if (index != -1 && index == middlePressedTab)
                     emit tabCloseRequested(index);
                 middlePressedTab = -1;
+            }
+            break;
+        }
+        default:
+            break;
+        }
+    }
+    else if (w && indexOf(w) >= 0)
+    {
+        switch (e->type())
+        {
+        case QEvent::Resize:
+        {
+            QSize sh = w->sizeHint();
+            if (sh.isValid())
+            {
+                sh.rheight() += tabBar()->height();
+                setMinimumSize(sh);
             }
             break;
         }
