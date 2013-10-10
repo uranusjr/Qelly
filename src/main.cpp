@@ -17,17 +17,10 @@
  *****************************************************************************/
 
 #include <QApplication>
-#include <QDir>
 #include <QLocale>
 #include <QTranslator>
 #include "Encodings.h"
 #include "Controller.h"
-
-inline QString translationSearchPath()
-{
-    QDir appDir(QCoreApplication::applicationDirPath());
-    return appDir.filePath("translations");
-}
 
 int main(int argc, char *argv[])
 {
@@ -43,7 +36,7 @@ int main(int argc, char *argv[])
 
     YL::init_table();
     QTranslator trans;
-    trans.load(QLocale::system(), "Qelly", ".", translationSearchPath());
+    trans.load(QLocale::system(), "Qelly", ".", ":/translations");
     a.installTranslator(&trans);
 
     UJ::Qelly::Controller c;

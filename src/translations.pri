@@ -24,13 +24,10 @@ transdir = $${DESTDIR}/translations
 # Build custom tools
 # http://www.qtcentre.org/wiki/index.php?title=Undocumented_qmake#Custom_tools
 updateqm.input = TRANSLATIONS
-updateqm.output = $${DESTDIR}/translations/${QMAKE_FILE_BASE}.qm
-!exists( $$transdir ) {
-    updateqm.commands += $$QMAKE_MKDIR $$transdir $$newline
-}
+updateqm.output = ${QMAKE_FILE_PATH}/${QMAKE_FILE_BASE}.qm
 updateqm.commands += $$QMAKE_LRELEASE ${QMAKE_FILE_IN} -qm ${QMAKE_FILE_OUT}
 updateqm.CONFIG += no_link
 
 # Use the custom tool and specify that make_all needs to make this one
 QMAKE_EXTRA_COMPILERS += updateqm
-POST_TARGETDEPS += compiler_updateqm_make_all
+PRE_TARGETDEPS += compiler_updateqm_make_all
