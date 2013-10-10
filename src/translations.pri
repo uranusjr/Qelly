@@ -15,17 +15,20 @@
 # this file belongs to.
 
 # Get the lrealese binary's path
-isEmpty(QMAKE_LRELEASE) {
+isEmpty( QMAKE_LRELEASE ) {
     QMAKE_LRELEASE = $$[QT_INSTALL_BINS]/lrelease
 }
+newline = $$escape_expand(\n\t)
+transdir = $${DESTDIR}/translations
 
-# Build a custom tool
+# Build custom tools
 # http://www.qtcentre.org/wiki/index.php?title=Undocumented_qmake#Custom_tools
 updateqm.input = TRANSLATIONS
-updateqm.output = ${QMAKE_FILE_PATH}/${QMAKE_FILE_BASE}.qm
-# This following one is the main building command. -qm outputs the qm file to
-# a specified path
-updateqm.commands = $$QMAKE_LRELEASE ${QMAKE_FILE_IN} -qm $${DESTDIR}/${QMAKE_FILE_BASE}.qm
+updateqm.output = $${DESTDIR}/translations/${QMAKE_FILE_BASE}.qm
+!exists( $$transdir ) {
+    updateqm.commands += $$QMAKE_MKDIR $$transdir $$newline
+}
+updateqm.commands += $$QMAKE_LRELEASE ${QMAKE_FILE_IN} -qm ${QMAKE_FILE_OUT}
 updateqm.CONFIG += no_link
 
 # Use the custom tool and specify that make_all needs to make this one
