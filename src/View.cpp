@@ -226,17 +226,22 @@ void View::mouseReleaseEvent(QMouseEvent *e)
 {
     Q_D(View);
 
-    if (!d->selectedLength && isConnected())
+    if (!isConnected())             // Not connected
+        ;
+    else if (d->selectedLength)     // Is selecting
+        ;
+    else if (e->modifiers())        // Is Modified click
+        ;
+    else
     {
         int index = d->indexFromPoint(e->pos());
         bool hasUrl = false;
         QString url = d->terminal->urlStringAt(
                     index / d->column, index % d->column, &hasUrl);
-        if (hasUrl && e->button() == Qt::LeftButton
-                && !(e->modifiers() & UJ::ModModifier))
+        if (hasUrl)     // Is clicking on a URL
         {
-            // NOTE: Should we implement image previewer at all?
-            QDesktopServices::openUrl(QUrl(url, QUrl::TolerantMode));
+            if (e->button() == Qt::LeftButton)
+                QDesktopServices::openUrl(QUrl(url, QUrl::TolerantMode));
         }
     }
 
