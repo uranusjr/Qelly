@@ -243,6 +243,11 @@ void View::mouseReleaseEvent(QMouseEvent *e)
             if (e->button() == Qt::LeftButton)
                 QDesktopServices::openUrl(QUrl(url, QUrl::TolerantMode));
         }
+        else            // Not clicking on a URL
+        {
+            if (e->button() == Qt::MiddleButton)
+                paste();
+        }
     }
 
     return Qx::Widget::mouseReleaseEvent(e);
