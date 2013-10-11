@@ -47,8 +47,8 @@ bool Tab::eventFilter(QObject *obj, QEvent *e)
             {
                 setMinimumSize(sz);
                 resize(sz);
+                centerView(size());
             }
-            centerView(size());
             break;
         }
         default:
