@@ -69,9 +69,7 @@ void MainWindow::buildToolBar()
     _address->setPlaceholderText(tr("Input site address"));
     _address->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     _address->setFocusPolicy(Qt::ClickFocus);
-    QLabel *inputLabel = new QLabel(QString("<small>") +
-                                    tr("Address") +
-                                    QString("</small>"));
+    QLabel *inputLabel = new QLabel(tr("Address"));
     inputLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     inputLabel->setAlignment(Qt::AlignCenter);
     inputLabel->setFocusPolicy(Qt::ClickFocus);
