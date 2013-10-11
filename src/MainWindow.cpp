@@ -128,7 +128,7 @@ bool MainWindow::event(QEvent *e)
     case QEvent::Move:
         _prefs->setWindowGeometry(saveGeometry());
         break;
-#ifndef Q_OS_MAC
+#ifdef Q_OS_WIN
     case QEvent::WindowStateChange:
     {
         // When return to normal state from maximized state, automatically
