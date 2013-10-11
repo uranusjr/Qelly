@@ -725,6 +725,8 @@ void View::copy()
 
 void View::paste()
 {
+    if (!isConnected())
+        return;
     const QMimeData *data = QApplication::clipboard()->mimeData();
     if (data->hasText())
         insertText(data->text(), 1);
@@ -732,6 +734,9 @@ void View::paste()
 
 void View::pasteColor()
 {
+    if (!isConnected())
+        return;
+
     Q_D(View);
 
     const QMimeData *mime = QApplication::clipboard()->mimeData();
@@ -859,7 +864,7 @@ void View::contextMenuEvent(QContextMenuEvent *e)
 bool View::isConnected()
 {
     Q_D(View);
-    return (d->terminal != 0 && d->terminal->connection() != 0 &&
+    return (d->terminal && d->terminal->connection() &&
             d->terminal->connection()->isConnected());
 }
 
