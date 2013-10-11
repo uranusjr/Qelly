@@ -340,7 +340,8 @@ void ViewPrivate::addActionsToContextMenu(QMenu *menu)
     }
 
     // C. Other menu entries
-    menu->addSeparator();
+    if (!menu->isEmpty())
+        menu->addSeparator();
     if (!s.isEmpty())
     {
         QAction *action = menu->addAction("Google", q, SLOT(google()));
