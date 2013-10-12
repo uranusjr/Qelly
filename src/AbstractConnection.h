@@ -29,14 +29,18 @@ namespace Connection
 {
 
 class Site;
+class AbstractConnectionPrivate;
 
 class AbstractConnection : public QObject
 {
     Q_OBJECT
+    Q_DECLARE_PRIVATE(AbstractConnection)
+    AbstractConnectionPrivate * const d_ptr;
 
 public:
     explicit AbstractConnection(QObject *parent = 0);
-    virtual bool connectToSite(Site *site);
+    virtual ~AbstractConnection();
+    bool connectToSite(Site *site);
     static const qint16 DefaultPort = -1;
 
 public slots:
@@ -44,79 +48,27 @@ public slots:
     virtual void reconnect() = 0;
     virtual void sendBytes(QByteArray bytes) = 0;
 
-private:
-    Site *_site;
-    QString _name;
-    QString _address;
-    // NOTE: Need an image member for tab icon...
-    //       Haven't decided which class, maybe QIcon?
-    bool _isConnected;
-    bool _isProcessing;
-    QDateTime _lastTouch;
-
 protected:
     virtual bool connectTo(const QString &address, qint16 port) = 0;
-
-protected slots:
-    virtual void processBytes(QByteArray bytes) = 0;
 
 signals:
     void connected();
     void disconnected();
-    void receivedBytes(QByteArray data);
     void processedBytes(QByteArray bytes);
-    void hasBytesToSend(QByteArray bytes);
 
 public: // Getters & Setters
-    virtual inline Site *site()
-    {
-        return _site;
-    }
+    virtual Site *site();
     virtual void setSite(Site *site);
-    virtual inline QString name()
-    {
-        return _name;
-    }
-    virtual inline void setName(const QString &name)
-    {
-        _name = name;
-    }
-    virtual inline QString address()
-    {
-        return _address;
-    }
-    virtual inline void setAddress(const QString &address)
-    {
-        _address = address;
-    }
-    virtual inline bool isConnected()
-    {
-        return _isConnected;
-    }
-    virtual inline void setConnected(bool isConnected)
-    {
-        // NOTE: Should change the icon image here...
-        _isConnected = isConnected;
-    }
-    virtual inline bool isProcessing()
-    {
-        return _isProcessing;
-    }
-    virtual inline void setProcessing(bool isProcessing)
-    {
-        _isProcessing = isProcessing;
-    }
-    inline QDateTime lastTouch() const
-    {
-        return _lastTouch;
-    }
-    void setLastTouch(const QDateTime &dt = QDateTime())
-    {
-        if (!dt.isValid())
-            _lastTouch = QDateTime::currentDateTime();
-        else
-            _lastTouch = dt;
-    }
+    virtual QString name();
+    virtual void setName(const QString &name);
+    virtual QString address();
+    virtual void setAddress(const QString &address);
+    virtual bool isConnected();
+    virtual void setConnected(bool isConnected);
+    virtual bool isProcessing();
+    virtual void setProcessing(bool isProcessing);
+    virtual QDateTime lastTouch() const;
+    virtual void setLastTouch(const QDateTime &dt = QDateTime());
 };
 
 }   // namespace Connection

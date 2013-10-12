@@ -29,15 +29,13 @@ namespace Connection
 Ssh::Ssh(const QString &sshPath, QObject *parent) :
     AbstractConnection(parent), _socket(new QProcess(this)), _sshPath(sshPath)
 {
-    connect(this, SIGNAL(receivedBytes(QByteArray)),
-            this, SLOT(processBytes(QByteArray)));
-    connect(_socket, SIGNAL(started()), this, SLOT(onProcessStarted()));
+    connect(_socket, SIGNAL(started()), SLOT(onProcessStarted()));
     connect(_socket, SIGNAL(readyReadStandardOutput()),
-            this, SLOT(onProcessReadyRead()));
+            SLOT(onProcessReadyRead()));
     connect(_socket, SIGNAL(error(QProcess::ProcessError)),
-            this, SLOT(onProcessError()));
+            SLOT(onProcessError()));
     connect(_socket, SIGNAL(finished(int, QProcess::ExitStatus)),
-            this, SLOT(onProcessFinished()));
+            SLOT(onProcessFinished()));
 }
 
 Ssh::~Ssh()
@@ -105,7 +103,7 @@ void Ssh::onProcessReadyRead()
     {
         QByteArray data = _socket->read(512);
         if (data.size() > 0)
-            emit receivedBytes(data);
+            emit processedBytes(data);
     }
 }
 
@@ -119,11 +117,6 @@ void Ssh::onProcessFinished()
     setProcessing(false);
     setConnected(false);
     emit disconnected();
-}
-
-void Ssh::processBytes(QByteArray bytes)
-{
-    emit processedBytes(bytes);
 }
 
 void Ssh::sendBytes(QByteArray bytes)

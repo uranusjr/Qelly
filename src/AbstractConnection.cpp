@@ -25,22 +25,46 @@ namespace UJ
 namespace Connection
 {
 
+class AbstractConnectionPrivate
+{
+    Q_DECLARE_PUBLIC(AbstractConnection)
+    AbstractConnection * const q_ptr;
+
+public:
+    AbstractConnectionPrivate(AbstractConnection *q) :
+        q_ptr(q), site(0) {}
+
+    void setSite(Site *s)
+    {
+        if (site == s)
+            return;
+        if (site)
+            site->deleteLater();
+        site = s;
+        site->setParent(q_ptr);
+    }
+
+    Site *site;
+    QString name;
+    QString address;
+    // NOTE: Need an image member for tab icon...
+    //       Haven't decided which class, maybe QIcon?
+    bool isConnected;
+    bool isProcessing;
+    QDateTime lastTouch;
+};
+
 AbstractConnection::AbstractConnection(QObject *parent) :
-    QObject(parent), _site(0)
+    QObject(parent), d_ptr(new AbstractConnectionPrivate(this))
 {
     setLastTouch();
     setProcessing(false);
     setConnected(false);
 }
 
-void AbstractConnection::setSite(Site *site)
+AbstractConnection::~AbstractConnection()
 {
-    if (_site == site)
-        return;
-    if (_site)
-        delete _site;
-    _site = site;
-    _site->setParent(this);
+    delete d_ptr;
 }
 
 bool AbstractConnection::connectToSite(Site *site)
@@ -48,6 +72,71 @@ bool AbstractConnection::connectToSite(Site *site)
     setSite(site);
     QString address = site->url();
     return connectTo(address, site->port());
+}
+
+Site *AbstractConnection::site()
+{
+    return d_ptr->site;
+}
+
+void AbstractConnection::setSite(Site *site)
+{
+    d_ptr->setSite(site);
+}
+
+QString AbstractConnection::name()
+{
+    return d_ptr->name;
+}
+
+void AbstractConnection::setName(const QString &name)
+{
+    d_ptr->name = name;
+}
+
+QString AbstractConnection::address()
+{
+    return d_ptr->address;
+}
+
+void AbstractConnection::setAddress(const QString &address)
+{
+    d_ptr->address = address;
+}
+
+bool AbstractConnection::isConnected()
+{
+    return d_ptr->isConnected;
+}
+
+void AbstractConnection::setConnected(bool isConnected)
+{
+    // NOTE: Should change the icon image here...
+    d_ptr->isConnected = isConnected;
+}
+
+bool AbstractConnection::isProcessing()
+{
+    return d_ptr->isProcessing;
+}
+
+void AbstractConnection::setProcessing(bool isProcessing)
+{
+    d_ptr->isProcessing = isProcessing;
+}
+
+QDateTime AbstractConnection::lastTouch() const
+{
+    return d_ptr->lastTouch;
+}
+
+void AbstractConnection::setLastTouch(const QDateTime &dt)
+{
+    Q_D(AbstractConnection);
+    if (!dt.isValid())
+        d->lastTouch = QDateTime::currentDateTime();
+    else
+        d->lastTouch = dt;
 }
 
 }   // namespace Connection

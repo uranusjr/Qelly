@@ -43,14 +43,10 @@ public:
 public slots:
     virtual void close();
     virtual void reconnect();
-    virtual void processBytes(QByteArray bytes);
     virtual void sendBytes(QByteArray bytes);
 
 protected:
     virtual bool connectTo(const QString &address, qint16 port);
-
-protected slots:
-    virtual void sendCommand(uchar cmd, uchar option);
 
 private slots:
     void onSocketHostFound();
@@ -60,6 +56,8 @@ private slots:
     void onSocketDisconnected();
 
 private:
+    void processBytes(QByteArray bytes);
+    void sendCommand(uchar cmd, uchar option);
     void handleStateTopLevel(uchar c, QQueue<uchar> *buffer);
     void handleStateSeenCr(uchar c, QQueue<uchar> *buffer);
     void handleStateSeenIac(uchar c);

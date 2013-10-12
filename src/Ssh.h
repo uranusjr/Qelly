@@ -45,9 +45,6 @@ public slots:
 protected:
     virtual bool connectTo(const QString &address, qint16 port);
 
-protected slots:
-    virtual void processBytes(QByteArray bytes);
-
 private slots:
     void onProcessStarted();
     void onProcessReadyRead();

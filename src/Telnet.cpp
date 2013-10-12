@@ -34,17 +34,12 @@ Telnet::Telnet(QObject *parent) :
     _port(DefaultPort), _synced(false), _state(TOP_LEVEL)
 {
     _socket = new QTcpSocket(this);
-    connect(this, SIGNAL(receivedBytes(QByteArray)),
-            this, SLOT(processBytes(QByteArray)));
-    connect(this, SIGNAL(hasBytesToSend(QByteArray)),
-            this, SLOT(sendBytes(QByteArray)));
-    connect(_socket, SIGNAL(hostFound()), this, SLOT(onSocketHostFound()));
-    connect(_socket, SIGNAL(connected()), this, SLOT(onSocketConnected()));
-    connect(_socket, SIGNAL(readyRead()), this, SLOT(onSocketReadyRead()));
+    connect(_socket, SIGNAL(hostFound()), SLOT(onSocketHostFound()));
+    connect(_socket, SIGNAL(connected()), SLOT(onSocketConnected()));
+    connect(_socket, SIGNAL(readyRead()), SLOT(onSocketReadyRead()));
+    connect(_socket, SIGNAL(disconnected()), SLOT(onSocketDisconnected()));
     connect(_socket, SIGNAL(error(QAbstractSocket::SocketError)),
-            this, SLOT(onSocketError()));
-    connect(_socket, SIGNAL(disconnected()),
-            this, SLOT(onSocketDisconnected()));
+            SLOT(onSocketError()));
 }
 
 Telnet::~Telnet()
@@ -88,7 +83,7 @@ void Telnet::onSocketReadyRead()
     {
         QByteArray data = _socket->read(512);
         if (data.size() > 0)
-            emit receivedBytes(data);
+            processBytes(data);
     }
 }
 
@@ -268,7 +263,7 @@ void Telnet::handleStateSeenDo(uchar c)
         bs.append('\x18');
         bs.append(IAC);
         bs.append(SE);
-        emit hasBytesToSend(bs);
+        sendBytes(bs);
         break;
     case TELOPT_TTYPE:
     case TELOPT_BINARY:
@@ -296,7 +291,7 @@ void Telnet::handleStateSubNegIac(uchar c)
             bs.append("vt100");
             bs.append(IAC);
             bs.append(SE);
-            emit hasBytesToSend(bs);
+            sendBytes(bs);
         }
         _state = TOP_LEVEL;
         _sbBuffer.clear();
@@ -314,7 +309,7 @@ void Telnet::sendCommand(uchar cmd, uchar option)
     data.append(IAC);
     data.append(cmd);
     data.append(option);
-    emit hasBytesToSend(data);
+    sendBytes(data);
 }
 
 void Telnet::sendBytes(QByteArray bytes)
@@ -337,9 +332,9 @@ void Telnet::sendBytes(QByteArray bytes)
     if (sz == bytes.size())
         return;
     else if (sz <= 0)
-        emit hasBytesToSend(bytes);
+        sendBytes(bytes);
     else
-        emit hasBytesToSend(bytes.mid(sz)); // restart from want we left off
+        sendBytes(bytes.mid(sz)); // restart from want we left off
 }
 
 }   // namespace Connection
