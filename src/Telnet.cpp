@@ -29,6 +29,8 @@ namespace UJ
 namespace Connection
 {
 
+using namespace YL;
+
 class TelnetPrivate
 {
     Q_DECLARE_PUBLIC(Telnet)
@@ -45,36 +47,23 @@ public:
     QTcpSocket *socket;
     qint16 port;
     bool synced;
-
-    enum State
-    {
-        TOP_LEVEL,
-        SEENIAC,
-        SEENWILL,
-        SEENWONT,
-        SEENDO,
-        SEENDONT,
-        SEENSB,
-        SUBNEGOT,
-        SUBNEG_IAC,
-        SEENCR
-    } state;
+    State state;
 
 private:
-    void sendCommand(uchar cmd, uchar option);
+    void sendCommand(char cmd, char option);
     void sendBytes(QByteArray bytes);
-    void handleStateTopLevel(uchar c, QQueue<uchar> *buffer);
-    void handleStateSeenCr(uchar c, QQueue<uchar> *buffer);
-    void handleStateSeenIac(uchar c);
-    void handleStateSeenWill(uchar c);
-    void handleStateSeenDo(uchar c);
-    void handleStateSubNegIac(uchar c);
+    void handleStateTopLevel(char c, QQueue<char> *buffer);
+    void handleStateSeenCr(char c, QQueue<char> *buffer);
+    void handleStateSeenIac(char c);
+    void handleStateSeenWill(char c);
+    void handleStateSeenDo(char c);
+    void handleStateSubNegIac(char c);
 };
 
 void TelnetPrivate::processBytes(QByteArray bytes)
 {
-    QQueue<uchar> buffer;
-    foreach (uchar c, bytes)
+    QQueue<char> buffer;
+    foreach (char c, bytes)
     {
         switch (state)
         {
@@ -91,14 +80,14 @@ void TelnetPrivate::processBytes(QByteArray bytes)
             handleStateSeenWill(c);
             break;
         case SEENWONT:
-            sendCommand(DONT, c);
+            sendCommand((char)DONT, c);
             state = TOP_LEVEL;
             break;
         case SEENDO:
             handleStateSeenDo(c);
             break;
         case SEENDONT:
-            sendCommand(WONT, c);
+            sendCommand((char)WONT, c);
             state = TOP_LEVEL;
             break;
         case SEENSB:
@@ -131,9 +120,10 @@ void TelnetPrivate::processBytes(QByteArray bytes)
     }
 }
 
-void TelnetPrivate::handleStateTopLevel(uchar c, QQueue<uchar> *buffer)
+void TelnetPrivate::handleStateTopLevel(char c, QQueue<char> *buffer)
 {
-    switch (c)
+    uchar uc = static_cast<uchar>(c);
+    switch (uc)
     {
     case IAC:
         state = SEENIAC;
@@ -141,9 +131,9 @@ void TelnetPrivate::handleStateTopLevel(uchar c, QQueue<uchar> *buffer)
     default:
         if (!synced)
             buffer->enqueue(c);
-        else if (c == DM)
+        else if (uc == DM)
             synced = false;
-        if (c == CR)
+        if (uc == CR)
             state = SEENCR;
         else
             state = TOP_LEVEL;
@@ -151,9 +141,10 @@ void TelnetPrivate::handleStateTopLevel(uchar c, QQueue<uchar> *buffer)
     }
 }
 
-void TelnetPrivate::handleStateSeenCr(uchar c, QQueue<uchar> *buffer)
+void TelnetPrivate::handleStateSeenCr(char c, QQueue<char> *buffer)
 {
-    switch (c)
+    uchar uc = static_cast<uchar>(c);
+    switch (uc)
     {
     case NUL:
         state = TOP_LEVEL;
@@ -164,9 +155,9 @@ void TelnetPrivate::handleStateSeenCr(uchar c, QQueue<uchar> *buffer)
     default:
         if (!synced)
             buffer->enqueue(c);
-        else if (c == DM)
+        else if (uc == DM)
             synced = false;
-        if (c == CR)
+        if (uc == CR)
             state = SEENCR;
         else
             state = TOP_LEVEL;
@@ -174,9 +165,9 @@ void TelnetPrivate::handleStateSeenCr(uchar c, QQueue<uchar> *buffer)
     }
 }
 
-void TelnetPrivate::handleStateSeenIac(uchar c)
+void TelnetPrivate::handleStateSeenIac(char c)
 {
-    switch (c)
+    switch (static_cast<uchar>(c))
     {
     case DO:
         state = SEENDO;
@@ -203,66 +194,68 @@ void TelnetPrivate::handleStateSeenIac(uchar c)
     }
 }
 
-void TelnetPrivate::handleStateSeenWill(uchar c)
+void TelnetPrivate::handleStateSeenWill(char c)
 {
-    switch (c)
+    switch (static_cast<uchar>(c))
     {
     case TELOPT_ECHO:
     case TELOPT_SGA:
     case TELOPT_BINARY:
-        sendCommand(DO, c);
+        sendCommand((char)DO, c);
         break;
     default:
-        sendCommand(DONT, c);
+        sendCommand((char)DONT, c);
         break;
     }
     state = TOP_LEVEL;
 }
 
-void TelnetPrivate::handleStateSeenDo(uchar c)
+void TelnetPrivate::handleStateSeenDo(char c)
 {
     QByteArray bs;
-    switch (c)
+    switch (static_cast<uchar>(c))
     {
     case TELOPT_NAWS:
-        sendCommand(WILL, c);
-        bs.append(IAC);
-        bs.append(SB);
-        bs.append(TELOPT_NAWS);
+        sendCommand((char)WILL, c);
+        bs.append((char)IAC);
+        bs.append((char)SB);
+        bs.append((char)TELOPT_NAWS);
         bs.append('\x0');
         bs.append('\x50');
         bs.append('\x0');
         bs.append('\x18');
-        bs.append(IAC);
-        bs.append(SE);
+        bs.append((char)IAC);
+        bs.append((char)SE);
         sendBytes(bs);
         break;
     case TELOPT_TTYPE:
     case TELOPT_BINARY:
-        sendCommand(WILL, c);
+        sendCommand((char)WILL, c);
         break;
     default:
-        sendCommand(WONT, c);
+        sendCommand((char)WONT, c);
         break;
     }
     state = TOP_LEVEL;
 }
 
-void TelnetPrivate::handleStateSubNegIac(uchar c)
+void TelnetPrivate::handleStateSubNegIac(char c)
 {
-    if (c == SE)
+    uchar uc = static_cast<uchar>(c);
+    if (uc == SE)
     {
-        if (sbOption == TELOPT_TTYPE &&
-                sbBuffer.size() == 1 && sbBuffer.at(0) == TELQUAL_SEND)
+        if (sbOption == (uchar)TELOPT_TTYPE
+                && sbBuffer.size() == 1
+                && sbBuffer.at(0) == (char)TELQUAL_SEND)
         {
             QByteArray bs;
-            bs.append(IAC);
-            bs.append(SB);
-            bs.append(TELOPT_TTYPE);
-            bs.append(static_cast<char>(TELQUAL_IS));
+            bs.append((char)IAC);
+            bs.append((char)SB);
+            bs.append((char)TELOPT_TTYPE);
+            bs.append((char)TELQUAL_IS);
             bs.append("vt100");
-            bs.append(IAC);
-            bs.append(SE);
+            bs.append((char)IAC);
+            bs.append((char)SE);
             sendBytes(bs);
         }
         state = TOP_LEVEL;
@@ -275,10 +268,10 @@ void TelnetPrivate::handleStateSubNegIac(uchar c)
     }
 }
 
-void TelnetPrivate::sendCommand(uchar cmd, uchar option)
+void TelnetPrivate::sendCommand(char cmd, char option)
 {
     QByteArray data;
-    data.append(IAC);
+    data.append((char)IAC);
     data.append(cmd);
     data.append(option);
     q_ptr->sendBytes(data);

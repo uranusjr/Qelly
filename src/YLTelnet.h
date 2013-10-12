@@ -187,7 +187,7 @@ enum
     NUM_OPTS
 };
 
-enum
+enum State
 {
     TOP_LEVEL,
     SEENIAC,
