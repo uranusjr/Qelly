@@ -29,82 +29,54 @@ namespace UJ
 namespace Connection
 {
 
-Telnet::Telnet(QObject *parent) :
-    AbstractConnection(parent), _sbOption(TELOPT_BINARY), _socket(0),
-    _port(DefaultPort), _synced(false), _state(TOP_LEVEL)
+class TelnetPrivate
 {
-    _socket = new QTcpSocket(this);
-    connect(_socket, SIGNAL(hostFound()), SLOT(onSocketHostFound()));
-    connect(_socket, SIGNAL(connected()), SLOT(onSocketConnected()));
-    connect(_socket, SIGNAL(readyRead()), SLOT(onSocketReadyRead()));
-    connect(_socket, SIGNAL(disconnected()), SLOT(onSocketDisconnected()));
-    connect(_socket, SIGNAL(error(QAbstractSocket::SocketError)),
-            SLOT(onSocketError()));
-}
+    Q_DECLARE_PUBLIC(Telnet)
+    Telnet * const q_ptr;
 
-Telnet::~Telnet()
-{
-    close();
-}
+public:
+    TelnetPrivate(Telnet *q) :
+        q_ptr(q), sbOption(TELOPT_BINARY), socket(new QTcpSocket(q)),
+        port(Telnet::DefaultPort), synced(false), state(TOP_LEVEL) {}
+    void processBytes(QByteArray bytes);
 
-bool Telnet::connectTo(const QString &address, qint16 port)
-{
-    setProcessing(true);
-    _port = port < 0 ? DefaultPort : port;
-    _socket->connectToHost(address, _port);
-    return true;
-}
+    QByteArray sbBuffer;
+    uchar sbOption;
+    QTcpSocket *socket;
+    qint16 port;
+    bool synced;
 
-void Telnet::close()
-{
-    _socket->close();
-}
-
-void Telnet::reconnect()
-{
-    close();
-    connectToSite(site());
-}
-
-void Telnet::onSocketHostFound()
-{
-}
-
-void Telnet::onSocketConnected()
-{
-    setConnected(true);
-    setProcessing(false);
-    emit connected();
-}
-
-void Telnet::onSocketReadyRead()
-{
-    while (_socket->bytesAvailable())
+    enum State
     {
-        QByteArray data = _socket->read(512);
-        if (data.size() > 0)
-            processBytes(data);
-    }
-}
+        TOP_LEVEL,
+        SEENIAC,
+        SEENWILL,
+        SEENWONT,
+        SEENDO,
+        SEENDONT,
+        SEENSB,
+        SUBNEGOT,
+        SUBNEG_IAC,
+        SEENCR
+    } state;
 
-void Telnet::onSocketError()
-{
-    setProcessing(false);
-}
+private:
+    void sendCommand(uchar cmd, uchar option);
+    void sendBytes(QByteArray bytes);
+    void handleStateTopLevel(uchar c, QQueue<uchar> *buffer);
+    void handleStateSeenCr(uchar c, QQueue<uchar> *buffer);
+    void handleStateSeenIac(uchar c);
+    void handleStateSeenWill(uchar c);
+    void handleStateSeenDo(uchar c);
+    void handleStateSubNegIac(uchar c);
+};
 
-void Telnet::onSocketDisconnected()
-{
-    setProcessing(false);
-    setConnected(false);
-    emit disconnected();
-}
-
-void Telnet::processBytes(QByteArray bytes)
+void TelnetPrivate::processBytes(QByteArray bytes)
 {
     QQueue<uchar> buffer;
     foreach (uchar c, bytes)
     {
-        switch (_state)
+        switch (state)
         {
         case TOP_LEVEL:
             handleStateTopLevel(c, &buffer);
@@ -120,25 +92,25 @@ void Telnet::processBytes(QByteArray bytes)
             break;
         case SEENWONT:
             sendCommand(DONT, c);
-            _state = TOP_LEVEL;
+            state = TOP_LEVEL;
             break;
         case SEENDO:
             handleStateSeenDo(c);
             break;
         case SEENDONT:
             sendCommand(WONT, c);
-            _state = TOP_LEVEL;
+            state = TOP_LEVEL;
             break;
         case SEENSB:
-            _sbOption = c;
-            _sbBuffer.clear();
-            _state = SUBNEGOT;
+            sbOption = c;
+            sbBuffer.clear();
+            state = SUBNEGOT;
             break;
         case SUBNEGOT:
             if (c == IAC)
-                _state = SUBNEG_IAC;
+                state = SUBNEG_IAC;
             else
-                _sbBuffer.append(c);
+                sbBuffer.append(c);
             break;
         case SUBNEG_IAC:
             handleStateSubNegIac(c);
@@ -155,83 +127,83 @@ void Telnet::processBytes(QByteArray bytes)
         int length = buffer.size() < chunk_sz ? buffer.size() : chunk_sz;
         for (int i = 0; i < length; i++)
             data.append(buffer.dequeue());
-        emit processedBytes(data);
+        emit q_ptr->processedBytes(data);
     }
 }
 
-void Telnet::handleStateTopLevel(uchar c, QQueue<uchar> *buffer)
+void TelnetPrivate::handleStateTopLevel(uchar c, QQueue<uchar> *buffer)
 {
     switch (c)
     {
     case IAC:
-        _state = SEENIAC;
+        state = SEENIAC;
         break;
     default:
-        if (!_synced)
+        if (!synced)
             buffer->enqueue(c);
         else if (c == DM)
-            _synced = false;
+            synced = false;
         if (c == CR)
-            _state = SEENCR;
+            state = SEENCR;
         else
-            _state = TOP_LEVEL;
+            state = TOP_LEVEL;
         break;
     }
 }
 
-void Telnet::handleStateSeenCr(uchar c, QQueue<uchar> *buffer)
+void TelnetPrivate::handleStateSeenCr(uchar c, QQueue<uchar> *buffer)
 {
     switch (c)
     {
     case NUL:
-        _state = TOP_LEVEL;
+        state = TOP_LEVEL;
         break;
     case IAC:
-        _state = SEENIAC;
+        state = SEENIAC;
         break;
     default:
-        if (!_synced)
+        if (!synced)
             buffer->enqueue(c);
         else if (c == DM)
-            _synced = false;
+            synced = false;
         if (c == CR)
-            _state = SEENCR;
+            state = SEENCR;
         else
-            _state = TOP_LEVEL;
+            state = TOP_LEVEL;
         break;
     }
 }
 
-void Telnet::handleStateSeenIac(uchar c)
+void TelnetPrivate::handleStateSeenIac(uchar c)
 {
     switch (c)
     {
     case DO:
-        _state = SEENDO;
+        state = SEENDO;
         break;
     case DONT:
-        _state = SEENDONT;
+        state = SEENDONT;
         break;
     case WILL:
-        _state = SEENWILL;
+        state = SEENWILL;
         break;
     case WONT:
-        _state = SEENWONT;
+        state = SEENWONT;
         break;
     case SB:
-        _state = SEENSB;
+        state = SEENSB;
         break;
     case DM:
-        _synced = false;
-        _state = TOP_LEVEL;
+        synced = false;
+        state = TOP_LEVEL;
         break;
     default:
-        _state = TOP_LEVEL;
+        state = TOP_LEVEL;
         break;
     }
 }
 
-void Telnet::handleStateSeenWill(uchar c)
+void TelnetPrivate::handleStateSeenWill(uchar c)
 {
     switch (c)
     {
@@ -244,10 +216,10 @@ void Telnet::handleStateSeenWill(uchar c)
         sendCommand(DONT, c);
         break;
     }
-    _state = TOP_LEVEL;
+    state = TOP_LEVEL;
 }
 
-void Telnet::handleStateSeenDo(uchar c)
+void TelnetPrivate::handleStateSeenDo(uchar c)
 {
     QByteArray bs;
     switch (c)
@@ -273,15 +245,15 @@ void Telnet::handleStateSeenDo(uchar c)
         sendCommand(WONT, c);
         break;
     }
-    _state = TOP_LEVEL;
+    state = TOP_LEVEL;
 }
 
-void Telnet::handleStateSubNegIac(uchar c)
+void TelnetPrivate::handleStateSubNegIac(uchar c)
 {
     if (c == SE)
     {
-        if (_sbOption == TELOPT_TTYPE &&
-                _sbBuffer.size() == 1 && _sbBuffer.at(0) == TELQUAL_SEND)
+        if (sbOption == TELOPT_TTYPE &&
+                sbBuffer.size() == 1 && sbBuffer.at(0) == TELQUAL_SEND)
         {
             QByteArray bs;
             bs.append(IAC);
@@ -293,32 +265,31 @@ void Telnet::handleStateSubNegIac(uchar c)
             bs.append(SE);
             sendBytes(bs);
         }
-        _state = TOP_LEVEL;
-        _sbBuffer.clear();
+        state = TOP_LEVEL;
+        sbBuffer.clear();
     }
     else
     {
-        _sbBuffer.append(c);
-        _state = SUBNEGOT;
+        sbBuffer.append(c);
+        state = SUBNEGOT;
     }
 }
 
-void Telnet::sendCommand(uchar cmd, uchar option)
+void TelnetPrivate::sendCommand(uchar cmd, uchar option)
 {
     QByteArray data;
     data.append(IAC);
     data.append(cmd);
     data.append(option);
-    sendBytes(data);
+    q_ptr->sendBytes(data);
 }
 
-void Telnet::sendBytes(QByteArray bytes)
+void TelnetPrivate::sendBytes(QByteArray bytes)
 {
     if (bytes.isEmpty())
         return;
 
-    setLastTouch();
-    switch (_socket->state())
+    switch (socket->state())
     {
     case QAbstractSocket::UnconnectedState:
     case QAbstractSocket::HostLookupState:
@@ -328,13 +299,93 @@ void Telnet::sendBytes(QByteArray bytes)
     default:
         break;
     }
-    qint64 sz = _socket->write(bytes);
-    if (sz == bytes.size())
-        return;
-    else if (sz <= 0)
-        sendBytes(bytes);
+    qint64 sz = socket->write(bytes);
+    if (sz <= 0)
+    {
+        sendBytes(bytes);               // Failed. Retry.
+    }
     else
-        sendBytes(bytes.mid(sz)); // restart from want we left off
+    {
+        q_ptr->setLastTouch();
+        if (sz != bytes.size())
+            sendBytes(bytes.mid(sz));   // restart from want we left off
+    }
+}
+
+Telnet::Telnet(QObject *parent) :
+    AbstractConnection(parent), d_ptr(new TelnetPrivate(this))
+{
+    Q_D(Telnet);
+    connect(d->socket, SIGNAL(hostFound()), SLOT(onSocketHostFound()));
+    connect(d->socket, SIGNAL(connected()), SLOT(onSocketConnected()));
+    connect(d->socket, SIGNAL(readyRead()), SLOT(onSocketReadyRead()));
+    connect(d->socket, SIGNAL(disconnected()), SLOT(onSocketDisconnected()));
+    connect(d->socket, SIGNAL(error(QAbstractSocket::SocketError)),
+            SLOT(onSocketError()));
+}
+
+Telnet::~Telnet()
+{
+    close();
+}
+
+bool Telnet::connectTo(const QString &address, qint16 port)
+{
+    Q_D(Telnet);
+    setProcessing(true);
+    d->port = port < 0 ? DefaultPort : port;
+    d->socket->connectToHost(address, d->port);
+    return true;
+}
+
+void Telnet::close()
+{
+    d_ptr->socket->close();
+}
+
+void Telnet::reconnect()
+{
+    close();
+    connectToSite(site());
+}
+
+void Telnet::onSocketHostFound()
+{
+}
+
+void Telnet::onSocketConnected()
+{
+    setConnected(true);
+    setProcessing(false);
+    emit connected();
+}
+
+void Telnet::onSocketReadyRead()
+{
+    Q_D(Telnet);
+    while (d->socket->bytesAvailable())
+    {
+        QByteArray data = d->socket->read(512);
+        if (data.size() > 0)
+            d->processBytes(data);
+    }
+}
+
+void Telnet::onSocketError()
+{
+    setProcessing(false);
+}
+
+void Telnet::onSocketDisconnected()
+{
+    setProcessing(false);
+    setConnected(false);
+    emit disconnected();
+}
+
+void Telnet::sendBytes(QByteArray bytes)
+{
+    d_ptr->sendBytes(bytes);
 }
 
 }   // namespace Connection

@@ -31,9 +31,13 @@ namespace UJ
 namespace Connection
 {
 
+class TelnetPrivate;
+
 class Telnet : public AbstractConnection
 {
     Q_OBJECT
+    Q_DECLARE_PRIVATE(Telnet)
+    TelnetPrivate * const d_ptr;
 
 public:
     explicit Telnet(QObject *parent = 0);
@@ -54,36 +58,6 @@ private slots:
     void onSocketReadyRead();
     void onSocketError();
     void onSocketDisconnected();
-
-private:
-    void processBytes(QByteArray bytes);
-    void sendCommand(uchar cmd, uchar option);
-    void handleStateTopLevel(uchar c, QQueue<uchar> *buffer);
-    void handleStateSeenCr(uchar c, QQueue<uchar> *buffer);
-    void handleStateSeenIac(uchar c);
-    void handleStateSeenWill(uchar c);
-    void handleStateSeenDo(uchar c);
-    void handleStateSubNegIac(uchar c);
-
-    QByteArray _sbBuffer;
-    uchar _sbOption;
-    QTcpSocket *_socket;
-    qint16 _port;
-    bool _synced;
-
-    enum State
-    {
-        TOP_LEVEL,
-        SEENIAC,
-        SEENWILL,
-        SEENWONT,
-        SEENDO,
-        SEENDONT,
-        SEENSB,
-        SUBNEGOT,
-        SUBNEG_IAC,
-        SEENCR
-    } _state;
 };
 
 }   // namespace Connection
