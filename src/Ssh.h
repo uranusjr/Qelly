@@ -40,7 +40,7 @@ public:
 public slots:
     virtual void close();
     virtual void reconnect();
-    virtual void sendBytes(QByteArray bytes);
+    virtual void sendBytes(const QByteArray &bytes);
 
 protected:
     virtual bool connectTo(const QString &address, qint16 port);

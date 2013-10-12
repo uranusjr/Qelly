@@ -46,7 +46,7 @@ public:
 public slots:
     virtual void close() = 0;
     virtual void reconnect() = 0;
-    virtual void sendBytes(QByteArray bytes) = 0;
+    virtual void sendBytes(const QByteArray &bytes) = 0;
 
 protected:
     virtual bool connectTo(const QString &address, qint16 port) = 0;

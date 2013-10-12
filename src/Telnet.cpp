@@ -51,7 +51,7 @@ public:
 
 private:
     void sendCommand(char cmd, char option);
-    void sendBytes(QByteArray bytes);
+    void sendBytes(const QByteArray &bytes);
     void handleStateTopLevel(char c, QQueue<char> *buffer);
     void handleStateSeenCr(char c, QQueue<char> *buffer);
     void handleStateSeenIac(char c);
@@ -277,7 +277,7 @@ void TelnetPrivate::sendCommand(char cmd, char option)
     q_ptr->sendBytes(data);
 }
 
-void TelnetPrivate::sendBytes(QByteArray bytes)
+void TelnetPrivate::sendBytes(const QByteArray &bytes)
 {
     if (bytes.isEmpty())
         return;
@@ -376,7 +376,7 @@ void Telnet::onSocketDisconnected()
     emit disconnected();
 }
 
-void Telnet::sendBytes(QByteArray bytes)
+void Telnet::sendBytes(const QByteArray &bytes)
 {
     d_ptr->sendBytes(bytes);
 }

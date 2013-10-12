@@ -119,7 +119,7 @@ void Ssh::onProcessFinished()
     emit disconnected();
 }
 
-void Ssh::sendBytes(QByteArray bytes)
+void Ssh::sendBytes(const QByteArray &bytes)
 {
     if (bytes.isEmpty())
         return;
