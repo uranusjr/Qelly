@@ -96,7 +96,7 @@ void TelnetPrivate::processBytes(QByteArray bytes)
             state = SUBNEGOT;
             break;
         case SUBNEGOT:
-            if (c == IAC)
+            if (static_cast<uchar>(c) == IAC)
                 state = SUBNEG_IAC;
             else
                 sbBuffer.append(c);
