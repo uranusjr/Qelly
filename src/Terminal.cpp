@@ -48,7 +48,8 @@ Terminal::~Terminal()
     for (int i = 0; i < _row; i++)
         delete [] _cells[i];
     delete [] _cells;
-    _connection->deleteLater();
+    if (_connection)
+        _connection->deleteLater();
 }
 
 void Terminal::initSettings()
@@ -1191,9 +1192,9 @@ void Terminal::setConnection(AbstractConnection *connection)
     if (_connection)
         _connection->deleteLater();
     _connection = connection;
-    _connection->setParent(this);
     if (!_connection)
         return;
+    _connection->setParent(this);
     connect(_connection, SIGNAL(connected()), this, SLOT(startConnection()));
     connect(_connection, SIGNAL(disconnected()), this, SLOT(closeConnection()));
     connect(_connection, SIGNAL(processedBytes(QByteArray)),

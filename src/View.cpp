@@ -226,17 +226,27 @@ void View::mouseReleaseEvent(QMouseEvent *e)
 {
     Q_D(View);
 
-    if (!d->selectedLength && isConnected())
+    if (!isConnected())             // Not connected
+        ;
+    else if (d->selectedLength)     // Is selecting
+        ;
+    else if (e->modifiers())        // Is Modified click
+        ;
+    else
     {
         int index = d->indexFromPoint(e->pos());
         bool hasUrl = false;
         QString url = d->terminal->urlStringAt(
                     index / d->column, index % d->column, &hasUrl);
-        if (hasUrl && e->button() == Qt::LeftButton
-                && !(e->modifiers() & UJ::ModModifier))
+        if (hasUrl)     // Is clicking on a URL
         {
-            // NOTE: Should we implement image previewer at all?
-            QDesktopServices::openUrl(QUrl(url, QUrl::TolerantMode));
+            if (e->button() == Qt::LeftButton)
+                QDesktopServices::openUrl(QUrl(url, QUrl::TolerantMode));
+        }
+        else            // Not clicking on a URL
+        {
+            if (e->button() == Qt::MiddleButton)
+                paste();
         }
     }
 
@@ -725,6 +735,8 @@ void View::copy()
 
 void View::paste()
 {
+    if (!isConnected())
+        return;
     const QMimeData *data = QApplication::clipboard()->mimeData();
     if (data->hasText())
         insertText(data->text(), 1);
@@ -732,6 +744,9 @@ void View::paste()
 
 void View::pasteColor()
 {
+    if (!isConnected())
+        return;
+
     Q_D(View);
 
     const QMimeData *mime = QApplication::clipboard()->mimeData();
@@ -859,7 +874,7 @@ void View::contextMenuEvent(QContextMenuEvent *e)
 bool View::isConnected()
 {
     Q_D(View);
-    return (d->terminal != 0 && d->terminal->connection() != 0 &&
+    return (d->terminal && d->terminal->connection() &&
             d->terminal->connection()->isConnected());
 }
 

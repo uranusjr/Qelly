@@ -111,13 +111,8 @@ public:
     QTimer *insertTimer;
     int selectedStart;
     int selectedLength;
-    int markedStart;
-    int markedLength;
     QPixmap *backImage;
-    bool backImageFlipped;
     bool blinkTicker;
-    QVector<QSize> singleAdvances;
-    QVector<QSize> doubleAdvances;
     Connection::Terminal *terminal;
     QPainter *painter;
     QString address;

@@ -394,13 +394,15 @@ void Controller::showPreferencesWindow()
 
 void Controller::showAbout()
 {
-    static const QString text(fromFile(":/data/about.html"));
+    static const QString text =
+            QString::fromUtf8(fromFile(":/data/about.html"));
     QMessageBox::about(_window, "About", text);
 }
 
 void Controller::showAcknowledgement()
 {
-    static const QString text(fromFile(":/data/acknowledgement.html"));
+    static const QString text =
+            QString::fromUtf8(fromFile(":/data/acknowledgement.html"));
     QMessageBox::about(_window, "About", text);
 }
 

@@ -18,7 +18,7 @@
 isEmpty( QMAKE_LRELEASE ) {
     QMAKE_LRELEASE = $$[QT_INSTALL_BINS]/lrelease
 }
-newline = $$escape_expand(\n\t)
+newline = $$escape_expand(\\n\\t)
 transdir = $${DESTDIR}/translations
 
 # Build custom tools

@@ -40,8 +40,7 @@ namespace Qelly
 
 ViewPrivate::ViewPrivate(View *q)
     : q_ptr(q), selectedStart(PositionNotFound), selectedLength(0),
-      markedStart(PositionNotFound), markedLength(0), backImage(0),
-      backImageFlipped(false), blinkTicker(false), terminal(0)
+      backImage(0), blinkTicker(false), terminal(0)
 {
     prefs = SharedPreferences::sharedInstance();
     painter = new QPainter();
@@ -67,17 +66,6 @@ ViewPrivate::~ViewPrivate()
 void ViewPrivate::buildInfo()
 {
     updateCellSize();
-    if (singleAdvances.isEmpty() || doubleAdvances.isEmpty())
-    {
-        singleAdvances.clear();
-        doubleAdvances.clear();
-        for (int i = 0; i < column; i++)
-        {
-            singleAdvances << QSize(cellWidth * 1, 0);
-            doubleAdvances << QSize(cellWidth * 2, 0);
-        }
-    }
-
     insertBuffer.clear();
     insertTimer = new QTimer(q_ptr);
     q_ptr->connect(insertTimer, SIGNAL(timeout()), SLOT(popInsertBuffer()));
@@ -340,7 +328,8 @@ void ViewPrivate::addActionsToContextMenu(QMenu *menu)
     }
 
     // C. Other menu entries
-    menu->addSeparator();
+    if (!menu->isEmpty())
+        menu->addSeparator();
     if (!s.isEmpty())
     {
         QAction *action = menu->addAction("Google", q, SLOT(google()));

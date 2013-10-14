@@ -69,9 +69,7 @@ void MainWindow::buildToolBar()
     _address->setPlaceholderText(tr("Input site address"));
     _address->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     _address->setFocusPolicy(Qt::ClickFocus);
-    QLabel *inputLabel = new QLabel(QString("<small>") +
-                                    tr("Address") +
-                                    QString("</small>"));
+    QLabel *inputLabel = new QLabel(tr("Address"));
     inputLabel->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
     inputLabel->setAlignment(Qt::AlignCenter);
     inputLabel->setFocusPolicy(Qt::ClickFocus);
@@ -128,7 +126,7 @@ bool MainWindow::event(QEvent *e)
     case QEvent::Move:
         _prefs->setWindowGeometry(saveGeometry());
         break;
-#ifndef Q_OS_MAC
+#ifdef Q_OS_WIN
     case QEvent::WindowStateChange:
     {
         // When return to normal state from maximized state, automatically
