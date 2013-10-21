@@ -1,3 +1,27 @@
+1.0a3
+--------
+
+- Bugfixes
+    * If you choose to "restore connections on quit," only one of the
+      old connections could be restored.
+    * Wrong translation names on Linux with LilyTerm, and OS X.
+    * Context menu glitch when there are no entries in it.
+    * Various crashes when a terminal is not connected.
+    * Encoding mismatch when compiled with Qt 4.
+
+- New features
+    * Middle-click on mouse to paste.
+    * You can now make new connections even with the toolbar hidden,
+      in which case the address bar will appear in a popup box. Useful
+      if you're on a very small screen.
+
+- Enhancements
+    * Toolbar font is now unified.
+    * Translation files are now bundled into the executable.
+    * Better resigin logic.
+    * "Auto-fit" feature is now turned off on all non-Windows OSs.
+
+
 1.0a2
 --------
 
