@@ -45,10 +45,10 @@ ViewPrivate::ViewPrivate(View *q)
     prefs = SharedPreferences::sharedInstance();
     painter = new QPainter();
     preeditHolder = new PreeditTextHolder(q_ptr);
+    q->setFocusProxy(preeditHolder);
+    preeditHolder->installEventFilter(q);
     q->connect(preeditHolder, SIGNAL(hasCommitString(QInputMethodEvent*)),
-               SLOT(commitFromPreeditHolder(QInputMethodEvent*)));
-    q->connect(preeditHolder, SIGNAL(preeditStringCleared(QInputMethodEvent*)),
-               SLOT(clearPreeditHolder()));
+               SLOT(commitPreeditHolder(QInputMethodEvent*)));
 
     buildInfo();
 }
@@ -846,18 +846,6 @@ QString ViewPrivate::selection() const
     return terminal->stringFromIndex(start, length);
 }
 
-void ViewPrivate::showPreeditHolder()
-{
-    preeditHolder->show();
-    preeditHolder->setFocus(Qt::PopupFocusReason);
-}
-
-void ViewPrivate::hidePreeditHolder()
-{
-    q_ptr->setFocus(Qt::PopupFocusReason);
-    preeditHolder->hide();
-}
-
 void ViewPrivate::updateCursor(
         const QPoint &pos, Qt::KeyboardModifiers modifiers,
         Qt::MouseButtons buttons)
@@ -871,10 +859,80 @@ void ViewPrivate::updateCursor(
         q->unsetCursor();
 }
 
-void UJ::Qelly::ViewPrivate::addUrlToMenu(const QString &url, QMenu *menu) const
+void ViewPrivate::addUrlToMenu(const QString &url, QMenu *menu) const
 {
     QAction *action = menu->addAction(url, q_ptr, SLOT(openUrl()));
     action->setData(url);
+}
+
+void ViewPrivate::handleKeyPress(QKeyEvent *e)
+{
+    Q_Q(View);
+        int key = e->key();
+        if (key != UJ::Key_Mod)
+            clearSelection();
+        terminal->setHasMessage(false);
+
+        bool ok = false;
+        Qt::KeyboardModifiers modifiers = e->modifiers();
+        const QString &text = e->text();
+
+        updateCursor(q->mapFromGlobal(QCursor::pos()), modifiers, 0);
+
+        if (modifiers & Qt::ControlModifier)
+        {
+            int c = characterFromKeyPress(key, modifiers, &ok);
+            if (ok)
+                emit q->hasBytesToSend(QByteArray(1, c));
+        }
+        else    // No modifier
+        {
+            switch (key)
+            {
+            case Qt::Key_Up:
+            case Qt::Key_Down:
+            case Qt::Key_Right:
+            case Qt::Key_Left:
+                handleArrowKey(key);
+                break;
+            case Qt::Key_PageUp:
+            case Qt::Key_PageDown:
+            case Qt::Key_Home:
+            case Qt::Key_End:
+                handleJumpKey(key);
+                break;
+            case Qt::Key_Delete:
+                handleForwardDeleteKey();
+                break;
+            case 0x7f:
+                handleAsciiDelete();
+                break;
+            default:
+                emit q->hasBytesToSend(text.toLatin1());   // Normal text input
+                break;
+            }
+        }
+        e->accept();
+}
+
+void ViewPrivate::handleKeyRelease(QKeyEvent *e)
+{
+    Q_Q(View);
+    if (q->isConnected())
+        updateCursor(q->mapFromGlobal(QCursor::pos()), e->modifiers(), 0);
+}
+
+void ViewPrivate::handleInputMethod(QInputMethodEvent *)
+{
+    // Put the holder near the cursor. Usually we put it one row above
+    // it (with some extra cusion, so it's 1.2 instead of 1), but if the
+    // cursor is at row 0 or 1, put it one row UNDER it instead.
+    QPoint p = pointFromIndex(terminal->cursorColumn(), terminal->cursorRow());
+    if (p.y() <= cellHeight * 2)
+        p.ry() += cellHeight * 1.2;
+    else
+        p.ry() -= cellHeight * 1.2;
+    preeditHolder->move(p);
 }
 
 }   // namespace Qelly

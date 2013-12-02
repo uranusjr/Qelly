@@ -37,11 +37,11 @@ public:
     explicit PreeditTextHolder(QWidget *parent = 0);
     int widthForText(const QString &text);
 
-    virtual void inputMethodEvent(QInputMethodEvent *e);
-
 signals:
     void hasCommitString(QInputMethodEvent *);
-    void preeditStringCleared(QInputMethodEvent *);
+
+protected:
+    virtual void inputMethodEvent(QInputMethodEvent *e);
 
 private:
     SharedPreferences *_prefs;

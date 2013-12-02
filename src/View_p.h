@@ -20,6 +20,8 @@
 #define VIEW_P_H
 
 #include <cctype>
+#include <QInputMethodEvent>
+#include <QKeyEvent>
 #include <QPixmap>
 #include <QPoint>
 #include <QQueue>
@@ -95,10 +97,12 @@ public:
     void addUrlToMenu(const QString &url, QMenu *menu) const;
     QString selection() const;
 
-    void showPreeditHolder();
-    void hidePreeditHolder();
     void updateCursor(const QPoint &pos, Qt::KeyboardModifiers modifiers,
                       Qt::MouseButtons buttons);
+
+    void handleKeyPress(QKeyEvent *e);
+    void handleKeyRelease(QKeyEvent *e);
+    void handleInputMethod(QInputMethodEvent *);
 
     SharedPreferences *prefs;
     int cellWidth;
