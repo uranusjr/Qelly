@@ -755,6 +755,7 @@ void View::pasteColor()
 bool View::eventFilter(QObject *obj, QEvent *e)
 {
     Q_D(View);
+    bool intercept = Qx::Widget::eventFilter(obj, e);
 
     if (obj == d->preeditHolder)
     {
@@ -767,16 +768,18 @@ bool View::eventFilter(QObject *obj, QEvent *e)
                 break;
             case QEvent::KeyPress:
                 d->handleKeyPress(dynamic_cast<QKeyEvent *>(e));
+                intercept = true;
                 break;
             case QEvent::KeyRelease:
                 d->handleKeyRelease(dynamic_cast<QKeyEvent *>(e));
+                intercept = true;
+                break;
             default:
                 break;
             }
-            return true;
         }
     }
-    return Qx::Widget::eventFilter(obj, e);
+    return intercept;
 }
 
 void View::contextMenuEvent(QContextMenuEvent *e)
