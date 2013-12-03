@@ -56,7 +56,9 @@ public:
     {
         if (file->open(QIODevice::ReadOnly | flags()))
         {
-            data = QxtJSON::parse(file->readAll()).toList();
+            QByteArray bytes = file->readAll();
+            data = QxtJSON::parse(QString::fromUtf8(bytes.constData(),
+                                                    bytes.size())).toList();
             file->close();
         }
     }
