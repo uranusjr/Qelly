@@ -1,0 +1,3 @@
+[submodule "3rdparty/libqxt"]
+	path = 3rdparty/libqxt
+	url = https://uranusjr@bitbucket.org/uranusjr/libqxt.git
