@@ -51,8 +51,6 @@ View::View(QWidget *parent) : Widget(parent)
 
     setMouseTracking(true);
     setFocusPolicy(Qt::StrongFocus);
-    setAttribute(Qt::WA_InputMethodEnabled);
-    setAttribute(Qt::WA_KeyCompression, false);     // One key per key event
     startTimer(QApplication::cursorFlashTime());    // NOTE: Use preferences
 }
 
@@ -79,22 +77,6 @@ bool View::focusNextPrevChild(bool)
     // backtab away from it. This makes it possible to stop the default Tab
     // and Ctrl+Tab behavior in QWidget::event()
     return false;
-}
-
-void View::commitFromPreeditHolder(QInputMethodEvent *e)
-{
-    Q_D(View);
-    if (e->preeditString().isEmpty())
-        d->hidePreeditHolder();
-    QString newText = d->preeditHolder->text().replace(e->commitString(), "");
-    d->preeditHolder->setText(newText);
-
-    insertText(e->commitString());
-}
-
-void View::clearPreeditHolder()
-{
-    d_ptr->hidePreeditHolder();
 }
 
 void View::mousePressEvent(QMouseEvent *e)
@@ -251,98 +233,6 @@ void View::mouseReleaseEvent(QMouseEvent *e)
     }
 
     return Qx::Widget::mouseReleaseEvent(e);
-}
-
-void View::keyPressEvent(QKeyEvent *e)
-{
-    Q_D(View);
-
-    if (isConnected() && d->preeditHolder->isHidden())
-    {
-        int key = e->key();
-        if (key != UJ::Key_Mod)
-            d->clearSelection();
-        d->terminal->setHasMessage(false);
-
-        bool ok = false;
-        Qt::KeyboardModifiers modifiers = e->modifiers();
-        const QString &text = e->text();
-
-        d->updateCursor(mapFromGlobal(QCursor::pos()), modifiers, 0);
-
-        if (modifiers & Qt::ControlModifier)
-        {
-            int c = d->characterFromKeyPress(key, modifiers, &ok);
-            if (ok)
-                emit hasBytesToSend(QByteArray(1, c));
-        }
-        else    // No modifier
-        {
-            switch (key)
-            {
-            case Qt::Key_Up:
-            case Qt::Key_Down:
-            case Qt::Key_Right:
-            case Qt::Key_Left:
-                d->handleArrowKey(key);
-                break;
-            case Qt::Key_PageUp:
-            case Qt::Key_PageDown:
-            case Qt::Key_Home:
-            case Qt::Key_End:
-                d->handleJumpKey(key);
-                break;
-            case Qt::Key_Delete:
-                d->handleForwardDeleteKey();
-                break;
-            case 0x7f:
-                d->handleAsciiDelete();
-                break;
-            default:
-                emit hasBytesToSend(text.toLatin1());   // Normal text input
-                break;
-            }
-        }
-        e->accept();
-    }
-    else
-    {
-        Qx::Widget::keyPressEvent(e);
-    }
-}
-
-void View::keyReleaseEvent(QKeyEvent *e)
-{
-    if (isConnected())
-        d_ptr->updateCursor(mapFromGlobal(QCursor::pos()), e->modifiers(), 0);
-    Qx::Widget::keyReleaseEvent(e);
-}
-
-void View::inputMethodEvent(QInputMethodEvent *e)
-{
-    Q_D(View);
-
-    if (isConnected())
-    {
-        // Put the holder near the cursor. Usually we put it one row above it
-        // (with some extra cusion, so it's 1.2 instead of 1), but if the cursor
-        // is at row 0 or 1, put it one row UNDER it instead.
-        QPoint p = d->pointFromIndex(d->terminal->cursorColumn(),
-                                     d->terminal->cursorRow());
-        if (p.y() <= d->cellHeight * 2)
-            p.ry() += d->cellHeight * 1.2;
-        else
-            p.ry() -= d->cellHeight * 1.2;
-        d->preeditHolder->move(p);
-
-        if (e->preeditString().isEmpty())
-            d->hidePreeditHolder();
-        else
-            d->showPreeditHolder();
-        d->preeditHolder->inputMethodEvent(e);
-    }
-
-    Qx::Widget::inputMethodEvent(e);
 }
 
 void View::insertText(const QString &string, uint delayMs)
@@ -862,6 +752,36 @@ void View::pasteColor()
     d->insertTimer->start();
 }
 
+bool View::eventFilter(QObject *obj, QEvent *e)
+{
+    Q_D(View);
+    bool intercept = Qx::Widget::eventFilter(obj, e);
+
+    if (obj == d->preeditHolder)
+    {
+        if (isConnected())
+        {
+            switch (e->type())
+            {
+            case QEvent::InputMethod:
+                d->handleInputMethod(dynamic_cast<QInputMethodEvent *>(e));
+                break;
+            case QEvent::KeyPress:
+                d->handleKeyPress(dynamic_cast<QKeyEvent *>(e));
+                intercept = true;
+                break;
+            case QEvent::KeyRelease:
+                d->handleKeyRelease(dynamic_cast<QKeyEvent *>(e));
+                intercept = true;
+                break;
+            default:
+                break;
+            }
+        }
+    }
+    return intercept;
+}
+
 void View::contextMenuEvent(QContextMenuEvent *e)
 {
     QMenu menu(this);
@@ -905,6 +825,14 @@ void View::setTerminal(Connection::Terminal *terminal)
 void View::setAddress(const QString &address)
 {
     d_ptr->address = address;
+}
+
+void View::commitPreeditHolder(QInputMethodEvent *e)
+{
+    Q_D(View);
+    QString newText = d->preeditHolder->text().replace(e->commitString(), "");
+    d->preeditHolder->setText(newText);
+    insertText(e->commitString());
 }
 
 }   // namespace Qelly

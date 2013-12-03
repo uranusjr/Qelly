@@ -47,7 +47,7 @@ PreeditTextHolder::PreeditTextHolder(QWidget *parent) : QLineEdit(parent)
               "border-radius:" << _borderRadius << "px;" <<
               "}";
     setStyleSheet(style);
-    hide();
+    resize(0, height());
 }
 
 int PreeditTextHolder::widthForText(const QString &text)
@@ -59,11 +59,12 @@ int PreeditTextHolder::widthForText(const QString &text)
 void PreeditTextHolder::inputMethodEvent(QInputMethodEvent *e)
 {
     QLineEdit::inputMethodEvent(e);
+    if (e->preeditString().isEmpty())
+        resize(0, height());
+    else
+        resize(widthForText(e->preeditString()), height());
     if (!e->commitString().isEmpty())
         emit hasCommitString(e);
-    if (e->preeditString().isEmpty())
-        emit preeditStringCleared(e);
-    resize(widthForText(e->preeditString()), height());
 }
 
 }   // namespace Qelly

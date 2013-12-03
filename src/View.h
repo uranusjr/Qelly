@@ -62,15 +62,13 @@ public slots:
     void pasteColor();
 
 protected:
+    virtual bool eventFilter(QObject *obj, QEvent *e);
     virtual void contextMenuEvent(QContextMenuEvent *e);
     virtual void mousePressEvent(QMouseEvent *e);
     virtual void mouseDoubleClickEvent(QMouseEvent *e);
     virtual void mouseTripleClickEvent(QMouseEvent *e);
     virtual void mouseReleaseEvent(QMouseEvent *);
     virtual void mouseMoveEvent(QMouseEvent *e);
-    virtual void keyPressEvent(QKeyEvent *e);
-    virtual void keyReleaseEvent(QKeyEvent *e);
-    virtual void inputMethodEvent(QInputMethodEvent *e);
     virtual void paintEvent(QPaintEvent *e);
     virtual void focusInEvent(QFocusEvent *e);
     virtual void timerEvent(QTimerEvent *);
@@ -81,8 +79,7 @@ signals:
     void shouldChangeAddress(const QString &address);
 
 private slots:
-    void commitFromPreeditHolder(QInputMethodEvent *e);
-    void clearPreeditHolder();
+    void commitPreeditHolder(QInputMethodEvent *e);
     void popInsertBuffer();
     void openUrl();
     void google();
