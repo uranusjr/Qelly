@@ -124,21 +124,24 @@ bool MainWindow::event(QEvent *e)
     {
     case QEvent::Resize:
     case QEvent::Move:
-        _prefs->setWindowGeometry(saveGeometry());
+        if (geometry() != QDesktopWidget().availableGeometry())
+            _prefs->setWindowGeometry(saveGeometry());
         break;
-#ifdef Q_OS_WIN
     case QEvent::WindowStateChange:
     {
+#ifdef Q_OS_WIN
         // When return to normal state from maximized state, automatically
-        // adapt the recommended size. We don't do this on for Mac because OS X
-        // windows don't have a "maximized" state anyway, and the auto-resizing
-        // feature doesn't work well with `setUnifiedTitleAndToolBarOnMac`
+        // adapt the recommended size. We do this only on Windows because it is
+        // the only OS that really has a distinctive "maximized" state, and the
+        // auto-resizing feature doesn't work well with many geometry restoring
+        // process and `setUnifiedTitleAndToolBarOnMac`.
         QWindowStateChangeEvent *ce = static_cast<QWindowStateChangeEvent *>(e);
         if ((ce->oldState() & Qt::WindowMaximized) && !isMaximized())
             resize(sizeHint());
+#endif
+        _prefs->setMaximized(isMaximized());
         break;
     }
-#endif
     default:
         break;
     }

@@ -90,7 +90,10 @@ Controller::Controller(QObject *parent) :
             SLOT(closeTab(int)));
 
     SharedPreferences *prefs = SharedPreferences::sharedInstance();
-    _window->show();
+    if (prefs->isMaximized())
+        _window->showMaximized();
+    else
+        _window->show();
     if (prefs->restoreConnectionsOnStartup())
     {
         foreach (Connection::Site *site, prefs->storedConnections())

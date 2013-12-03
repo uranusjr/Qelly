@@ -57,6 +57,8 @@ public:
     // General settings
     QByteArray windowGeometry() const;
     void setWindowGeometry(const QByteArray &geo);
+    bool isMaximized() const;
+    void setMaximized(bool m);
     int cellWidth() const;
     void setCellWidth(int w);
     int cellHeight() const;

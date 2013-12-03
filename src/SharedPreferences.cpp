@@ -58,6 +58,16 @@ void SharedPreferences::setWindowGeometry(const QByteArray &geo)
     _settings->setValue("window frame", geo);
 }
 
+bool SharedPreferences::isMaximized() const
+{
+    return _settings->value("window maximized").toBool();
+}
+
+void SharedPreferences::setMaximized(bool m)
+{
+    _settings->setValue("window maximized", m);
+}
+
 int SharedPreferences::cellWidth() const
 {
     return _settings->value("cell width", 12).toInt();
