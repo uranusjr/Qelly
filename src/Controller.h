@@ -80,6 +80,7 @@ protected:
 private slots:
     void updateAll();
     void minimize();
+    void onTabChanged(int to);
 
 private:
     View *currentView() const;

@@ -173,8 +173,8 @@ void Controller::connectWith(Connection::Site *site)
     view->setTerminal(terminal);
     view->setAddress(site->fullForm());
     view->setFocus(Qt::OtherFocusReason);
-    connect(view, SIGNAL(shouldChangeAddress(const QString &)),
-            SLOT(changeAddressField(const QString &)));
+    connect(_window->tabs(), SIGNAL(currentChanged(int)),
+            SLOT(onTabChanged(int)));
     connection->connectToSite(site);
 }
 
@@ -510,6 +510,11 @@ void Controller::updateAll()
 void Controller::minimize()
 {
     _window->setWindowState(Qt::WindowMinimized);
+}
+
+void Controller::onTabChanged(int to)
+{
+    changeAddressField(viewInTab(to)->address());
 }
 
 View *Controller::currentView() const

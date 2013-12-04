@@ -143,12 +143,6 @@ void View::mouseDoubleClickEvent(QMouseEvent *e)
     return Qx::Widget::mouseDoubleClickEvent(e);
 }
 
-void View::focusInEvent(QFocusEvent *e)
-{
-    Qx::Widget::focusInEvent(e);
-    emit shouldChangeAddress(d_ptr->address);
-}
-
 void View::mouseTripleClickEvent(QMouseEvent *e)
 {
     Q_D(View);
@@ -820,6 +814,11 @@ void View::setTerminal(Connection::Terminal *terminal)
             SLOT(extendTop(int,int)));
     connect(d->terminal, SIGNAL(shouldExtendBottom(int,int)),
             SLOT(extendBottom(int,int)));
+}
+
+QString View::address() const
+{
+    return d_ptr->address;
 }
 
 void View::setAddress(const QString &address)

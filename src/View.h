@@ -70,13 +70,11 @@ protected:
     virtual void mouseReleaseEvent(QMouseEvent *);
     virtual void mouseMoveEvent(QMouseEvent *e);
     virtual void paintEvent(QPaintEvent *e);
-    virtual void focusInEvent(QFocusEvent *e);
     virtual void timerEvent(QTimerEvent *);
     virtual bool focusNextPrevChild(bool);
 
 signals:
     void hasBytesToSend(QByteArray bytes);
-    void shouldChangeAddress(const QString &address);
 
 private slots:
     void commitPreeditHolder(QInputMethodEvent *e);
@@ -90,6 +88,7 @@ private:
 public: // Setters & Getters
     Connection::Terminal *terminal() const;
     void setTerminal(Connection::Terminal *terminal);
+    QString address() const;
     void setAddress(const QString &address);
 };
 
