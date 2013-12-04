@@ -88,7 +88,7 @@ void MainWindow::buildToolBar()
     _toolbar->addAction(QIcon(":/images/view-refresh.png"),
                         tr("Reconnect"), this, SIGNAL(reconnect()));
     _toolbar->addAction(QIcon(":/images/list-add.png"),
-                        tr("Add"), this, SIGNAL(newTabRequested()));
+                        tr("Add"), this, SIGNAL(addCurrentSite()));
     _toolbar->addWidget(_inputFrame);
     _toolbar->addWidget(stretch);
     _toolbar->addAction(QIcon(":/images/face-wink.png"), tr("Emoticons"),

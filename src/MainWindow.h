@@ -55,7 +55,7 @@ protected:
 
 signals:
     void windowShouldClose();
-    void newTabRequested();
+    void addCurrentSite();
     void reconnect();
     void antiIdleTriggered(bool);
     void showHiddenTextTriggered(bool);
