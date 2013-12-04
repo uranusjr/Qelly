@@ -17,17 +17,12 @@
 
 QT       += core gui widgets network
 
+CONFIG += qxt
+QXT += core gui widgets network
+
 TARGET = Qelly
 TEMPLATE = app
 CONFIG += precompile_header
-
-INCLUDEPATH += ../deps/libqxt/include/QxtCore ../deps/libqxt/include/QxtWidgets
-win32-msvc {
-    # TODO: Fill me up
-}
-else {
-    LIBS += -L../deps/libqxt/lib -lQxtCore -lQxtWidgets
-}
 
 defineReplace(mode) {
     Debug:return(debug)
@@ -113,7 +108,8 @@ HEADERS  += \
     Tab.h \
     EmoticonViewer.h \
     JsonFileListModel.h \
-    SiteManagerDialog.h
+    SiteManagerDialog.h \
+    Ssh_p.h
 
 RESOURCES += \
     GeneralResources.qrc

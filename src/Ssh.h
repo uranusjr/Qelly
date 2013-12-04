@@ -28,12 +28,16 @@ namespace UJ
 namespace Connection
 {
 
+class SshPrivate;
+
 class Ssh : public AbstractConnection
 {
     Q_OBJECT
+    Q_DECLARE_PRIVATE(Ssh)
+    SshPrivate * const d_ptr;
 
 public:
-    explicit Ssh(const QString &sshPath, QObject *parent = 0);
+    explicit Ssh(QObject *parent = 0);
     virtual ~Ssh();
     static const qint16 DefaultPort = 22;
 
@@ -44,16 +48,6 @@ public slots:
 
 protected:
     virtual bool connectTo(const QString &address, qint16 port);
-
-private slots:
-    void onProcessStarted();
-    void onProcessReadyRead();
-    void onProcessError();
-    void onProcessFinished();
-
-private:
-    QProcess *_socket;
-    QString _sshPath;
 };
 
 }   // namespace Connection

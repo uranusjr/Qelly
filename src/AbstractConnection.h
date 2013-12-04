@@ -54,7 +54,7 @@ protected:
 signals:
     void connected();
     void disconnected();
-    void processedBytes(QByteArray bytes);
+    void processedBytes(const QByteArray &bytes);
 
 public: // Getters & Setters
     virtual Site *site();

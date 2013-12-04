@@ -17,8 +17,9 @@
  *****************************************************************************/
 
 #include "Ssh.h"
-#include <QProcess>
-#include "Site.h"
+#include "Ssh_p.h"
+#include <QStringList>
+#include <QxtSshProcess>
 
 namespace UJ
 {
@@ -26,16 +27,107 @@ namespace UJ
 namespace Connection
 {
 
-Ssh::Ssh(const QString &sshPath, QObject *parent) :
-    AbstractConnection(parent), _socket(new QProcess(this)), _sshPath(sshPath)
+SshPrivate::SshPrivate(Ssh *q) :
+    QObject(q), q_ptr(q), client(new QxtSshClient(this))
 {
-    connect(_socket, SIGNAL(started()), SLOT(onProcessStarted()));
-    connect(_socket, SIGNAL(readyReadStandardOutput()),
-            SLOT(onProcessReadyRead()));
-    connect(_socket, SIGNAL(error(QProcess::ProcessError)),
-            SLOT(onProcessError()));
-    connect(_socket, SIGNAL(finished(int, QProcess::ExitStatus)),
-            SLOT(onProcessFinished()));
+    connect(client, SIGNAL(authenticationRequired(
+                               QList<QxtSshClient::AuthenticationMethod>)),
+            SLOT(acquireAuth(QList<QxtSshClient::AuthenticationMethod>)));
+    connect(client, SIGNAL(connected()), SLOT(didConnect()));
+    connect(client, SIGNAL(disconnected()), SLOT(didDisconnect()));
+    connect(client, SIGNAL(error(QxtSshClient::Error)),
+            SLOT(didError(QxtSshClient::Error)));
+}
+
+bool SshPrivate::connectTo(const QString &user, const QString &url, qint16 port)
+{
+    port = port < 0 ? Ssh::DefaultPort : port;
+    current = HostInfo(user, url, port);
+    client->connectToHost(user, url, port);
+    return true;
+}
+
+void SshPrivate::sendBytes(const QByteArray &bytes)
+{
+    if (process && process->isOpen())
+        process->write(bytes);
+}
+
+void SshPrivate::close()
+{
+    if (process)
+        process->close();
+    if (client)
+        client->disconnectFromHost();
+}
+
+void SshPrivate::acquireAuth(QList<QxtSshClient::AuthenticationMethod>)
+{
+    qDebug("Auth required");
+}
+
+void SshPrivate::didConnect()
+{
+    process = client->openProcessChannel();
+    connect(process, SIGNAL(started()), SLOT(didStart()));
+    connect(process, SIGNAL(finished(int)), SLOT(didFinish(int)));
+    connect(process, SIGNAL(readyRead()), SLOT(readData()));
+    process->requestPty();
+    process->startShell();
+}
+
+void SshPrivate::didDisconnect()
+{
+    qDebug("Disconnected");
+}
+
+void SshPrivate::didError(QxtSshClient::Error error)
+{
+    switch (error)
+    {
+    case QxtSshClient::HostKeyUnknownError:
+        client->addKnownHost(client->hostName(), client->hostKey());
+        connectTo(current.username, current.url, current.port);
+        break;
+    default:
+        qDebug("Error %d", error);
+        q_ptr->setProcessing(false);
+        break;
+    }
+}
+
+void SshPrivate::didStart()
+{
+    Q_Q(Ssh);
+    q->setConnected(true);
+    q->setProcessing(false);
+    emit q->connected();
+}
+
+void SshPrivate::didFinish(int exitCode)
+{
+    qDebug("Finished %d", exitCode);
+    Q_Q(Ssh);
+    q->setProcessing(false);
+    q->setConnected(false);
+    emit q->disconnected();
+}
+
+void SshPrivate::readData()
+{
+    while (true)
+    {
+        QByteArray data = process->read(512);
+        if (!data.isEmpty())
+            emit q_ptr->processedBytes(data);
+        else
+            break;
+    }
+}
+
+Ssh::Ssh(QObject *parent) :
+    AbstractConnection(parent), d_ptr(new SshPrivate(this))
+{
 }
 
 Ssh::~Ssh()
@@ -46,42 +138,15 @@ Ssh::~Ssh()
 bool Ssh::connectTo(const QString &address, qint16 port)
 {
     setProcessing(true);
-
-    _socket->setReadChannel(QProcess::StandardOutput);
-    _socket->setProcessChannelMode(QProcess::MergedChannels);
-
-    port = port < 0 ? DefaultPort : port;
-    QStringList args;
-
-#if defined Q_OS_WIN32
-    // Plink args
-    args << "-t"
-         << "-x"
-         << "-P" << QString::number(port)
-         << address;
-#elif defined Q_OS_UNIX
-    // OpenSSH args
-    args << "-tt"
-             << "-e" << "none"  // Do not use EscapeChar
-             << "-x"
-             << "-p" << QString::number(port)
-             << address;
-#elif defined Q_OS_LINUX
-    // Use OpenSSH (same as Q_OS_UNIX)
-    args << "-tt"
-             << "-e" << "none"  // Do not use EscapeChar
-             << "-x"
-             << "-p" << QString::number(port)
-             << address;
-#endif
-
-    _socket->start(_sshPath, args);
-    return true;
+    QStringList comps = address.split("@", QString::SkipEmptyParts);
+    if (comps.size() != 2)
+        return false;
+    return d_ptr->connectTo(comps.first(), comps.last(), port);
 }
 
 void Ssh::close()
 {
-    _socket->close();
+    d_ptr->close();
 }
 
 void Ssh::reconnect()
@@ -90,42 +155,12 @@ void Ssh::reconnect()
     connectToSite(site());
 }
 
-void Ssh::onProcessStarted()
-{
-    setConnected(true);
-    setProcessing(false);
-    emit connected();
-}
-
-void Ssh::onProcessReadyRead()
-{
-    while (_socket->bytesAvailable())
-    {
-        QByteArray data = _socket->read(512);
-        if (data.size() > 0)
-            emit processedBytes(data);
-    }
-}
-
-void Ssh::onProcessError()
-{
-    setProcessing(false);
-}
-
-void Ssh::onProcessFinished()
-{
-    setProcessing(false);
-    setConnected(false);
-    emit disconnected();
-}
-
 void Ssh::sendBytes(const QByteArray &bytes)
 {
     if (bytes.isEmpty())
         return;
-
+    d_ptr->sendBytes(bytes);
     setLastTouch();
-    _socket->write(bytes);
 }
 
 }   // namespace Connection
