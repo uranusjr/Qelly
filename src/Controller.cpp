@@ -77,7 +77,7 @@ Controller::Controller(QObject *parent) :
     connect(_window, SIGNAL(siteManageShouldOpen()), SLOT(showSiteManager()));
     connect(_window, SIGNAL(reconnect()), SLOT(reconnect()));
     connect(_window, SIGNAL(windowShouldClose()), SLOT(closeWindow()));
-    connect(_window, SIGNAL(newTabRequested()), SLOT(addTab()));
+    connect(_window, SIGNAL(addCurrentSite()), SLOT(addCurrentSite()));
     connect(_window, SIGNAL(antiIdleTriggered(bool)),
             SLOT(toggleAntiIdle(bool)));
     connect(_window, SIGNAL(showHiddenTextTriggered(bool)),
@@ -514,7 +514,9 @@ void Controller::minimize()
 
 void Controller::onTabChanged(int to)
 {
-    changeAddressField(viewInTab(to)->address());
+    View *view = viewInTab(to);
+    if (view)
+        changeAddressField(view->address());
 }
 
 View *Controller::currentView() const
