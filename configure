@@ -1,7 +1,0 @@
-_PWD=$PWD
-cd 3rdparty/libqxt
-./configure -no-xrandr -no-db -no-zeroconf \
-    -nomake docs -nomake berkeley -nomake designer -nomake sql -nomake web -nomake zeroconf \
-    -prefix $_PWD/deps/libqxt -featuredir $_PWD/deps/libqxt/features -static \
-&& make && make install
-
