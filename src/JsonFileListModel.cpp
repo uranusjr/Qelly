@@ -18,7 +18,7 @@
 
 #include "JsonFileListModel.h"
 #include <QFile>
-#include <QxtJSON>
+#include "Json.h"
 
 namespace UJ
 {
@@ -46,7 +46,7 @@ public:
     {
         if (file->open(QIODevice::WriteOnly | flags()))
         {
-            file->write(QxtJSON::stringify(data).toUtf8());
+            file->write(Json::dump(data));
             file->close();
             return true;
         }
@@ -57,8 +57,7 @@ public:
         if (file->open(QIODevice::ReadOnly | flags()))
         {
             QByteArray bytes = file->readAll();
-            data = QxtJSON::parse(QString::fromUtf8(bytes.constData(),
-                                                    bytes.size())).toList();
+            data = Json::load(bytes.constData()).toList();
             file->close();
         }
     }

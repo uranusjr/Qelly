@@ -24,6 +24,10 @@ TARGET = Qelly
 TEMPLATE = app
 CONFIG += precompile_header
 
+contains(DEFINES, QJSON) {
+    LIBS += -lqjson
+}
+
 defineReplace(mode) {
     Debug:return(debug)
     Release:return(release)
@@ -78,7 +82,8 @@ SOURCES += main.cpp \
     EmoticonViewer.cpp \
     JsonFileListModel.cpp \
     Globals.cpp \
-    SiteManagerDialog.cpp
+    SiteManagerDialog.cpp \
+    Json.cpp
 
 HEADERS  += \
     SharedMenuBar.h \
@@ -108,7 +113,8 @@ HEADERS  += \
     Tab.h \
     EmoticonViewer.h \
     JsonFileListModel.h \
-    SiteManagerDialog.h
+    SiteManagerDialog.h \
+    Json.h
 
 RESOURCES += \
     GeneralResources.qrc

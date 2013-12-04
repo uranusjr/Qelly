@@ -45,24 +45,41 @@ location correctly in Qelly's Preferences.
 
 ## Building
 
-Qelly depends on Qt and LibQxt. Currently both Qt 4.8 and 5+ are supported. You
-can find more information regarding installation on Qt and libqxt's respective
-project pages:
+Qelly depends on Qt, LibQxt, and optionally QJson. Currently both Qt 4.8 and 5+
+are supported. You can find more information regarding installation on Qt,
+libqxt and QJson's respective project pages:
 
 * Qt 4.8: http://qt-project.org/doc/qt-4.8/installation.html
 * Qt 5.1: http://qt-project.org/doc/qt-5.1/qtdoc/qtinstaller.html
 * LibQxt: http://dev.libqxt.org/libqxt/wiki/user_guide
+* QJson: http://qjson.sourceforge.net/
+
+### JSON Backends
+
+LibQxt's JSON processor, `QxtJSON`, has a serious bug in 0.6.1, which is
+subsequently (fixed)[https://bitbucket.org/libqxt/libqxt/commits/a06474ae98f25b18fd16c003074a70c1ff75541b].
+APT, unfortunately, only has the old, buggy version to this date. The
+alternative implementation based on QJson is provided to address this specific
+problem.
+
+If you intend to build Qelly using the QJson-based implementation, run `qmake`
+with an additional argument `DEFINE+=QJSON`, *i.e.*:
+
+    qmake DEFINE+=QJSON Qelly.pro
+
+For those using newer versions of LibQxt and doesn't need QJson, simply run
+`qmake` without the `DEFINE+=QJSON` argument.
 
 ### APT-based Installation
 
 If you use an APT-based package manager, the content of `.travis.yml` provides
-a minimalistic build environment setup. It is currently based on Qt 4.8.1 and
-LibQxt 0.6.1.
+a minimalistic build environment setup. It is currently based on Qt 4.8.1,
+LibQxt 0.6.1, and (optionally) QJson 0.7.1.
 
 ### Other Package Managers
 
 Alternatively, if your package manager of choice (such as YUM, Homebrew, etc.)
-provides Qt and LibQxt, you can install both them manually.
+provides Qt, LibQxt and (optionally) QJson, you can install both them manually.
 
 ### LibQxt Setup Without Package Managers
 
@@ -82,6 +99,9 @@ http://qt-project.org/
 
 LibQxt is used under the terms of LGPL v2.1. LibQxt is owned by the Qxt
 Foundation. http://libqxt.org/
+
+QJson is used under the terms of LGPL v2.1. QJson is authored by Flavio
+Castelli. http://qjson.sourceforge.net/
 
 Plink (PuTTY Link) is distributed under the MIT license. For more, see:
 http://www.chiark.greenend.org.uk/~sgtatham/putty/licence.html

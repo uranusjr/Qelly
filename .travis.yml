@@ -4,11 +4,14 @@ compiler:
   - clang
   - gcc
 
+env:
+    - EXTRA_ARGS="DEFINES+=QJSON" PACKAGES="libqxt-dev libqjson-dev"
+    - EXTRA_ARGS= PACKAGES="libqxt-dev"
+
 before_install:
   - sudo apt-get -qq update
-  - sudo apt-get -qq install libqxt-dev
+  - sudo apt-get -qq install $PACKAGES
 
 script:
-  - qmake Qelly.pro
+  - qmake Qelly.pro $EXTRA_ARGS
   - make
-
