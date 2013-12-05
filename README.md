@@ -57,7 +57,7 @@ libqxt and QJson's respective project pages:
 ### JSON Backends
 
 LibQxt's JSON processor, `QxtJSON`, has a serious bug in 0.6.1, which is
-subsequently (fixed)[https://bitbucket.org/libqxt/libqxt/commits/a06474ae98f25b18fd16c003074a70c1ff75541b].
+subsequently [fixed](https://bitbucket.org/libqxt/libqxt/commits/a06474ae98f25b18fd16c003074a70c1ff75541b).
 APT, unfortunately, only has the old, buggy version to this date. The
 alternative implementation based on QJson is provided to address this specific
 problem.
