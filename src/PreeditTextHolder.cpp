@@ -59,6 +59,11 @@ int PreeditTextHolder::widthForText(const QString &text)
 void PreeditTextHolder::inputMethodEvent(QInputMethodEvent *e)
 {
     QLineEdit::inputMethodEvent(e);
+
+    QWidget *pw = parentWidget();
+    if (pw)
+        pw->update(geometry());
+
     if (e->preeditString().isEmpty())
         resize(0, height());
     else
