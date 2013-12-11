@@ -1,3 +1,19 @@
+1.0b
+--------
+- Bugfixes
+    * Fix app data encoding errors when using Qt 4. (#64)
+    * Fix input method problems on Linux. (#65)
+    * Fix site list data structure on Linux. (#66)
+    * Fix address bar updating.
+
+- New features
+    * Enable "Add" button in the toolbar to add current connection as new site. (#34)
+
+- Enhancements
+    * Maximized state can now be correctly restored. (#63)
+
+
+
 1.0a3
 --------
 
