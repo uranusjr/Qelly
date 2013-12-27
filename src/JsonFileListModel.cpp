@@ -102,9 +102,19 @@ QVariant JsonFileListModel::data(const QModelIndex &index, int role) const
     case Qt::DisplayRole:
     case Qt::EditRole:
     {
-        QVariant v = d_ptr->data.at(index.row());
-        if (v.canConvert<QVariantList>())
-            v = v.toList().at(index.column());
+        QVariant v;
+        int row = index.row();
+        if (d_ptr->data.size() > row)
+        {
+            v = d_ptr->data.at(row);
+            if (v.canConvert<QVariantList>())
+            {
+                QVariantList vl = v.toList();
+                int column = index.column();
+                if (vl.size() > column)
+                    v = vl.at(index.column());
+            }
+        }
         return v;
     }
     default:
