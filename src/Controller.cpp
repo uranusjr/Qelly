@@ -123,7 +123,7 @@ Controller::~Controller()
         prefs->storeConnections(sites);
     }
     prefs->sync();  // Force sync because we might not have another chance!
-    _window->deleteLater();
+    delete _window;
 }
 
 void Controller::connectWith(const QString &address)
