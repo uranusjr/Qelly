@@ -104,14 +104,14 @@ QVariant JsonFileListModel::data(const QModelIndex &index, int role) const
     {
         QVariant v;
         int row = index.row();
-        if (!d_ptr->data.isEmpty() && row >=0 && d_ptr->data.size() > row)
+        if (!d_ptr->data.isEmpty() && row >= 0 && d_ptr->data.size() > row)
         {
             v = d_ptr->data.at(row);
             if (v.canConvert<QVariantList>())
             {
                 QVariantList vl = v.toList();
                 int column = index.column();
-                if (!vl.isEmpty() && column >=0 && vl.size() > column)
+                if (!vl.isEmpty() && column >= 0 && vl.size() > column)
                     v = vl.at(index.column());
             }
         }
