@@ -15,18 +15,37 @@
 # this file belongs to.
 
 
-QT       += core gui widgets network
+# Basic configs
 
-CONFIG += qxt
-QXT += core gui widgets
+QT       += core gui network
 
-TARGET = Qelly
-TEMPLATE = app
-CONFIG += precompile_header
+greaterThan(QT_VERSION, 4) {
+    QT   += widgets
+}
+
+CONFIG   += qxt
+QXT      += core gui widgets
+TARGET   =  Qelly
+TEMPLATE =  app
+CONFIG   += precompile_header
+
+
+# Extra compile flags
+
+LIBS += -lsource-highlight
 
 contains(DEFINES, QJSON) {
     LIBS += -lqjson
 }
+
+CONFIG(static) {
+    win32-g++ {
+        LIBS += -static-libgcc -static-libstdc++
+    }
+}
+
+
+# Building configs
 
 defineReplace(mode) {
     Debug:return(debug)
@@ -41,11 +60,8 @@ RCC_DIR = $$BUILD_DIR
 UI_DIR = $$BUILD_DIR
 PRECOMPILED_DIR = $$BUILD_DIR
 
-CONFIG(static) {
-    win32-g++ {
-        LIBS += -static-libgcc -static-libstdc++
-    }
-}
+
+# Assets for deployment
 
 TRANSLATIONS = \
     translations/Qelly.zh_TW.ts \
@@ -54,6 +70,9 @@ TRANSLATIONS = \
 include("translations.pri")
 RC_FILE = icons/Qelly.rc        # Windows
 ICON = icons/qower-icon.icns    # OS X
+
+
+# Sources...
 
 PRECOMPILED_HEADER = UJCommonDefs.h
 
