@@ -59,6 +59,7 @@ signals:
     void reconnect();
     void antiIdleTriggered(bool);
     void showHiddenTextTriggered(bool);
+    void codePasterShouldOpen();
     void emoticonViewerShouldOpen();
     void siteManageShouldOpen();
 

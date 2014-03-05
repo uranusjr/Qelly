@@ -33,6 +33,7 @@ class Site;
 namespace Qelly
 {
 
+class CodePaster;
 class EmoticonViewer;
 class MainWindow;
 class PreferencesWindow;
@@ -69,6 +70,7 @@ public slots:
     void visitProject();
     void toggleAntiIdle(bool enabled);
     void toggleShowHiddenText(bool enabled);
+    void showCodePaster();
     void showEmoticonViewer();
     void showSiteManager();
     void tabNext();
@@ -89,6 +91,7 @@ private:
     int _antiIdleTimer;
     MainWindow *_window;
     QPointer<PreferencesWindow> _preferencesWindow;
+    QPointer<CodePaster> _codePaster;
     QPointer<EmoticonViewer> _emoticonViewer;
     QPointer<SiteManagerDialog> _siteManager;
 };

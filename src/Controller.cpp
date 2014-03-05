@@ -24,6 +24,7 @@
 #include <QMessageBox>
 #include <QUrl>
 #include "Globals.h"
+#include "CodePaster.h"
 #include "EmoticonViewer.h"
 #include "MainWindow.h"
 #include "PreferencesWindow.h"
@@ -82,6 +83,8 @@ Controller::Controller(QObject *parent) :
             SLOT(toggleAntiIdle(bool)));
     connect(_window, SIGNAL(showHiddenTextTriggered(bool)),
             SLOT(toggleShowHiddenText(bool)));
+    connect(_window, SIGNAL(codePasterShouldOpen()),
+            SLOT(showCodePaster()));
     connect(_window, SIGNAL(emoticonViewerShouldOpen()),
             SLOT(showEmoticonViewer()));
     connect(_window->address(), SIGNAL(returnPressed()),
@@ -428,6 +431,19 @@ void Controller::toggleShowHiddenText(bool enabled)
         prefs->setShowHiddenText(enabled);
         updateAll();
     }
+}
+
+void Controller::showCodePaster()
+{
+    if (!_codePaster)
+    {
+        _codePaster = new CodePaster(_window);
+        _codePaster->setAttribute(Qt::WA_DeleteOnClose);
+        connect(_codePaster, SIGNAL(hasTextToInsert(QString)),
+                SLOT(insertText(QString)));
+    }
+    _codePaster->setAttribute(Qt::WA_ShowModal);
+    _codePaster->show();
 }
 
 void Controller::showEmoticonViewer()

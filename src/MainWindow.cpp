@@ -91,6 +91,9 @@ void MainWindow::buildToolBar()
                         tr("Add"), this, SIGNAL(addCurrentSite()));
     _toolbar->addWidget(_inputFrame);
     _toolbar->addWidget(stretch);
+
+    _toolbar->addAction(QIcon(":/images/code-context.png"), tr("Paste Code"),
+                        this, SIGNAL(codePasterShouldOpen()));
     _toolbar->addAction(QIcon(":/images/face-wink.png"), tr("Emoticons"),
                         this, SIGNAL(emoticonViewerShouldOpen()));
     action = _toolbar->addAction(QIcon(":/images/player-time.png"),

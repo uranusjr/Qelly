@@ -13,6 +13,7 @@
         <file>translations/Qelly.zh_Hant.qm</file>
         <file>translations/Qelly.zh_TW.qm</file>
         <file alias="translations/Qelly.zh_TW.UTF_8.qm">translations/Qelly.zh_TW.qm</file>
+        <file>images/code-context.png</file>
     </qresource>
     <qresource prefix="/data">
         <file>about.html</file>

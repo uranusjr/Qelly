@@ -102,7 +102,8 @@ SOURCES += main.cpp \
     JsonFileListModel.cpp \
     Globals.cpp \
     SiteManagerDialog.cpp \
-    Json.cpp
+    Json.cpp \
+    CodePaster.cpp
 
 HEADERS  += \
     SharedMenuBar.h \
@@ -133,7 +134,8 @@ HEADERS  += \
     EmoticonViewer.h \
     JsonFileListModel.h \
     SiteManagerDialog.h \
-    Json.h
+    Json.h \
+    CodePaster.h
 
 RESOURCES += \
     GeneralResources.qrc
@@ -143,7 +145,8 @@ FORMS += \
     PreferencesFont.ui \
     PreferencesColor.ui \
     EmoticonViewer.ui \
-    SiteManagerDialog.ui
+    SiteManagerDialog.ui \
+    CodePaster.ui
 
 OTHER_FILES += \
     icons/Qelly.rc \
