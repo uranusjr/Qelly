@@ -5,7 +5,7 @@ compiler:
   - gcc
 
 env:
-    - EXTRA_ARGS="DEFINES+=QJSON" PACKAGES="libqxt-dev libqjson-dev"
+    - EXTRA_ARGS="DEFINES+=QJSON" PACKAGES="libqxt-dev libqjson-dev libsource-highlight-dev"
     - EXTRA_ARGS= PACKAGES="libqxt-dev"
 
 before_install:
