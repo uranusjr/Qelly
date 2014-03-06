@@ -20,6 +20,7 @@
 #include "ui_CodePaster.h"
 #include <string>
 #include <sstream>
+#include <srchilite/parserexception.h>
 #include <srchilite/sourcehighlight.h>
 #include "SharedPreferences.h"
 
@@ -89,15 +90,23 @@ void CodePaster::accept()
     input << inputCode.toUtf8().data();
     srchilite::SourceHighlight sourceHighlight("esc.outlang");
 
-    QString langName;
-    int index = _ui->syntaxSelect->currentIndex();
-
-    if (index >= _ui->syntaxSelect->count() || index < 0)   // Custom entry
-        langName = _ui->syntaxSelect->currentText();
-    else
+    QString langName = _ui->syntaxSelect->currentText();
+    int index = _ui->syntaxSelect->findText(langName, Qt::MatchExactly);
+    if (index != -1)                        // Is a selected value.
         langName = _ui->syntaxSelect->itemData(index).toString();
+    else if (!langName.endsWith(".lang"))   // Try to correct custom input.
+        langName.append(".lang");
 
-    sourceHighlight.highlight(input, output, langName.toUtf8().data());
+    try
+    {
+        // Do highlighting.
+        sourceHighlight.highlight(input, output, langName.toUtf8().data());
+    }
+    catch (srchilite::ParserException)
+    {
+        // Fail silently and output the raw source without modification.
+        output.str(inputCode.toUtf8().data());
+    }
 
     std::string outputStr = output.str();
     QString highlighted =
