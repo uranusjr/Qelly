@@ -45,16 +45,40 @@ location correctly in Qelly's Preferences.
 
 ## Building
 
-Qelly depends on Qt, LibQxt, and optionally QJson. Currently both Qt 4.8 and 5+
-are supported. You can find more information regarding installation on Qt,
-libqxt and QJson's respective project pages:
+Qelly depends on Qt, LibQxt, GNU Source-highlight, and (optionally) QJson.
+Currently both Qt 4.8 and 5+ are supported. You can find more information
+regarding installation on dependent libraries' respective project pages:
 
 * Qt 4.8: http://qt-project.org/doc/qt-4.8/installation.html
 * Qt 5.1: http://qt-project.org/doc/qt-5.1/qtdoc/qtinstaller.html
 * LibQxt: http://dev.libqxt.org/libqxt/wiki/user_guide
 * QJson: http://qjson.sourceforge.net/
 
-### JSON Backends
+### Getting Dependencies
+
+#### APT-based Installation
+
+If you use an APT-based package manager, the content of `.travis.yml` provides
+a minimalistic build environment setup. It is currently based on Qt 4.8.1,
+LibQxt 0.6.1, and (optionally) QJson 0.7.1.
+
+#### Other Package Managers
+
+Alternatively, if your package manager of choice (such as YUM, Homebrew, etc.)
+provides Qt, LibQxt and (optionally) QJson, you can install both them manually.
+
+#### LibQxt Setup Without Package Managers
+
+If you wish to build LibQxt manually, you will need to choose an appropriate
+version based on the version of Qt tha you use. At the time of writing
+(2013-09-25), the latest stable LibQxt release (0.6.2) supports only Qt 4.
+Therefore, if you wish to build Qelly against Qt 5, you will need to use Git or
+Mercurial to clone the tip version, and build LibQxt from that.
+
+
+### Platform Notes
+
+#### JSON Backends on APT-based Systems
 
 LibQxt's JSON processor, `QxtJSON`, has a serious bug in 0.6.1, which is
 subsequently [fixed](https://bitbucket.org/libqxt/libqxt/commits/a06474ae98f25b18fd16c003074a70c1ff75541b).
@@ -70,24 +94,18 @@ with an additional argument `DEFINE+=QJSON`, *i.e.*:
 For those using newer versions of LibQxt and doesn't need QJson, simply run
 `qmake` without the `DEFINE+=QJSON` argument.
 
-### APT-based Installation
+#### Building on OS X 10.9 (Mavericks)
 
-If you use an APT-based package manager, the content of `.travis.yml` provides
-a minimalistic build environment setup. It is currently based on Qt 4.8.1,
-LibQxt 0.6.1, and (optionally) QJson 0.7.1.
+Clang on OS X Mavericks defaults to use the new `libc++` library instead of
+`libstdc++` (which is compatible to GCC's version). Qt, however, tries to be
+compatible with older OS X versions, and uses `libstdc++`. If you build your
+dependencies with default settings (which is recommanded by package managers
+such as Homebrew), you will need to specify `QMAKESPEC` to
+`unsupported/macx-clang-libc++` so that the linker resolves symbols correctly.
+One way of doing this is to supply an additional `-spec` parameter when you run
+`qmake`, *i.e.*:
 
-### Other Package Managers
-
-Alternatively, if your package manager of choice (such as YUM, Homebrew, etc.)
-provides Qt, LibQxt and (optionally) QJson, you can install both them manually.
-
-### LibQxt Setup Without Package Managers
-
-If you wish to build LibQxt manually, you will need to choose an appropriate
-version based on the version of Qt tha you use. At the time of writing
-(2013-09-25), the latest stable LibQxt release (0.6.2) supports only Qt 4.
-Therefore, if you wish to build Qelly against Qt 5, you will need to use Git or
-Mercurial to clone the tip version, and build LibQxt from that.
+    qmake -spec unsupported/macx-clang-libc++ Qelly.pro
 
 
 ## Thrid Party Components
