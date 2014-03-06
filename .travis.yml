@@ -6,7 +6,7 @@ compiler:
 
 env:
     - EXTRA_ARGS="DEFINES+=QJSON" PACKAGES="libqxt-dev libqjson-dev libsource-highlight-dev"
-    - EXTRA_ARGS= PACKAGES="libqxt-dev"
+    - EXTRA_ARGS= PACKAGES="libqxt-dev libsource-highlight-dev"
 
 before_install:
   - sudo apt-get -qq update
