@@ -20,6 +20,7 @@
 #define CODEPASTER_H
 
 #include <QDialog>
+#include "Globals.h"
 
 namespace Ui
 {
@@ -40,6 +41,9 @@ public:
     explicit CodePaster(QWidget *parent = 0);
     ~CodePaster();
 
+    BBS::AnsiColorKey colorKey() const;
+    void setColorKey(BBS::AnsiColorKey key);
+
 signals:
     void hasTextToInsert(const QString &text);
 
@@ -48,6 +52,7 @@ private slots:
 
 private:
     Ui::CodePaster *_ui;
+    BBS::AnsiColorKey _colorKey;
 };
 
 }   // namespace Qelly

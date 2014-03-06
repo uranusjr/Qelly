@@ -375,10 +375,7 @@ void Controller::changeAddressField(const QString &address)
 
 void Controller::addCurrentSite()
 {
-    View *view = currentView();
-    if (!view || !view->isConnected())
-        return;
-    Connection::Site *site = view->terminal()->connection()->site();
+    Connection::Site *site = currentConenction()->site();
     if (!site)
         return;
     showSiteManager();
@@ -444,6 +441,10 @@ void Controller::showCodePaster()
     }
     _codePaster->setAttribute(Qt::WA_ShowModal);
     _codePaster->show();
+
+    Connection::AbstractConnection *connection = currentConenction();
+    if (connection && connection->site())
+        _codePaster->setColorKey(connection->site()->colorKey());
 }
 
 void Controller::showEmoticonViewer()
@@ -546,6 +547,14 @@ View *Controller::viewInTab(int index) const
     if (!w)
         return 0;
     return static_cast<Tab *>(w)->view();
+}
+
+Connection::AbstractConnection *Controller::currentConenction() const
+{
+    View *view = currentView();
+    if (!view || !view->isConnected())
+        return 0;
+    return view->terminal()->connection();
 }
 
 void Controller::setAntiIdleTimer(bool enabled)

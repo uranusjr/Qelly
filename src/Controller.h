@@ -27,6 +27,7 @@ namespace UJ
 
 namespace Connection
 {
+class AbstractConnection;
 class Site;
 }
 
@@ -87,6 +88,7 @@ private slots:
 private:
     View *currentView() const;
     View *viewInTab(int index) const;
+    Connection::AbstractConnection *currentConenction() const;
     void setAntiIdleTimer(bool enabled);
     int _antiIdleTimer;
     MainWindow *_window;
