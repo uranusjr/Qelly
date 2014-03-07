@@ -106,6 +106,10 @@ public:
     int doubleByteFontPaddingBottom() const;
     void setDoubleByteFontPaddingBottom(int padding);
 
+    // Pasters
+    QStringList activeLanguages() const;
+    void setActiveLanguages(const QStringList &langs);
+
     // Colors
     QColor fColor(int index, bool bright = false) const;
     QColor bColor(int index, bool bright = false) const;

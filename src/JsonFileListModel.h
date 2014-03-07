@@ -35,6 +35,7 @@ class JsonFileListModel : public QAbstractListModel
 public:
     explicit JsonFileListModel(const QString &filename,
                                const QStringList &keys = QStringList(),
+                               const QVariantList &defaults = QVariantList(),
                                QObject *parent = 0);
     virtual ~JsonFileListModel();
     virtual int rowCount(const QModelIndex & = QModelIndex()) const;

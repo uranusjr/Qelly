@@ -238,6 +238,20 @@ void SharedPreferences::setDoubleByteFontPaddingBottom(int padding)
     _settings->setValue("double byte font padding bottom", padding);
 }
 
+QStringList SharedPreferences::activeLanguages() const
+{
+    QStringList defaults =
+            QStringList() << "c.lang" << "cpp.lang" << "latex.lang" <<
+                             "python.lang";
+    QVariant v = _settings->value("code paster active languages", defaults);
+    return v.toStringList();
+}
+
+void SharedPreferences::setActiveLanguages(const QStringList &langs)
+{
+    _settings->setValue("code paster active languages", langs);
+}
+
 QColor SharedPreferences::colorBlack() const
 {
     return _settings->value("color black", QColor(Qt::black)).value<QColor>();

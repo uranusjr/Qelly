@@ -1,7 +1,7 @@
 /*****************************************************************************
  * CodePaster.cpp
  *
- * Created: 05/3 2014 by uranusjr
+ * Created: 0/3 2014 by uranusjr
  *
  * Copyright 2014 uranusjr. All rights reserved.
  *
@@ -30,23 +30,6 @@ namespace UJ
 namespace Qelly
 {
 
-static const ssize_t COMMON_LANGUAGES_SIZE = 12;
-
-static const char * COMMON_LANGUAGES[COMMON_LANGUAGES_SIZE][2] = {
-    {"C", "c.lang"},
-    {"C++", "cpp.lang"},
-    {"C#", "csharp.lang"},
-    {"CSS", "css.lang"},
-    {"HTML", "html.lang"},
-    {"Java", "java.lang"},
-    {"JavaScript", "javascript.lang"},
-    {"LaTeX", "latex.lang"},
-    {"Python", "python.lang"},
-    {"Ruby", "ruby.lang"},
-    {"Shell", "sh.lang"},
-    {"XML", "xml.lang"}
-};
-
 CodePaster::CodePaster(QWidget *parent) :
     QDialog(parent), _ui(new Ui::CodePaster), _colorKey(BBS::ColorKeyCtrlU)
 {
@@ -56,12 +39,9 @@ CodePaster::CodePaster(QWidget *parent) :
     font.setPointSize(QApplication::font().pointSize());
     _ui->codeEdit->setFont(font);
 
-    for (ssize_t i = 0; i < COMMON_LANGUAGES_SIZE; i++)
-    {
-        _ui->syntaxSelect->addItem(
-            QString::fromUtf8(COMMON_LANGUAGES[i][0]),
-            QString::fromUtf8(COMMON_LANGUAGES[i][1]));
-    }
+    QStringList langs = SharedPreferences::sharedInstance()->activeLanguages();
+    _ui->syntaxSelect->clear();
+    _ui->syntaxSelect->addItems(langs);
 
     connect(_ui->buttons, SIGNAL(accepted()), SLOT(accept()));
     connect(_ui->buttons, SIGNAL(rejected()), SLOT(close()));
@@ -90,11 +70,8 @@ void CodePaster::accept()
     input << inputCode.toUtf8().data();
     srchilite::SourceHighlight sourceHighlight("esc.outlang");
 
-    QString langName = _ui->syntaxSelect->currentText();
-    int index = _ui->syntaxSelect->findText(langName, Qt::MatchExactly);
-    if (index != -1)                        // Is a selected value.
-        langName = _ui->syntaxSelect->itemData(index).toString();
-    else if (!langName.endsWith(".lang"))   // Try to correct custom input.
+    QString langName = _ui->syntaxSelect->currentText().toLower();
+    if (!langName.endsWith(".lang"))    // Try to correct custom input.
         langName.append(".lang");
 
     try

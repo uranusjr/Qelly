@@ -15,6 +15,7 @@
         <file alias="translations/Qelly.zh_TW.UTF_8.qm">translations/Qelly.zh_TW.qm</file>
         <file>images/code-context.png</file>
         <file>translations/Qelly.en.qm</file>
+        <file>images/tools-wizard.png</file>
     </qresource>
     <qresource prefix="/data">
         <file>about.html</file>

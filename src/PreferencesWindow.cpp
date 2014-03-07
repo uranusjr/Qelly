@@ -23,6 +23,7 @@
 #include "PreferencesColor.h"
 #include "PreferencesFont.h"
 #include "PreferencesGeneral.h"
+#include "PreferencesPaster.h"
 #include "SharedPreferences.h"
 
 namespace UJ
@@ -42,6 +43,7 @@ PreferencesWindow::PreferencesWindow(QWidget *parent) :
     PreferencesGeneral *general = new PreferencesGeneral(this);
     PreferencesFont *font = new PreferencesFont(this);
     PreferencesColor *color = new PreferencesColor(this);
+    PreferencesPaster *paster = new PreferencesPaster(this);
 
     addPage(general, QIcon(":/images/preferences-system.png"),
             tr("General"));
@@ -49,6 +51,7 @@ PreferencesWindow::PreferencesWindow(QWidget *parent) :
             tr("Fonts"));
     addPage(color, QIcon(":/images/preferences-desktop-color.png"),
             tr("Color"));
+    addPage(paster, QIcon(":/images/tools-wizard.png"), tr("Pasters"));
 
     // If anyone of the pages has been updated, trigger redraw
     _displayPreferenceGroup->addSignal(font, SIGNAL(preferencesUpdated()));

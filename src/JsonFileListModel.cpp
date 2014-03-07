@@ -30,12 +30,13 @@ class JsonFileListModelPrivate
 
 public:
     JsonFileListModelPrivate(const QString &filename, const QStringList &ks,
+                             const QVariantList &defaults,
                              JsonFileListModel *q) :
         q_ptr(q), file(new QFile(filename)), keys(ks)
     {
         if (keys.isEmpty())
             keys << "value";
-        load();
+        load(defaults);
     }
     ~JsonFileListModelPrivate()
     {
@@ -52,14 +53,16 @@ public:
         }
         return false;
     }
-    void load()
+    void load(const QVariantList &defaults = QVariantList())
     {
-        if (file->open(QIODevice::ReadOnly | flags()))
+        if (!file->open(QIODevice::ReadOnly | flags()))
         {
-            QByteArray bytes = file->readAll();
-            data = Json::load(bytes.constData()).toList();
-            file->close();
+            data = defaults;
+            return;
         }
+        QByteArray bytes = file->readAll();
+        data = Json::load(bytes.constData()).toList();
+        file->close();
     }
 
     QFile *file;
@@ -74,9 +77,10 @@ private:
 };
 
 JsonFileListModel::JsonFileListModel(
-        const QString &filename, const QStringList &keys, QObject *parent) :
+        const QString &filename, const QStringList &keys,
+        const QVariantList &defaults, QObject *parent) :
     QAbstractListModel(parent),
-    d_ptr(new JsonFileListModelPrivate(filename, keys, this))
+    d_ptr(new JsonFileListModelPrivate(filename, keys, defaults, this))
 {
 }
 
