@@ -64,6 +64,7 @@ PRECOMPILED_DIR = $$BUILD_DIR
 # Assets for deployment
 
 TRANSLATIONS = \
+    translations/Qelly.en.ts \
     translations/Qelly.zh_TW.ts \
     translations/Qelly.zh_Hant.ts
 
