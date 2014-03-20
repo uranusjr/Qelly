@@ -48,6 +48,7 @@ CONFIG(static) {
 }
 
 TRANSLATIONS = \
+    translations/Qelly.en.ts \
     translations/Qelly.zh_TW.ts \
     translations/Qelly.zh_Hant.ts
 
