@@ -100,7 +100,6 @@ Controller::Controller(QObject *parent) :
         {
             addTab(false);
             connectWith(site);
-            changeAddressField(site->fullForm());
         }
     }
     if (!_window->tabs()->count())
@@ -176,6 +175,7 @@ void Controller::connectWith(Connection::Site *site)
     connect(_window->tabs(), SIGNAL(currentChanged(int)),
             SLOT(onTabChanged(int)));
     connection->connectToSite(site);
+    changeAddressField(site->fullForm());
 }
 
 void Controller::focusAddressField()
