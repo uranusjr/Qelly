@@ -115,9 +115,11 @@ Controller::~Controller()
         for (int i = 0; i < _window->tabs()->count(); i++)
         {
             View *view = viewInTab(i);
-            if (!view->isConnected())
+            if (!view->terminal() || !view->terminal()->connection())
                 continue;
-            sites << view->terminal()->connection()->site();
+            Connection::Site *site = view->terminal()->connection()->site();
+            if (site)
+                sites << site;
         }
         prefs->storeConnections(sites);
     }
