@@ -130,6 +130,9 @@ Qt::ItemFlags JsonFileListModel::flags(const QModelIndex &index) const
 bool JsonFileListModel::setData(
         const QModelIndex &index, const QVariant &value, int role)
 {
+    if (!index.isValid())
+        return false;
+
     switch (role)
     {
     case Qt::EditRole:
