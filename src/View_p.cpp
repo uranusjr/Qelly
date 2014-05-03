@@ -442,7 +442,6 @@ void ViewPrivate::handleBackspaceKey()
         {
             bytes.append(bytes);
         }
-
     }
     emit q_ptr->hasBytesToSend(bytes);
 }
