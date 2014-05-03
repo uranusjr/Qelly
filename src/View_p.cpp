@@ -431,6 +431,21 @@ void ViewPrivate::handleForwardDeleteKey()
     emit q_ptr->hasBytesToSend(bytes);
 }
 
+void ViewPrivate::handleBackspaceKey()
+{
+    QByteArray bytes("\x08");
+    int x = terminal->cursorColumn();
+    int y = terminal->cursorRow();
+    if (terminal->connection()->site()->manualDoubleByte())
+    {
+        if (x > 1 && terminal->attributeOfCellAt(y, x - 1).f.doubleByte == 2)
+        {
+            bytes.append(bytes);
+        }
+    }
+    emit q_ptr->hasBytesToSend(bytes);
+}
+
 void ViewPrivate::handleAsciiDelete()
 {
     QByteArray buffer("\x08");
@@ -903,6 +918,9 @@ void ViewPrivate::handleKeyPress(QKeyEvent *e)
                 break;
             case Qt::Key_Delete:
                 handleForwardDeleteKey();
+                break;
+            case Qt::Key_Backspace:
+                handleBackspaceKey();
                 break;
             case 0x7f:
                 handleAsciiDelete();
