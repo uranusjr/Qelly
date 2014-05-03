@@ -453,7 +453,7 @@ void ViewPrivate::handleAsciiDelete()
     int column = terminal->cursorColumn();
     if (terminal->connection()->site()->manualDoubleByte() &&
         terminal->attributeOfCellAt(row, column - 1).f.doubleByte == 2 &&
-        column > 0)
+        column > 1)
     {
         buffer.append(buffer);
     }
