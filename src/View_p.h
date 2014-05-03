@@ -73,6 +73,7 @@ public:
     void handleArrowKey(int key);   // Up, Down, Left, Right
     void handleJumpKey(int key);    // PgUp, PgDn, Home, End
     void handleForwardDeleteKey();
+    void handleBackspaceKey();      // 0x08
     void handleAsciiDelete();       // 0x7f
 
     void displayCellAt(int column, int row);
