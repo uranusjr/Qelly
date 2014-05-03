@@ -883,54 +883,54 @@ void ViewPrivate::addUrlToMenu(const QString &url, QMenu *menu) const
 void ViewPrivate::handleKeyPress(QKeyEvent *e)
 {
     Q_Q(View);
-        int key = e->key();
-        if (key != UJ::Key_Mod)
-            clearSelection();
-        terminal->setHasMessage(false);
+    int key = e->key();
+    if (key != UJ::Key_Mod)
+        clearSelection();
+    terminal->setHasMessage(false);
 
-        bool ok = false;
-        Qt::KeyboardModifiers modifiers = e->modifiers();
-        const QString &text = e->text();
+    bool ok = false;
+    Qt::KeyboardModifiers modifiers = e->modifiers();
+    const QString &text = e->text();
 
-        updateCursor(q->mapFromGlobal(QCursor::pos()), modifiers, 0);
+    updateCursor(q->mapFromGlobal(QCursor::pos()), modifiers, 0);
 
-        if (modifiers & Qt::ControlModifier)
+    if (modifiers & Qt::ControlModifier)
+    {
+        int c = characterFromKeyPress(key, modifiers, &ok);
+        if (ok)
+            emit q->hasBytesToSend(QByteArray(1, c));
+    }
+    else    // No modifier
+    {
+        switch (key)
         {
-            int c = characterFromKeyPress(key, modifiers, &ok);
-            if (ok)
-                emit q->hasBytesToSend(QByteArray(1, c));
+        case Qt::Key_Up:
+        case Qt::Key_Down:
+        case Qt::Key_Right:
+        case Qt::Key_Left:
+            handleArrowKey(key);
+            break;
+        case Qt::Key_PageUp:
+        case Qt::Key_PageDown:
+        case Qt::Key_Home:
+        case Qt::Key_End:
+            handleJumpKey(key);
+            break;
+        case Qt::Key_Delete:
+            handleForwardDeleteKey();
+            break;
+        case Qt::Key_Backspace:
+            handleBackspaceKey();
+            break;
+        case 0x7f:
+            handleAsciiDelete();
+            break;
+        default:
+            emit q->hasBytesToSend(text.toLatin1());   // Normal text input
+            break;
         }
-        else    // No modifier
-        {
-            switch (key)
-            {
-            case Qt::Key_Up:
-            case Qt::Key_Down:
-            case Qt::Key_Right:
-            case Qt::Key_Left:
-                handleArrowKey(key);
-                break;
-            case Qt::Key_PageUp:
-            case Qt::Key_PageDown:
-            case Qt::Key_Home:
-            case Qt::Key_End:
-                handleJumpKey(key);
-                break;
-            case Qt::Key_Delete:
-                handleForwardDeleteKey();
-                break;
-            case Qt::Key_Backspace:
-                handleBackspaceKey();
-                break;
-            case 0x7f:
-                handleAsciiDelete();
-                break;
-            default:
-                emit q->hasBytesToSend(text.toLatin1());   // Normal text input
-                break;
-            }
-        }
-        e->accept();
+    }
+    e->accept();
 }
 
 void ViewPrivate::handleKeyRelease(QKeyEvent *e)
