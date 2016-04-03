@@ -511,7 +511,7 @@ void ViewPrivate::drawSpecialSymbol(
                 prefs->fColor(left.f.foregroundColorCode(),
                               left.f.isForegroundBright()));
         painter->fillRect(
-                xs[1], ys[1], w * (0x258c - code) / 8, h,
+                xs[1], ys[1], w * (0x258c - code) / 4, h,
                 prefs->fColor(right.f.foregroundColorCode(),
                               right.f.isForegroundBright()));
         break;
@@ -520,7 +520,7 @@ void ViewPrivate::drawSpecialSymbol(
     case 0x258e:    // ▎ Left one quarter block
     case 0x258f:    // ▏ Left one eighth block
         painter->fillRect(
-                xs[0], ys[0], w * (0x2590 - code) / 8, h,
+                xs[0], ys[0], w * (0x2590 - code) / 4, h,
                 prefs->fColor(left.f.foregroundColorCode(),
                               left.f.isForegroundBright()));
         break;
