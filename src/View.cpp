@@ -634,7 +634,7 @@ void View::pasteColor()
     Q_D(View);
 
     const QMimeData *mime = QApplication::clipboard()->mimeData();
-    QByteArray bytes = mime->data("application/x-ansi-colored-text-data");
+    QByteArray bytes = mime->data(ANSI_COLOR_MIME);
 
     if (bytes.isEmpty())
         return;
@@ -661,6 +661,7 @@ void View::pasteColor()
     cleared.f.bright = 0;
     cleared.f.underlined = 0;
     cleared.f.reversed = 0;
+    cleared.f.doubleByte = 0;
 
     int space = 0;
     BBS::CellAttribute before = cleared;
@@ -675,6 +676,20 @@ void View::pasteColor()
         cell.attr.f.bright = bytes[i++];
         cell.attr.f.underlined = bytes[i++];
         cell.attr.f.reversed = bytes[i++];
+
+        switch (before.f.doubleByte)
+        {
+        case 0:
+        case 2:
+            if (cell.byte > 0x7f)
+                cell.attr.f.doubleByte = 1;
+            else
+                cell.attr.f.doubleByte = 0;
+            break;
+        case 1:
+            cell.attr.f.doubleByte = 2;
+            break;
+        }
 
         // Identical to the previous one
         if ((cell.attr.f.bColorIndex == before.f.bColorIndex) &&
